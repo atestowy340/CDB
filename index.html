@@ -24,8 +24,8 @@
         
         const CONTRACT_ABI = [
             "function zaglosuj(uint256 _komentarzId) public",
-            "function dodajKomentarz(string memory _tresc, string memory _tag) public payable",
-            "function setNickname(string memory _nickname) public payable"
+            "function dodajKomentarz(string memory _tresc, string memory _tag) public",
+            "function setNickname(string memory _nickname) public"
         ];
 
         const translations = {
@@ -36,7 +36,7 @@
                 setNickname: "Ustaw swój nick",
                 nicknamePlaceholder: "Wpisz unikalny nick...",
                 saveNickname: "Zapisz Nick",
-                freeNotice: "Pierwsza zmiana nicku jest darmowa! Kolejne wymagają opłaty.",
+                freeNotice: "Najpierw ustaw nick on-chain, aby móc publikować.",
                 feedTitle: "Dyskusje Społeczności",
                 postPlaceholder: "O czym giełda szumi dzisiaj?",
                 tagPlaceholder: "Tag (np. ogolny, bitcoin)",
@@ -58,7 +58,7 @@
                 setNickname: "Set Your Nickname",
                 nicknamePlaceholder: "Enter unique nickname...",
                 saveNickname: "Save Nickname",
-                freeNotice: "First nickname change is free!",
+                freeNotice: "Set your nickname on-chain first.",
                 feedTitle: "Community Discussions",
                 postPlaceholder: "What's happening in crypto today?",
                 tagPlaceholder: "Tag (e.g., general, bitcoin)",
@@ -80,7 +80,7 @@
                 setNickname: "Nickname festlegen",
                 nicknamePlaceholder: "Einzigartigen Nickname eingeben...",
                 saveNickname: "Nickname speichern",
-                freeNotice: "Die erste Nickname-Änderung ist kostenlos!",
+                freeNotice: "Legen Sie zuerst Ihren Nickname fest.",
                 feedTitle: "Community-Diskussionen",
                 postPlaceholder: "Was passiert heute im Krypto-Markt?",
                 tagPlaceholder: "Tag (z. B. general, bitcoin)",
@@ -218,10 +218,8 @@
 
                     const cleanedTag = postTag.replace('#', '').trim() || 'ogolny';
                     
-                    // Przekazujemy opłatę za użycie tagu (0.000004 ETH) jeśli kontrakt tego wymaga
-                    const tx = await contract.dodajKomentarz(postText, cleanedTag, {
-                        value: ethers.utils.parseEther("0.000004")
-                    });
+                    // Bezpośrednie wywołanie funkcji kontraktu bez dołączania msg.value
+                    const tx = await contract.dodajKomentarz(postText, cleanedTag);
                     
                     await tx.wait();
 
@@ -239,7 +237,7 @@
                     showNotification("Wpis opublikowany na blockchainie!", "success");
                 } catch (err) {
                     console.error(err);
-                    showNotification("Błąd kontraktu (sprawdź nick / opłatę za tag)", "error");
+                    showNotification("Błąd kontraktu (sprawdź czy ustawiono nick)", "error");
                 } finally {
                     setIsProcessing(false);
                 }
