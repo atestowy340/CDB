@@ -56,16 +56,16 @@
                 searchPlaceholder: "🔍 Search or inspect tag...",
                 clearFilter: "Clear",
                 rulesBtn: "Rules & Mechanics",
-                rulesTitle: "CDB Rules, Mechanics & Whitepaper",
-                rulesIntro: "CryptoDiscussionBoard (CDB) is a 100% decentralized, serverless Web3 platform operating on the Base L2 network via secure UUPS Proxy smart contracts.",
-                rule1Title: "1. Tags & Snipe System",
-                rule1Text: "• **Free Limit:** Every wallet can register up to 3 custom free tags.\n• **DEFAULT Tag:** Permanently protected at the smart contract level. It is always free and open for everyone.\n• **Buyout / Snipe:** Once a custom tag reaches 500+ uses, anyone can buyout/snipe ownership starting at 0.0005 ETH. Each buyout increases the price by 30%.\n• **Profit Split:** 70% of buyout proceeds go to the previous owner, and 30% to the platform.\n• **Usage Fee:** Owned tags charge a tiny fee (0.000004 ETH) split 50/50 between the tag owner and the platform.",
-                rule2Title: "2. Nickname System",
-                rule2Text: "• **First Setup:** Completely free of charge.\n• **Subsequent Changes:** Scaled dynamically based on your change count (Base fee × changes count), transferred to the platform.",
-                rule3Title: "3. Comments & Daily Voting",
-                rule3Text: "• **On-Chain Publishing:** All posts are permanently stored on Base L2.\n• **Voting:** One vote per wallet per comment per day (UTC midnight reset). Automatically tracks the Top Comment of the Day.",
+                rulesTitle: "CDB Rules, Mechanics & Detailed Whitepaper",
+                rulesIntro: "CryptoDiscussionBoard (CDB) is a fully decentralized, serverless Web3 platform running on the Base L2 network via secure UUPS Proxy smart contracts. Below are the precise rules and financial mechanisms governing the platform.",
+                rule1Title: "1. Tags, Snipe & Ownership System",
+                rule1Text: "• **Free Registration Limit:** Every wallet can register up to 3 custom free tags (e.g., #crypto, #defi).\n• **DEFAULT Tag Protection:** The DEFAULT tag (and empty tags) is permanently protected at the smart contract level. It is always 100% free for everyone and cannot be bought out.\n• **Buyout / Snipe Mechanism:** Once any custom tag reaches 500+ uses, it becomes eligible for buyout (Snipe). The starting buyout price is 0.0005 ETH.\n• **Buyout Revenue Split:** When someone buys your tag for 0.0005 ETH, 70% (0.00035 ETH) goes directly to the previous owner, and 30% (0.00015 ETH) goes to the platform treasury.\n• **Dynamic Price Scaling:** Each successful buyout increases the tag's future price by 30% (multiplier 130%).\n• **Usage Fee for Owned Tags:** If a tag has an owner, publishing a post with it requires a tiny fee of 0.000004 ETH, which is split 50/50 (50% to the tag owner, 50% to the platform). Unowned tags are completely free to use.",
+                rule2Title: "2. Nickname System & Pricing",
+                rule2Text: "• **First Setup:** Completely free of charge (0 ETH).\n• **Subsequent Changes:** Scaled dynamically based on how many times you changed it. Base fee is 0.00005 ETH multiplied by your changes count.\n• *Example:* 1st change = Free (0 ETH) | 2nd change = 0.00005 ETH | 3rd change = 0.0001 ETH. All fees go to the platform.",
+                rule3Title: "3. Comments & Daily Voting (Comment of the Day)",
+                rule3Text: "• **On-Chain Storage:** All posts and discussions are permanently stored on the Base L2 blockchain.\n• **Voting Limits:** Each wallet can vote once per comment per day (resets at midnight UTC).\n• **Top Comment of the Day:** The system automatically tracks votes and highlights the top-voted comment of the day at the very top of the interface.",
                 rule4Title: "4. Dual-Mode Direct Chat",
-                rule4Text: "• **Off-Chain P2P:** Instant, 100% free encrypted messaging between wallets. Messages persist across browser sessions.\n• **On-Chain DMs:** Permanent decentralized records stored directly as blockchain transactions.",
+                rule4Text: "• **Off-Chain P2P Chat:** Instant, 100% free, encrypted peer-to-peer messaging. History persists across browser sessions.\n• **On-Chain DMs:** Permanent decentralized direct messages recorded directly as blockchain transactions.",
                 ethicsTitle: "🛡️ Ethics & Moderation",
                 ethicsText: "We strictly prohibit hate speech, scams, and malicious spam.",
                 close: "Close",
@@ -105,16 +105,16 @@
                 searchPlaceholder: "🔍 Tag suchen oder prüfen...",
                 clearFilter: "Löschen",
                 rulesBtn: "Regeln & Mechanik",
-                rulesTitle: "CDB Regeln, Mechanik & Whitepaper",
-                rulesIntro: "CryptoDiscussionBoard (CDB) ist eine zu 100 % dezentrale Web3-Plattform im Base L2-Netzwerk über sichere UUPS-Proxy-Smart Contracts.",
-                rule1Title: "1. Tags & Snipe-System",
-                rule1Text: "• **Kostenloses Limit:** Jedes Wallet kann bis zu 3 eigene Tags kostenlos registrieren.\n• **DEFAULT-Tag:** Permanent im Smart Contract geschützt. Immer frei und für jeden nutzbar.\n• **Übernahme (Snipe):** Ab 500 Nutzungen kann jeder einen Tag ab 0.0005 ETH übernehmen. Jede Übernahme erhöht den Preis um 30%.\n• **Erlösaufteilung:** 70% gehen an den Vorbesitzer, 30% an die Plattform.\n• **Nutzungsgebühr:** Besessene Tags erheben eine geringe Gebühr (0.000004 ETH), aufgeteilt 50/50.",
-                rule2Title: "2. Spitznamen-System",
-                rule2Text: "• **Ersteinrichtung:** Völlig kostenlos.\n• **Änderungen:** Skalieren dynamisch basierend auf der Anzahl der Änderungen.",
+                rulesTitle: "CDB Regeln, Mechanik & Detailliertes Whitepaper",
+                rulesIntro: "CryptoDiscussionBoard (CDB) ist eine dezentrale Web3-Plattform im Base L2-Netzwerk. Hier finden Sie eine transparente Erklärung aller Regeln und Finanzmechanismen.",
+                rule1Title: "1. Tags, Snipe- & Eigentumssystem",
+                rule1Text: "• **Kostenloses Limit:** Jedes Wallet kann bis zu 3 eigene Tags kostenlos registrieren.\n• **DEFAULT-Tag Schutz:** Der DEFAULT-Tag ist permanent im Smart Contract geschützt. Er ist immer kostenlos und kann nicht gekauft werden.\n• **Übernahme (Snipe):** Ab 500 Nutzungen kann jeder einen Tag ab 0.0005 ETH übernehmen.\n• **Erlösaufteilung:** 70% (0.00035 ETH) gehen an den Vorbesitzer, 30% (0.00015 ETH) an die Plattform.\n• **Preisanstieg:** Jede Übernahme erhöht den Preis um 30% (Multiplikator 130%).\n• **Nutzungsgebühr:** Besessene Tags erheben eine Gebühr von 0.000004 ETH, aufgeteilt 50/50 zwischen Besitzer und Plattform.",
+                rule2Title: "2. Spitznamen-System & Preise",
+                rule2Text: "• **Ersteinrichtung:** Völlig kostenlos (0 ETH).\n• **Änderungen:** Skalieren basierend auf der Anzahl der Änderungen (Basisgebühr 0.00005 ETH × Anzahl).\n• *Beispiel:* 1. Änderung = Gratis | 2. Änderung = 0.00005 ETH | 3. Änderung = 0.0001 ETH.",
                 rule3Title: "3. Kommentare & Tägliche Abstimmung",
-                rule3Text: "• **On-Chain Veröffentlichung:** Alle Beiträge werden permanent auf Base L2 gespeichert.\n• **Abstimmung:** Eine Stimme pro Wallet und Kommentar pro Tag (UTC-Mitternachtsreset).",
+                rule3Text: "• **On-Chain Speicherung:** Alle Beiträge werden permanent auf Base L2 gesichert.\n• **Abstimmung:** Eine Stimme pro Wallet und Kommentar pro Tag (UTC-Mitternachtsreset).\n• **Kommentar des Tages:** Der Beitrag mit den meisten Stimmen wird ganz oben angezeigt.",
                 rule4Title: "4. Dual-Mode Direktchat",
-                rule4Text: "• **Off-Chain P2P:** Schnelle, 100% kostenlose verschlüsselte Nachrichten zwischen Wallets.\n• **On-Chain DMs:** Permanente dezentrale Aufzeichnungen als Blockchain-Transaktionen.",
+                rule4Text: "• **Off-Chain P2P Chat:** Schnelle, 100% kostenlose verschlüsselte Nachrichten zwischen Wallets.\n• **On-Chain DMs:** Permanente dezentrale Nachrichten als Blockchain-Transaktionen.",
                 ethicsTitle: "🛡️ Ethik & Moderation",
                 ethicsText: "Wir lehnen Hassrede, Betrug und Spam strikt ab.",
                 close: "Schließen",
@@ -154,16 +154,16 @@
                 searchPlaceholder: "🔍 Szukaj lub sprawdź tag...",
                 clearFilter: "Wyczyść",
                 rulesBtn: "Zasady i Mechanika",
-                rulesTitle: "Zasady, Mechanika i Whitepaper CDB",
-                rulesIntro: "CryptoDiscussionBoard (CDB) to w 100% zdecentralizowana platforma Web3 działająca w sieci Base L2 w oparciu o bezpieczne smart kontrakty UUPS Proxy.",
-                rule1Title: "1. System Tagów i Przejęcia (Snipe)",
-                rule1Text: "• **Darmowy limit:** Każdy portfel może zarejestrować do 3 własnych, darmowych tagów.\n• **Tag DEFAULT:** Trwale zabezpieczony na poziomie smart kontraktu. Jest zawsze darmowy i publiczny dla każdego.\n• **Wykup / Snipe:** Gdy tag osiągnie $\\ge 500$ użyć, każdy może go wykupić na własność (cena startowa 0.0005 ETH). Każdy kolejny wykup podnosi cenę o 30%.\n• **Podział zysków:** 70% kwoty wykupu trafia do poprzedniego właściciela, a 30% do platformy.\n• **Opłata za użycie:** Posiadane tagi pobierają symboliczną opłatę (0.000004 ETH) dzieloną 50/50 między właściciela tagu a platformę.",
-                rule2Title: "2. System Nicków",
-                rule2Text: "• **Pierwsza rejestracja:** Całkowicie darmowa.\n• **Kolejne zmiany:** Koszt rośnie multiplikatywnie w zależności od liczby dotychczasowych zmian (opłata bazowa × liczba zmian), trafiając do skarbca platformy.",
-                rule3Title: "3. Wpisy i Głosowanie Dnia",
-                rule3Text: "• **Zapis On-Chain:** Wszystkie publikowane posty są trwale zapisywane w łańcuchu Base L2.\n• **Głosowanie:** Jeden głos na portfel na dany komentarz dziennie (reset o północy UTC). Automatycznie wyłania Komentarz Dnia.",
+                rulesTitle: "Szczegółowe Zasady, Mechanika i Whitepaper CDB",
+                rulesIntro: "CryptoDiscussionBoard (CDB) to w 100% zdecentralizowana platforma Web3 w sieci Base L2. Poniżej znajdziesz dokładne wyjaśnienie wszystkich reguł, opłat i mechanizmów finansowych.",
+                rule1Title: "1. System Tagów, Przejęć (Snipe) i Własności",
+                rule1Text: "• **Darmowy limit:** Każdy portfel może zarejestrować do 3 własnych tagów za darmo (np. #bitcoin, #web3).\n• **Ochrona tagu DEFAULT:** Tag domyślny (oraz brak tagu) jest trwale zabezpieczony na poziomie smart kontraktu. Jest zawsze darmowy dla wszystkich i nikt nie może go wykupić.\n• **Próg wykupu (Snipe):** Gdy dowolny niestandardowy tag osiągnie 500 użyć w postach, staje się dostępny do wykupu przez każdego użytkownika. Cena startowa to dokładnie 0.0005 ETH.\n• **Podział kwoty wykupu:** Jeśli ktoś wykupi Twój tag za 0.0005 ETH, to 70% tej kwoty (0.00035 ETH) trafia bezpośrednio do Ciebie jako poprzedniego właściciela, a 30% (0.00015 ETH) zasila skarbiec platformy.\n• **Wzrost ceny (Multiplikator):** Każdy kolejny udany wykup danego tagu automatycznie podnosi jego cenę o 30% (współczynnik 130%).\n• **Opłata za użycie posiadaszonego tagu:** Jeśli tag ma właściciela, opublikowanie z nim postu kosztuje symboliczną opłatę 0.000004 ETH, która dzielona jest po równo: 50% dla właściciela tagu i 50% dla platformy. Używanie darmowych tagów jest całkowicie bezpłatne.",
+                rule2Title: "2. System Nicków i Skalowanie Opłat",
+                rule2Text: "• **Pierwszy nick:** Ustawienie pierwszego pseudonimu jest całkowicie darmowe (0 ETH).\n• **Kolejne zmiany:** Koszt kolejnych zmian rośnie multiplikatywnie. Bazowa opłata to 0.00005 ETH pomnożona przez liczbę dotychczasowych zmian.\n• *Przykład wyliczenia:*\n  - 1. zmiana: Darmowa (0 ETH)\n  - 2. zmiana: 0.00005 ETH × 1 = 0.00005 ETH\n  - 3. zmiana: 0.00005 ETH × 2 = 0.0001 ETH\n  Wszystkie opłaty za zmiany nicków trafiają do skarbca platformy.",
+                rule3Title: "3. Wpisy i Głosowanie Dnia (Komentarz Dnia)",
+                rule3Text: "• **Zapis w Blockchainie:** Wszystkie wpisy i interakcje są trwale i bezpiecznie zapisywane w sieci Base L2.\n• **Zasada głosowania:** Każdy portfel może oddać 1 głos na dany komentarz na dobę (licznik resetuje się o północy czasu UTC).\n• **Komentarz Dnia:** System automatycznie wyłania komentarz z największą liczbą głosów w danym dniu i prezentuje go w wyróżnionym banerze na samym początku strony.",
                 rule4Title: "4. Dwa Tryby Chatu Bezpośredniego",
-                rule4Text: "• **Off-Chain P2P:** Szybka, całkowicie darmowa i szyfrowana komunikacja między portfelami. Historia nie znika po zamknięciu przeglądarki.\n• **On-Chain DMs:** Wiadomości zapisywane bezpośrednio jako permanentne transakcje w blockchainie.",
+                rule4Text: "• **Chat Off-Chain P2P:** Szybka, całkowicie darmowa i w pełni szyfrowana komunikacja bezpośrednia między portfelami. Wiadomości są zapisywane w pamięci i nie znikają po zamknięciu przeglądarki.\n• **Wiadomości On-Chain DMs:** Alternatywny tryb wysyłający wiadomości jako permanentne, szyfrowane transakcje bezpośrednio w blockchainie.",
                 ethicsTitle: "🛡️ Etyka i Moderacja",
                 ethicsText: "Stanowczo sprzeciwiamy się mowie nienawiści, oszustwom i złośliwemu spamowi.",
                 close: "Zamknij",
@@ -243,7 +243,6 @@
 
                     setPosts(loadedPosts.reverse());
 
-                    // ODCZYT KOMENTARZA DNIA (Top Comment of the Day)
                     try {
                         const currentDay = Math.floor(Date.now() / 1000 / 86400);
                         const topCommentId = await contract.topCommentPerDay(currentDay);
@@ -627,7 +626,7 @@
                         </div>
                     </header>
 
-                    {/* SEKACJA: KOMENTARZ DNIA (TOP COMMENT OF THE DAY) */}
+                    {/* SEKCJA: KOMENTARZ DNIA (TOP COMMENT OF THE DAY) */}
                     <section className="bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-yellow-500/10 border border-amber-500/30 p-4 rounded-2xl shadow-lg relative overflow-hidden">
                         <div className="flex justify-between items-center mb-2">
                             <h3 className="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
@@ -867,30 +866,30 @@
                         )}
                     </main>
 
-                    {/* MODAL Z ROZBUDOWANYMI ZASADAMI I MECHANIKĄ (WHITEPAPER) */}
+                    {/* MODAL Z ROZBUDOWANYMI ZASADAMI I PRZYKŁADAMI (WHITEPAPER) */}
                     {showRules && (
                         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
                             <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-2xl w-full space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
-                                <h3 className="font-bold text-lg text-slate-100 border-b border-slate-800 pb-3">{t.rulesTitle}</h3>
+                                <h3 className="font-bold text-base text-slate-100 border-b border-slate-800 pb-3">{t.rulesTitle}</h3>
                                 <div className="space-y-4 text-xs text-slate-300 leading-relaxed">
                                     <p className="text-slate-400">{t.rulesIntro}</p>
                                     
-                                    <div className="space-y-1 bg-slate-950/60 p-3 rounded-xl border border-slate-800/80">
+                                    <div className="space-y-1.5 bg-slate-950/60 p-3.5 rounded-xl border border-slate-800/80">
                                         <h4 className="font-semibold text-blue-400 text-sm">{t.rule1Title}</h4>
                                         <p className="whitespace-pre-line text-slate-300">{t.rule1Text}</p>
                                     </div>
 
-                                    <div className="space-y-1 bg-slate-950/60 p-3 rounded-xl border border-slate-800/80">
+                                    <div className="space-y-1.5 bg-slate-950/60 p-3.5 rounded-xl border border-slate-800/80">
                                         <h4 className="font-semibold text-teal-400 text-sm">{t.rule2Title}</h4>
                                         <p className="whitespace-pre-line text-slate-300">{t.rule2Text}</p>
                                     </div>
 
-                                    <div className="space-y-1 bg-slate-950/60 p-3 rounded-xl border border-slate-800/80">
+                                    <div className="space-y-1.5 bg-slate-950/60 p-3.5 rounded-xl border border-slate-800/80">
                                         <h4 className="font-semibold text-emerald-400 text-sm">{t.rule3Title}</h4>
                                         <p className="whitespace-pre-line text-slate-300">{t.rule3Text}</p>
                                     </div>
 
-                                    <div className="space-y-1 bg-slate-950/60 p-3 rounded-xl border border-slate-800/80">
+                                    <div className="space-y-1.5 bg-slate-950/60 p-3.5 rounded-xl border border-slate-800/80">
                                         <h4 className="font-semibold text-indigo-400 text-sm">{t.rule4Title}</h4>
                                         <p className="whitespace-pre-line text-slate-300">{t.rule4Text}</p>
                                     </div>
