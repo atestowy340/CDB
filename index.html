@@ -11,7 +11,7 @@
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <!-- Babel dla JSX -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Ethers.js do obsługi kontraktu -->
+    <!-- Ethers.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans min-h-screen">
@@ -20,10 +20,8 @@
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        // ADRES TWOJEGO KONTRAKTU PROXY NA BASE SEPOLIA
         const CONTRACT_ADDRESS = "0x53289fc98F9bBa2cbbae20a69a3A1178FBF62583";
         
-        // Minimalne ABI kontraktu do obsługi głosowania i wpisów
         const CONTRACT_ABI = [
             "function zaglosuj(uint256 _komentarzId) public",
             "function dodajKomentarz(string memory _tresc, string memory _tag) public payable",
@@ -137,7 +135,6 @@
                 }
             };
 
-            // Prawdziwe głosowanie on-chain przez smart kontrakt
             const handleVote = async (postId) => {
                 if (!window.ethereum || !wallet) {
                     showNotification("Najpierw połącz portfel MetaMask!", "error");
@@ -153,18 +150,15 @@
                     const signer = provider.getSigner();
                     const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
-                    // Wywołanie funkcji zaglosuj z kontraktu
                     const tx = await contract.zaglosuj(postId);
-                    showNotification("Transakcja wysłana do sieci Base. Oczekiwanie...", "info");
+                    showNotification("Transakcja wysłana. Oczekiwanie...", "info");
                     
-                    await tx.wait(); // Czekaj na potwierdzenie w bloku
-
-                    // Aktualizacja stanu po sukcesie
+                    await tx.wait();
                     setPosts(posts.map(item => item.id === postId ? {...item, votes: item.votes + 1} : item));
-                    showNotification("Głos został zapisany na blockchainie!", "success");
+                    showNotification("Głos zapisany na blockchainie!", "success");
                 } catch (err) {
                     console.error(err);
-                    showNotification("Błąd głosowania (mogłeś już głosować dzisiaj)", "error");
+                    showNotification("Błąd głosowania (mogłeś już głosować)", "error");
                 } finally {
                     setIsProcessing(false);
                 }
@@ -223,7 +217,12 @@
                     const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
                     const cleanedTag = postTag.replace('#', '').trim() || 'ogolny';
-                    const tx = await contract.dodajKomentarz(postText, cleanedTag);
+                    
+                    // Przekazujemy opłatę za użycie tagu (0.000004 ETH) jeśli kontrakt tego wymaga
+                    const tx = await contract.dodajKomentarz(postText, cleanedTag, {
+                        value: ethers.utils.parseEther("0.000004")
+                    });
+                    
                     await tx.wait();
 
                     const newPost = {
@@ -240,7 +239,7 @@
                     showNotification("Wpis opublikowany na blockchainie!", "success");
                 } catch (err) {
                     console.error(err);
-                    showNotification("Błąd publikacji wpisu", "error");
+                    showNotification("Błąd kontraktu (sprawdź nick / opłatę za tag)", "error");
                 } finally {
                     setIsProcessing(false);
                 }
