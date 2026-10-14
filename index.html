@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>(CDB)</title>
+    <title>CryptoDiscussionBoard (CDB)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- React & ReactDOM -->
@@ -11,7 +11,7 @@
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <!-- Babel dla JSX -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Ethers.js do obsługi Web3 -->
+    <!-- Ethers.js do obsługi kontraktu -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans min-h-screen">
@@ -20,8 +20,15 @@
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        // ADRES TWOJEGO KONTRAKTU
+        // ADRES TWOJEGO KONTRAKTU PROXY NA BASE SEPOLIA
         const CONTRACT_ADDRESS = "0x53289fc98F9bBa2cbbae20a69a3A1178FBF62583";
+        
+        // Minimalne ABI kontraktu do obsługi głosowania i wpisów
+        const CONTRACT_ABI = [
+            "function zaglosuj(uint256 _komentarzId) public",
+            "function dodajKomentarz(string memory _tresc, string memory _tag) public payable",
+            "function setNickname(string memory _nickname) public payable"
+        ];
 
         const translations = {
             pl: {
@@ -35,15 +42,15 @@
                 feedTitle: "Dyskusje Społeczności",
                 postPlaceholder: "O czym giełda szumi dzisiaj?",
                 tagPlaceholder: "Tag (np. ogolny, bitcoin)",
-                publish: "Opublikuj wpis",
+                publish: "Opublikuj wpis (On-Chain)",
                 filterPlaceholder: "🔍 Szukaj po tagu (#) lub użytkowniku...",
-                clearFilter: "Wyszyść filtr",
+                clearFilter: "Wyczyść filtr",
                 rulesBtn: "ℹ️ Zasady i Etyka",
                 rulesTitle: "Zasady i Funkcjonowanie CDB",
-                rulesText1: "Platforma działa w 100% w oparciu o sieć Base L2 oraz smart kontrakty. Brak centralnej bazy danych.",
-                rulesText2: "Możesz publikować wpisy, darmowo tworzyć własne tagi, głosować na wypowiedzi dnia oraz filtry.",
+                rulesText1: "Platforma działa w 100% w oparciu o sieć Base L2 oraz smart kontrakty.",
+                rulesText2: "Głosy i wpisy są zapisywane bezpośrednio na blockchainie.",
                 ethicsTitle: "🛡️ Etyka i Moderacja",
-                ethicsText: "Choć technologia blockchain zapewnia niezmienność danych, stanowczo sprzeciwiamy się mowie nienawiści, oszustwom i spamowi. Zastrzegamy sobie prawo do filtrowania takich treści w interfejsie.",
+                ethicsText: "Stanowczo sprzeciwiamy się mowie nienawiści, oszustwom i spamowi.",
                 close: "Zamknij"
             },
             en: {
@@ -53,19 +60,19 @@
                 setNickname: "Set Your Nickname",
                 nicknamePlaceholder: "Enter unique nickname...",
                 saveNickname: "Save Nickname",
-                freeNotice: "First nickname change is free! Subsequent changes cost ETH.",
+                freeNotice: "First nickname change is free!",
                 feedTitle: "Community Discussions",
                 postPlaceholder: "What's happening in crypto today?",
                 tagPlaceholder: "Tag (e.g., general, bitcoin)",
-                publish: "Publish Post",
+                publish: "Publish Post (On-Chain)",
                 filterPlaceholder: "🔍 Filter by tag (#) or user...",
                 clearFilter: "Clear filter",
                 rulesBtn: "ℹ️ Rules & Ethics",
                 rulesTitle: "CDB Rules & Features",
-                rulesText1: "The platform runs 100% on Base L2 network and smart contracts. No central database.",
-                rulesText2: "You can publish posts, create free tags, vote for comments of the day, and filter.",
+                rulesText1: "The platform runs 100% on Base L2 network and smart contracts.",
+                rulesText2: "Votes and posts are recorded directly on the blockchain.",
                 ethicsTitle: "🛡️ Ethics & Moderation",
-                ethicsText: "Although blockchain ensures permanence, we strictly oppose hate speech, scams, and spam. We reserve the right to filter out such content.",
+                ethicsText: "We strictly oppose hate speech, scams, and spam.",
                 close: "Close"
             },
             de: {
@@ -85,7 +92,7 @@
                 rulesBtn: "ℹ️ Regeln & Ethik",
                 rulesTitle: "CDB Regeln & Funktionen",
                 rulesText1: "Die Plattform läuft zu 100% über das Base L2-Netzwerk.",
-                rulesText2: "Sie können Beiträge veröffentlichen und filtern.",
+                rulesText2: "Stimmen werden direkt in der Blockchain gespeichert.",
                 ethicsTitle: "🛡️ Ethik & Moderation",
                 ethicsText: "Wir lehnen Hassrede und Spam strikt ab.",
                 close: "Schließen"
@@ -101,13 +108,12 @@
             const [postTag, setPostTag] = useState('');
             const [searchFilter, setSearchFilter] = useState('');
             const [showRules, setShowRules] = useState(false);
-            const [toast, setToast] = useState(null); // Powiadomienia sukcesu/błędu
+            const [toast, setToast] = useState(null);
             const [isProcessing, setIsProcessing] = useState(false);
 
             const [posts, setPosts] = useState([
-                { id: 1, author: "0x7a69F6F1...ADEfe55", name: "Atest", text: "English test", tag: "en", votes: 0 },
-                { id: 2, author: "0x7a69F6F1...ADEfe55", name: "Btest", text: "SECOND test", tag: "ogolny", votes: 0 },
-                { id: 3, author: "0x7a69F6F1...ADEfe55", name: "Atest", text: "FIRST test", tag: "ogolny", votes: 0 }
+                { id: 0, author: "0x7a69...e55", name: "Atest", text: "English test on-chain structure", tag: "en", votes: 0 },
+                { id: 1, author: "0x7a69...e55", name: "Btest", text: "SECOND test entry", tag: "ogolny", votes: 0 }
             ]);
 
             const t = translations[lang];
@@ -131,45 +137,115 @@
                 }
             };
 
-            // Zapisywanie nicka z powiadomieniem
+            // Prawdziwe głosowanie on-chain przez smart kontrakt
+            const handleVote = async (postId) => {
+                if (!window.ethereum || !wallet) {
+                    showNotification("Najpierw połącz portfel MetaMask!", "error");
+                    connectWallet();
+                    return;
+                }
+
+                try {
+                    setIsProcessing(true);
+                    showNotification("Zatwierdź transakcję głosowania w portfelu...", "info");
+
+                    const provider = new ethers.providers.Web3Provider(window.ethereum);
+                    const signer = provider.getSigner();
+                    const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+
+                    // Wywołanie funkcji zaglosuj z kontraktu
+                    const tx = await contract.zaglosuj(postId);
+                    showNotification("Transakcja wysłana do sieci Base. Oczekiwanie...", "info");
+                    
+                    await tx.wait(); // Czekaj na potwierdzenie w bloku
+
+                    // Aktualizacja stanu po sukcesie
+                    setPosts(posts.map(item => item.id === postId ? {...item, votes: item.votes + 1} : item));
+                    showNotification("Głos został zapisany na blockchainie!", "success");
+                } catch (err) {
+                    console.error(err);
+                    showNotification("Błąd głosowania (mogłeś już głosować dzisiaj)", "error");
+                } finally {
+                    setIsProcessing(false);
+                }
+            };
+
             const handleSaveNickname = async () => {
                 if (!nickname.trim()) {
                     showNotification("Wpisz poprawny nick!", "error");
                     return;
                 }
-                setIsProcessing(true);
-                showNotification("Wysyłanie żądania do portfela...", "info");
+                if (!window.ethereum || !wallet) {
+                    showNotification("Połącz najpierw portfel!", "error");
+                    connectWallet();
+                    return;
+                }
 
-                setTimeout(() => {
+                try {
+                    setIsProcessing(true);
+                    showNotification("Zatwierdź ustawienie nicku w portfelu...", "info");
+
+                    const provider = new ethers.providers.Web3Provider(window.ethereum);
+                    const signer = provider.getSigner();
+                    const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+
+                    const tx = await contract.setNickname(nickname);
+                    await tx.wait();
+
                     setSavedNick(nickname);
+                    showNotification(`Nick '${nickname}' zapisany w sieci!`, "success");
+                } catch (err) {
+                    console.error(err);
+                    showNotification("Błąd zapisu nicku on-chain", "error");
+                } finally {
                     setIsProcessing(false);
-                    showNotification(`Nick '${nickname}' został pomyślnie zapisany!`, "success");
-                }, 1200);
+                }
             };
 
-            // Publikowanie wpisu
-            const handlePublish = (e) => {
+            const handlePublish = async (e) => {
                 e.preventDefault();
                 if (!postText.trim()) {
                     showNotification("Wpis nie może być pusty!", "error");
                     return;
                 }
-                const cleanedTag = postTag.replace('#', '').trim() || 'ogolny';
-                const newPost = {
-                    id: posts.length + 1,
-                    author: wallet ? wallet.slice(0,6) + '...' + wallet.slice(-4) : '0x7a69...e55',
-                    name: savedNick || nickname || 'Anonim',
-                    text: postText,
-                    tag: cleanedTag,
-                    votes: 0
-                };
-                setPosts([newPost, ...posts]);
-                setPostText('');
-                setPostTag('');
-                showNotification("Opublikowano nowy wpis!", "success");
+                if (!window.ethereum || !wallet) {
+                    showNotification("Połącz najpierw portfel!", "error");
+                    connectWallet();
+                    return;
+                }
+
+                try {
+                    setIsProcessing(true);
+                    showNotification("Wysyłanie wpisu na blockchain...", "info");
+
+                    const provider = new ethers.providers.Web3Provider(window.ethereum);
+                    const signer = provider.getSigner();
+                    const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+
+                    const cleanedTag = postTag.replace('#', '').trim() || 'ogolny';
+                    const tx = await contract.dodajKomentarz(postText, cleanedTag);
+                    await tx.wait();
+
+                    const newPost = {
+                        id: posts.length,
+                        author: wallet.slice(0,6) + '...' + wallet.slice(-4),
+                        name: savedNick || nickname || 'Anonim',
+                        text: postText,
+                        tag: cleanedTag,
+                        votes: 0
+                    };
+                    setPosts([newPost, ...posts]);
+                    setPostText('');
+                    setPostTag('');
+                    showNotification("Wpis opublikowany na blockchainie!", "success");
+                } catch (err) {
+                    console.error(err);
+                    showNotification("Błąd publikacji wpisu", "error");
+                } finally {
+                    setIsProcessing(false);
+                }
             };
 
-            // Filtrowanie wpisów po tagu lub nazwie/adresie użytkownika
             const filteredPosts = posts.filter(p => {
                 if (!searchFilter) return true;
                 const filter = searchFilter.toLowerCase().replace('#', '');
@@ -180,7 +256,6 @@
 
             return (
                 <div className="max-w-2xl mx-auto p-4 md:p-6 space-y-6">
-                    {/* POWIADOMIENIA (TOAST) */}
                     {toast && (
                         <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-xl shadow-xl text-sm font-medium border flex items-center gap-2 transition-all duration-300 ${
                             toast.type === 'error' ? 'bg-rose-950/90 border-rose-800 text-rose-200' :
@@ -192,7 +267,6 @@
                         </div>
                     )}
 
-                    {/* NAGŁÓWEK */}
                     <header className="flex justify-between items-center border-b border-slate-800 pb-4">
                         <div>
                             <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
@@ -223,7 +297,6 @@
                         </button>
                     </div>
 
-                    {/* USTAWIENIE NICKU */}
                     <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-2">
                         <h2 className="text-sm font-semibold text-slate-200">{t.setNickname}</h2>
                         <div className="flex gap-2">
@@ -245,7 +318,6 @@
                         <p className="text-[11px] text-slate-500">{t.freeNotice}</p>
                     </div>
 
-                    {/* FORMULARZ PUBLIKACJI */}
                     <form onSubmit={handlePublish} className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-3">
                         <textarea 
                             rows="3"
@@ -262,13 +334,12 @@
                                 placeholder={t.tagPlaceholder} 
                                 className="bg-slate-950 border border-slate-800 rounded-xl p-2 text-sm flex-1 focus:outline-none focus:border-blue-500 text-slate-200"
                             />
-                            <button type="submit" className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-5 py-2 rounded-xl text-sm transition">
-                                {t.publish}
+                            <button type="submit" disabled={isProcessing} className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-5 py-2 rounded-xl text-sm transition disabled:opacity-50">
+                                {isProcessing ? "Wysyłanie..." : t.publish}
                             </button>
                         </div>
                     </form>
 
-                    {/* PASEK FILTROWANIA I WYSZUKIWANIA */}
                     <div className="bg-slate-900/60 border border-slate-800 p-3 rounded-xl flex items-center justify-between gap-2">
                         <input 
                             type="text" 
@@ -278,47 +349,33 @@
                             className="bg-transparent text-sm text-slate-200 focus:outline-none w-full"
                         />
                         {searchFilter && (
-                            <button 
-                                onClick={() => setSearchFilter('')}
-                                className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1 rounded-lg transition"
-                            >
+                            <button onClick={() => setSearchFilter('')} className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1 rounded-lg transition">
                                 {t.clearFilter}
                             </button>
                         )}
                     </div>
 
-                    {/* STRUMIEŃ WPISÓW */}
                     <div className="space-y-4">
                         <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">{t.feedTitle}</h2>
                         {filteredPosts.length === 0 ? (
-                            <p className="text-center text-xs text-slate-500 py-6">Brak wpisów spełniających kryteria wyszukiwania.</p>
+                            <p className="text-center text-xs text-slate-500 py-6">Brak wpisów.</p>
                         ) : (
                             filteredPosts.map(p => (
                                 <div key={p.id} className="p-4 bg-slate-900 border border-slate-800 rounded-2xl space-y-2">
                                     <div className="flex justify-between items-center text-xs text-slate-400">
-                                        <button 
-                                            onClick={() => setSearchFilter(p.name)}
-                                            className="font-bold text-slate-300 hover:text-blue-400 text-left transition"
-                                            title="Kliknij, aby przefiltrować wpisy tego użytkownika"
-                                        >
+                                        <button onClick={() => setSearchFilter(p.name)} className="font-bold text-slate-300 hover:text-blue-400 text-left transition">
                                             {p.name} <span className="text-[10px] text-slate-500">({p.author})</span>
                                         </button>
-                                        <button 
-                                            onClick={() => setSearchFilter(p.tag)}
-                                            className="bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded-lg text-blue-400 font-medium transition"
-                                            title="Kliknij, aby przefiltrować ten tag"
-                                        >
+                                        <button onClick={() => setSearchFilter(p.tag)} className="bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded-lg text-blue-400 font-medium transition">
                                             #{p.tag}
                                         </button>
                                     </div>
                                     <p className="text-sm text-slate-200">{p.text}</p>
                                     <div className="flex justify-end pt-1">
                                         <button 
-                                            onClick={() => {
-                                                setPosts(posts.map(item => item.id === p.id ? {...item, votes: item.votes + 1} : item));
-                                                showNotification("Oddano głos na wpis!");
-                                            }}
-                                            className="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-xl text-slate-300 transition"
+                                            onClick={() => handleVote(p.id)}
+                                            disabled={isProcessing}
+                                            className="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-xl text-slate-300 transition disabled:opacity-50"
                                         >
                                             👍 Podbij ({p.votes})
                                         </button>
@@ -328,7 +385,6 @@
                         )}
                     </div>
 
-                    {/* MODAL Z ZASADAMI */}
                     {showRules && (
                         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
                             <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-lg w-full space-y-4 shadow-2xl">
