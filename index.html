@@ -73,7 +73,10 @@
                 unregisteredTag: "Unregistered",
                 ownedTag: "Owned",
                 readyForSnipe: "Ready for Snipe (500+ uses)",
-                freeOrInUse: "Free / In use"
+                freeOrInUse: "Free / In use",
+                tagStatusTitle: "Tag Status:",
+                usesCountLabel: "Uses count:",
+                buyoutPriceLabel: "Buyout price:"
             },
             de: {
                 brand: "CryptoDiscussionBoard",
@@ -110,7 +113,10 @@
                 unregisteredTag: "Nicht registriert",
                 ownedTag: "Im Besitz",
                 readyForSnipe: "Bereit zur Übernahme (500+ Nutzungen)",
-                freeOrInUse: "Kostenlos / In Verwendung"
+                freeOrInUse: "Kostenlos / In Verwendung",
+                tagStatusTitle: "Tag-Status:",
+                usesCountLabel: "Nutzungen:",
+                buyoutPriceLabel: "Kaufpreis:"
             },
             pl: {
                 brand: "CryptoDiscussionBoard",
@@ -147,7 +153,10 @@
                 unregisteredTag: "Niezarejestrowany",
                 ownedTag: "Posiadany (Owned)",
                 readyForSnipe: "Gotowy do Wykupu (500+ Użyć)",
-                freeOrInUse: "Darmowy / W użyciu"
+                freeOrInUse: "Darmowy / W użyciu",
+                tagStatusTitle: "Status Tagu:",
+                usesCountLabel: "Liczba użyć:",
+                buyoutPriceLabel: "Cena wykupu:"
             }
         };
 
@@ -714,7 +723,7 @@
                         <div className="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl shadow-lg space-y-2 text-xs">
                             <div className="flex justify-between items-center">
                                 <span className="font-semibold text-slate-200 flex items-center gap-1.5">
-                                    🔍 Status Tagu: <span className="text-blue-400">#{inspectTagInfo.name}</span>
+                                    🔍 {t.tagStatusTitle} <span className="text-blue-400">#{inspectTagInfo.name}</span>
                                 </span>
                                 {inspectTagInfo.isSystemTag ? (
                                     <span className="bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-lg border border-emerald-500/20 font-medium">{t.systemTag}</span>
@@ -731,8 +740,8 @@
 
                             {!inspectTagInfo.notExists && !inspectTagInfo.isSystemTag && (
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-slate-400">
-                                    <div>Liczba użyć: <b className="text-slate-200">{inspectTagInfo.usesCount} / 500</b></div>
-                                    <div>Cena wykupu: <b className="text-slate-200">{inspectTagInfo.currentPrice} ETH</b></div>
+                                    <div>{t.usesCountLabel} <b className="text-slate-200">{inspectTagInfo.usesCount} / 500</b></div>
+                                    <div>{t.buyoutPriceLabel} <b className="text-slate-200">{inspectTagInfo.currentPrice} ETH</b></div>
                                     <div className="col-span-2 text-right">
                                         {(inspectTagInfo.canSnipe || inspectTagInfo.isOwned) && (
                                             <button 
