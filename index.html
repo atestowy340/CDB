@@ -39,7 +39,7 @@
         const translations = {
             en: {
                 brand: "CryptoDiscussionBoard",
-                tagline: "Decentralized Web3 Community Board",
+                tagline: "Web3 Discussion Board",
                 connectWallet: "Connect Wallet",
                 setNickname: "Nickname",
                 nicknamePlaceholder: "Set nickname...",
@@ -48,12 +48,12 @@
                 tagRegPlaceholder: "New tag...",
                 registerTagBtn: "Register",
                 feedTitle: "Community Discussions (On-Chain)",
-                postPlaceholder: "What's happening in crypto today?",
+                postPlaceholder: "Write something...",
                 tagPlaceholder: "Tag (leave empty for DEFAULT)",
                 publish: "Publish Post",
                 searchPlaceholder: "🔍 Search tag or user...",
                 clearFilter: "Clear",
-                rulesBtn: "ℹ️ Rules & Ethics",
+                rulesBtn: "Rules & Ethics",
                 rulesTitle: "CDB Rules & Governance",
                 rulesText1: "Platform runs 100% on Base L2 network and smart contracts.",
                 rulesText2: "First nickname set is free. Custom tags must be registered before use.",
@@ -63,7 +63,7 @@
             },
             de: {
                 brand: "CryptoDiscussionBoard",
-                tagline: "Dezentrales Web3-Community-Board",
+                tagline: "Web3-Beitragsboard",
                 connectWallet: "Wallet verbinden",
                 setNickname: "Spitzname",
                 nicknamePlaceholder: "Spitzname eingeben...",
@@ -72,12 +72,12 @@
                 tagRegPlaceholder: "Neuer Tag...",
                 registerTagBtn: "Registrieren",
                 feedTitle: "Community-Diskussionen (On-Chain)",
-                postPlaceholder: "Was passiert heute im Krypto-Markt?",
+                postPlaceholder: "Schreibe etwas...",
                 tagPlaceholder: "Tag (leer lassen für DEFAULT)",
                 publish: "Beitrag veröffentlichen",
                 searchPlaceholder: "🔍 Tag oder Nutzer suchen...",
                 clearFilter: "Löschen",
-                rulesBtn: "ℹ️ Regeln & Ethik",
+                rulesBtn: "Regeln & Ethik",
                 rulesTitle: "CDB Regeln & Funktionen",
                 rulesText1: "Die Plattform läuft zu 100 % auf dem Base L2-Netzwerk.",
                 rulesText2: "Die erste Namensänderung ist kostenlos. Benutzerdefinierte Tags müssen zuerst registriert werden.",
@@ -87,7 +87,7 @@
             },
             pl: {
                 brand: "CryptoDiscussionBoard",
-                tagline: "Zdecentralizowana tablica społecznościowa Web3",
+                tagline: "Tablica wpisów Web3",
                 connectWallet: "Połącz Portfel",
                 setNickname: "Twój Nick",
                 nicknamePlaceholder: "Wpisz nick...",
@@ -96,12 +96,12 @@
                 tagRegPlaceholder: "Wpisz tag...",
                 registerTagBtn: "Rejestruj",
                 feedTitle: "Dyskusje Społeczności (On-Chain)",
-                postPlaceholder: "O czym giełda szumi dzisiaj?",
+                postPlaceholder: "Napisz coś...",
                 tagPlaceholder: "Tag (zostaw puste dla DEFAULT)",
                 publish: "Opublikuj wpis",
                 searchPlaceholder: "🔍 Szukaj po tagu lub nicku...",
                 clearFilter: "Wyczyść",
-                rulesBtn: "ℹ️ Zasady i Etyka",
+                rulesBtn: "Zasady i Etyka",
                 rulesTitle: "Zasady i Funkcjonowanie CDB",
                 rulesText1: "Platforma działa w 100% w oparciu o sieć Base L2 oraz smart kontrakty.",
                 rulesText2: "Pierwsze ustawienie nicku jest darmowe. Tagi muszą być najpierw zarejestrowane.",
@@ -112,7 +112,6 @@
         };
 
         function App() {
-            // Domyślny język ustawiony na angielski (EN)
             const [lang, setLang] = useState('en');
             const [wallet, setWallet] = useState(null);
             const [nickname, setNickname] = useState('');
