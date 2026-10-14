@@ -21,11 +21,17 @@
         const { useState, useEffect } = React;
 
         const CONTRACT_ADDRESS = "0x53289fc98F9bBa2cbbae20a69a3A1178FBF62583";
+        const BASE_SEPOLIA_RPC = "https://sepolia.base.org";
         
+        // ABI dopasowane dokładnie do Twojego kontraktu CDBPlatform
         const CONTRACT_ABI = [
-            "function zaglosuj(uint256 _komentarzId) public",
-            "function dodajKomentarz(string memory _tresc, string memory _tag) public payable",
-            "function setNickname(string memory _nickname) public payable"
+            "function voteComment(uint256 _commentId) external",
+            "function addComment(string memory _content, string memory _tagName) external payable",
+            "function setNickname(string memory _nickname) external payable",
+            "function registerCustomTag(string memory _tagName) external",
+            "function commentsCount() external view returns (uint256)",
+            "function comments(uint256) external view returns (uint256 id, address author, string memory content, string memory tag, uint256 votes, uint256 timestamp)",
+            "function nicknames(address) external view returns (string memory)"
         ];
 
         const translations = {
@@ -33,20 +39,19 @@
                 brand: "CryptoDiscussionBoard",
                 tagline: "Zdecentralizowana tablica społecznościowa Web3",
                 connectWallet: "Połącz Portfel",
-                setNickname: "Ustaw swój nick (Opcjonalnie)",
+                setNickname: "Ustaw swój nick",
                 nicknamePlaceholder: "Wpisz unikalny nick...",
                 saveNickname: "Zapisz Nick",
-                freeNotice: "Nick jest opcjonalny. Pierwsza zmiana darmowa.",
-                feedTitle: "Dyskusje Społeczności",
+                feedTitle: "Dyskusje Społeczności (On-Chain)",
                 postPlaceholder: "O czym giełda szumi dzisiaj?",
-                tagPlaceholder: "Tag (Opcjonalnie, np. #bitcoin)",
-                publish: "Opublikuj wpis",
+                tagPlaceholder: "Tag (zostaw puste lub wpisz istniejący)",
+                publish: "Opublikuj wpis on-chain",
                 filterPlaceholder: "🔍 Szukaj po tagu (#) lub użytkowniku...",
                 clearFilter: "Wyczyść filtr",
                 rulesBtn: "ℹ️ Zasady i Etyka",
                 rulesTitle: "Zasady i Funkcjonowanie CDB",
                 rulesText1: "Platforma działa w 100% w oparciu o sieć Base L2 oraz smart kontrakty.",
-                rulesText2: "Możesz dodawać wpisy anonimowo lub z własnym nickiem i tagiem.",
+                rulesText2: "Jeśli używasz tagu, upewnij się, że został wcześniej zarejestrowany.",
                 ethicsTitle: "🛡️ Etyka i Moderacja",
                 ethicsText: "Stanowczo sprzeciwiamy się mowie nienawiści, oszustwom i spamowi.",
                 close: "Zamknij"
@@ -55,45 +60,22 @@
                 brand: "CryptoDiscussionBoard",
                 tagline: "Decentralized Web3 Community Board",
                 connectWallet: "Connect Wallet",
-                setNickname: "Set Your Nickname (Optional)",
+                setNickname: "Set Your Nickname",
                 nicknamePlaceholder: "Enter unique nickname...",
                 saveNickname: "Save Nickname",
-                freeNotice: "Nickname is optional. First change is free.",
-                feedTitle: "Community Discussions",
+                feedTitle: "Community Discussions (On-Chain)",
                 postPlaceholder: "What's happening in crypto today?",
-                tagPlaceholder: "Tag (Optional, e.g. #bitcoin)",
-                publish: "Publish Post",
+                tagPlaceholder: "Tag (leave empty or use existing)",
+                publish: "Publish Post On-Chain",
                 filterPlaceholder: "🔍 Filter by tag (#) or user...",
                 clearFilter: "Clear filter",
                 rulesBtn: "ℹ️ Rules & Ethics",
                 rulesTitle: "CDB Rules & Features",
                 rulesText1: "The platform runs 100% on Base L2 network.",
-                rulesText2: "You can post anonymously or with a custom nickname and tag.",
+                rulesText2: "If using a tag, ensure it was registered beforehand.",
                 ethicsTitle: "🛡️ Ethics & Moderation",
                 ethicsText: "We strictly oppose hate speech, scams, and spam.",
                 close: "Close"
-            },
-            de: {
-                brand: "CryptoDiscussionBoard",
-                tagline: "Dezentrales Web3-Community-Board",
-                connectWallet: "Wallet verbinden",
-                setNickname: "Nickname festlegen (Optional)",
-                nicknamePlaceholder: "Einzigartigen Nickname eingeben...",
-                saveNickname: "Nickname speichern",
-                freeNotice: "Nickname ist optional.",
-                feedTitle: "Community-Diskussionen",
-                postPlaceholder: "Was passiert heute im Krypto-Markt?",
-                tagPlaceholder: "Tag (Optional)",
-                publish: "Beitrag veröffentlichen",
-                filterPlaceholder: "🔍 Filtern nach Tag oder Benutzer...",
-                clearFilter: "Filter löschen",
-                rulesBtn: "ℹ️ Regeln & Ethik",
-                rulesTitle: "CDB Regeln & Funktionen",
-                rulesText1: "Die Plattform läuft zu 100% über das Base L2-Netzwerk.",
-                rulesText2: "Sie können anonym oder mit einem Nickname posten.",
-                ethicsTitle: "🛡️ Ethik & Moderation",
-                ethicsText: "Wir lehnen Hassrede und Spam strikt ab.",
-                close: "Schließen"
             }
         };
 
@@ -101,24 +83,56 @@
             const [lang, setLang] = useState('pl');
             const [wallet, setWallet] = useState(null);
             const [nickname, setNickname] = useState('');
-            const [savedNick, setSavedNick] = useState('');
             const [postText, setPostText] = useState('');
             const [postTag, setPostTag] = useState('');
             const [searchFilter, setSearchFilter] = useState('');
             const [showRules, setShowRules] = useState(false);
             const [toast, setToast] = useState(null);
             const [isProcessing, setIsProcessing] = useState(false);
+            const [posts, setPosts] = useState([]);
 
-            const [posts, setPosts] = useState([
-                { id: 0, author: "0x7a69...e55", name: "SatoshiFan", text: "Witaj na zdecentralizowanej tablicy CDB!", tag: "ogolny", votes: 3 }
-            ]);
-
-            const t = translations[lang];
+            const t = translations[lang] || translations.pl;
 
             const showNotification = (msg, type = 'success') => {
                 setToast({ msg, type });
                 setTimeout(() => setToast(null), 4000);
             };
+
+            // Pobieranie komentarzy bezpośrednio z kontraktu
+            const loadPostsFromBlockchain = async () => {
+                try {
+                    const provider = new ethers.providers.JsonRpcProvider(BASE_SEPOLIA_RPC);
+                    const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
+                    
+                    const count = await contract.commentsCount();
+                    const loadedPosts = [];
+
+                    for (let i = 1; i <= count.toNumber(); i++) {
+                        const c = await contract.comments(i);
+                        let authorNick = "";
+                        try {
+                            authorNick = await contract.nicknames(c.author);
+                        } catch (e) {}
+
+                        loadedPosts.push({
+                            id: c.id.toNumber(),
+                            author: c.author.slice(0,6) + '...' + c.author.slice(-4),
+                            name: authorNick || 'Anonim',
+                            text: c.content,
+                            tag: c.tag || 'ogolny',
+                            votes: c.votes.toNumber()
+                        });
+                    }
+
+                    setPosts(loadedPosts.reverse());
+                } catch (err) {
+                    console.error("Błąd pobierania postów:", err);
+                }
+            };
+
+            useEffect(() => {
+                loadPostsFromBlockchain();
+            }, []);
 
             const connectWallet = async () => {
                 if (window.ethereum) {
@@ -130,10 +144,11 @@
                         showNotification("Błąd połączenia z portfelem!", "error");
                     }
                 } else {
-                    showNotification("Zainstaluj wtyczkę MetaMask!", "error");
+                    alert("Zainstaluj MetaMask!");
                 }
             };
 
+            // Głosowanie przez funkcję voteComment z kontraktu
             const handleVote = async (postId) => {
                 if (!window.ethereum || !wallet) {
                     showNotification("Połącz najpierw portfel!", "error");
@@ -143,21 +158,20 @@
 
                 try {
                     setIsProcessing(true);
-                    showNotification("Otwieranie MetaMask dla głosowania...", "info");
+                    showNotification("Zatwierdź głos w portfelu...", "info");
 
                     const provider = new ethers.providers.Web3Provider(window.ethereum);
                     const signer = provider.getSigner();
                     const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
-                    const tx = await contract.zaglosuj(postId, { gasLimit: 150000 });
-                    showNotification("Transakcja w toku...", "info");
-                    
+                    const tx = await contract.voteComment(postId, { gasLimit: 150000 });
                     await tx.wait();
-                    setPosts(posts.map(item => item.id === postId ? {...item, votes: item.votes + 1} : item));
-                    showNotification("Oddano głos!", "success");
+
+                    showNotification("Głos zapisany pomyślnie!", "success");
+                    loadPostsFromBlockchain();
                 } catch (err) {
                     console.error(err);
-                    showNotification("Głosowanie anulowane lub niedozwolone", "error");
+                    showNotification("Błąd głosowania (mogłeś już głosować dzisiaj)", "error");
                 } finally {
                     setIsProcessing(false);
                 }
@@ -176,26 +190,26 @@
 
                 try {
                     setIsProcessing(true);
-                    showNotification("Zatwierdź nick w MetaMask...", "info");
+                    showNotification("Zatwierdź zmianę nicku w MetaMask...", "info");
 
                     const provider = new ethers.providers.Web3Provider(window.ethereum);
                     const signer = provider.getSigner();
                     const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
+                    // Pierwszy nick jest darmowy, kolejne wymagają opłaty BASE_NICKNAME_CHANGE_FEE
                     const tx = await contract.setNickname(nickname, { gasLimit: 200000 });
                     await tx.wait();
 
-                    setSavedNick(nickname);
-                    showNotification(`Nick '${nickname}' został zapisany!`, "success");
+                    showNotification(`Nick '${nickname}' został zapisany w sieci!`, "success");
                 } catch (err) {
                     console.error(err);
-                    showNotification("Błąd podczas zapisywania nicku", "error");
+                    showNotification("Błąd zapisu nicku (sprawdź środki na opłatę)", "error");
                 } finally {
                     setIsProcessing(false);
                 }
             };
 
-            // BEZPIECZNE PUBLIKOWANIE WPISU (Działa zawsze)
+            // Publikowanie wpisu zgodne z addComment(string, string)
             const handlePublish = async (e) => {
                 e.preventDefault();
                 if (!postText.trim()) {
@@ -204,53 +218,32 @@
                 }
 
                 if (!window.ethereum || !wallet) {
-                    showNotification("Połącz portfel, aby opublikować on-chain!", "error");
+                    showNotification("Połącz najpierw portfel!", "error");
                     connectWallet();
                     return;
                 }
 
-                const cleanedTag = postTag.replace('#', '').trim() || 'ogolny';
-                const userDisplayName = savedNick || (nickname.trim() ? nickname : wallet.slice(0,6) + '...' + wallet.slice(-4));
+                // Jeśli tag jest pusty, przekazujemy pusty string, żeby uniknąć błędu nieistniejącego tagu
+                const tagToSend = postTag.trim().replace('#', '');
 
                 try {
                     setIsProcessing(true);
-                    showNotification("Potwierdź publikację w portfelu...", "info");
+                    showNotification("Wysyłanie wpisu do sieci Base...", "info");
 
                     const provider = new ethers.providers.Web3Provider(window.ethereum);
                     const signer = provider.getSigner();
                     const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
-                    let tx;
-                    try {
-                        // Próba bez opłat (darmowy wpis / darmowy tag)
-                        tx = await contract.dodajKomentarz(postText, cleanedTag, { gasLimit: 300000 });
-                    } catch (feeError) {
-                        // Jeśli kontrakt wymaga minimalnej opłaty za tag (~1 cent = 0.000004 ETH)
-                        tx = await contract.dodajKomentarz(postText, cleanedTag, { 
-                            value: ethers.utils.parseEther("0.000004"),
-                            gasLimit: 300000 
-                        });
-                    }
-
-                    showNotification("Transakcja w sieci Base...", "info");
+                    const tx = await contract.addComment(postText, tagToSend, { gasLimit: 300000 });
                     await tx.wait();
 
-                    const newPost = {
-                        id: posts.length,
-                        author: wallet.slice(0,6) + '...' + wallet.slice(-4),
-                        name: userDisplayName,
-                        text: postText,
-                        tag: cleanedTag,
-                        votes: 0
-                    };
-
-                    setPosts([newPost, ...posts]);
                     setPostText('');
                     setPostTag('');
-                    showNotification("Wpis pomyślnie dodany do sieci!", "success");
+                    showNotification("Wpis opublikowany na blockchainie!", "success");
+                    loadPostsFromBlockchain();
                 } catch (err) {
                     console.error("Szczegóły błędu:", err);
-                    showNotification("Transakcja odrzucona lub anulowana", "error");
+                    showNotification("Transakcja odrzucona (sprawdź czy tag istnieje)", "error");
                 } finally {
                     setIsProcessing(false);
                 }
@@ -289,7 +282,6 @@
                             <div className="flex bg-slate-900 border border-slate-800 rounded-xl p-1 text-xs">
                                 <button onClick={() => setLang('pl')} className={`px-2 py-1 rounded-lg ${lang === 'pl' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}>PL</button>
                                 <button onClick={() => setLang('en')} className={`px-2 py-1 rounded-lg ${lang === 'en' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}>EN</button>
-                                <button onClick={() => setLang('de')} className={`px-2 py-1 rounded-lg ${lang === 'de' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}>DE</button>
                             </div>
 
                             <button 
@@ -307,7 +299,7 @@
                         </button>
                     </div>
 
-                    {/* SEKCJA USTAWIENIA NICKU (OPCJONALNA) */}
+                    {/* USTAWIENIE NICKU */}
                     <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-2">
                         <h2 className="text-sm font-semibold text-slate-200">{t.setNickname}</h2>
                         <div className="flex gap-2">
@@ -323,13 +315,12 @@
                                 disabled={isProcessing}
                                 className="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-xl text-sm transition font-medium disabled:opacity-50"
                             >
-                                {isProcessing ? "Przetwarzanie..." : t.saveNickname}
+                                {isProcessing ? "..." : t.saveNickname}
                             </button>
                         </div>
-                        <p className="text-[11px] text-slate-500">{t.freeNotice}</p>
                     </div>
 
-                    {/* FORMULARZ DODAWANIA WPISU */}
+                    {/* FORMULARZ PUBLIKACJI */}
                     <form onSubmit={handlePublish} className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-3">
                         <textarea 
                             rows="3"
@@ -347,12 +338,12 @@
                                 className="bg-slate-950 border border-slate-800 rounded-xl p-2 text-sm flex-1 focus:outline-none focus:border-blue-500 text-slate-200"
                             />
                             <button type="submit" disabled={isProcessing} className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-5 py-2 rounded-xl text-sm transition disabled:opacity-50">
-                                {isProcessing ? "Wysyłanie..." : t.publish}
+                                {isProcessing ? "..." : t.publish}
                             </button>
                         </div>
                     </form>
 
-                    {/* PASEK FILTRÓW */}
+                    {/* FILTR */}
                     <div className="bg-slate-900/60 border border-slate-800 p-3 rounded-xl flex items-center justify-between gap-2">
                         <input 
                             type="text" 
@@ -368,11 +359,11 @@
                         )}
                     </div>
 
-                    {/* LISTA WPISÓW */}
+                    {/* STRUMIEŃ WPISÓW */}
                     <div className="space-y-4">
                         <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">{t.feedTitle}</h2>
                         {filteredPosts.length === 0 ? (
-                            <p className="text-center text-xs text-slate-500 py-6">Brak wpisów pasujących do filtra.</p>
+                            <p className="text-center text-xs text-slate-500 py-6">Brak wpisów w sieci lub wczytywanie...</p>
                         ) : (
                             filteredPosts.map(p => (
                                 <div key={p.id} className="p-4 bg-slate-900 border border-slate-800 rounded-2xl space-y-2">
@@ -380,9 +371,11 @@
                                         <button onClick={() => setSearchFilter(p.name)} className="font-bold text-slate-300 hover:text-blue-400 text-left transition">
                                             {p.name} <span className="text-[10px] text-slate-500">({p.author})</span>
                                         </button>
-                                        <button onClick={() => setSearchFilter(p.tag)} className="bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded-lg text-blue-400 font-medium transition">
-                                            #{p.tag}
-                                        </button>
+                                        {p.tag && (
+                                            <button onClick={() => setSearchFilter(p.tag)} className="bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded-lg text-blue-400 font-medium transition">
+                                                #{p.tag}
+                                            </button>
+                                        )}
                                     </div>
                                     <p className="text-sm text-slate-200">{p.text}</p>
                                     <div className="flex justify-end pt-1">
@@ -407,10 +400,6 @@
                                 <div className="space-y-2 text-sm text-slate-300">
                                     <p>{t.rulesText1}</p>
                                     <p>{t.rulesText2}</p>
-                                    <div className="bg-rose-500/10 border border-rose-500/20 p-3 rounded-xl space-y-1 mt-4">
-                                        <h4 className="font-semibold text-rose-400 text-xs uppercase">{t.ethicsTitle}</h4>
-                                        <p className="text-xs text-slate-300">{t.ethicsText}</p>
-                                    </div>
                                 </div>
                                 <button onClick={() => setShowRules(false)} className="w-full bg-slate-800 hover:bg-slate-700 text-white py-2 rounded-xl text-sm font-medium transition mt-4">
                                     {t.close}
