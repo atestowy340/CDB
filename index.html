@@ -23,7 +23,6 @@
         const CONTRACT_ADDRESS = "0x53289fc98F9bBa2cbbae20a69a3A1178FBF62583";
         const BASE_SEPOLIA_RPC = "https://sepolia.base.org";
         
-        // ABI dopasowane dokładnie do Twojego kontraktu CDBPlatform
         const CONTRACT_ABI = [
             "function voteComment(uint256 _commentId) external",
             "function addComment(string memory _content, string memory _tagName) external payable",
@@ -31,7 +30,9 @@
             "function registerCustomTag(string memory _tagName) external",
             "function commentsCount() external view returns (uint256)",
             "function comments(uint256) external view returns (uint256 id, address author, string memory content, string memory tag, uint256 votes, uint256 timestamp)",
-            "function nicknames(address) external view returns (string memory)"
+            "function nicknames(address) external view returns (string memory)",
+            "function tags(string) external view returns (string memory name, address owner, uint256 usesCount, uint256 currentPrice, bool isOwned)",
+            "function editableUseFee() external view returns (uint256)"
         ];
 
         const translations = {
@@ -42,16 +43,19 @@
                 setNickname: "Ustaw swój nick",
                 nicknamePlaceholder: "Wpisz unikalny nick...",
                 saveNickname: "Zapisz Nick",
+                registerTagTitle: "Rejestracja Nowego Tagu (Darmowe: max 3)",
+                tagRegPlaceholder: "Wpisz nazwę tagu (np. #bitcoin)...",
+                registerTagBtn: "Zarejestruj Tag",
                 feedTitle: "Dyskusje Społeczności (On-Chain)",
                 postPlaceholder: "O czym giełda szumi dzisiaj?",
-                tagPlaceholder: "Tag (zostaw puste lub wpisz istniejący)",
+                tagPlaceholder: "Tag (zostaw puste dla DEFAULT)",
                 publish: "Opublikuj wpis on-chain",
                 filterPlaceholder: "🔍 Szukaj po tagu (#) lub użytkowniku...",
                 clearFilter: "Wyczyść filtr",
                 rulesBtn: "ℹ️ Zasady i Etyka",
                 rulesTitle: "Zasady i Funkcjonowanie CDB",
                 rulesText1: "Platforma działa w 100% w oparciu o sieć Base L2 oraz smart kontrakty.",
-                rulesText2: "Jeśli używasz tagu, upewnij się, że został wcześniej zarejestrowany.",
+                rulesText2: "Niestandardowe tagi muszą zostać najpierw zarejestrowane przed użyciem we wpisach.",
                 ethicsTitle: "🛡️ Etyka i Moderacja",
                 ethicsText: "Stanowczo sprzeciwiamy się mowie nienawiści, oszustwom i spamowi.",
                 close: "Zamknij"
@@ -63,16 +67,19 @@
                 setNickname: "Set Your Nickname",
                 nicknamePlaceholder: "Enter unique nickname...",
                 saveNickname: "Save Nickname",
+                registerTagTitle: "Register New Tag (Free limit: max 3)",
+                tagRegPlaceholder: "Enter tag name (e.g. #bitcoin)...",
+                registerTagBtn: "Register Tag",
                 feedTitle: "Community Discussions (On-Chain)",
                 postPlaceholder: "What's happening in crypto today?",
-                tagPlaceholder: "Tag (leave empty or use existing)",
+                tagPlaceholder: "Tag (leave empty for DEFAULT)",
                 publish: "Publish Post On-Chain",
                 filterPlaceholder: "🔍 Filter by tag (#) or user...",
                 clearFilter: "Clear filter",
                 rulesBtn: "ℹ️ Rules & Ethics",
                 rulesTitle: "CDB Rules & Features",
                 rulesText1: "The platform runs 100% on Base L2 network.",
-                rulesText2: "If using a tag, ensure it was registered beforehand.",
+                rulesText2: "Custom tags must be registered before being used in posts.",
                 ethicsTitle: "🛡️ Ethics & Moderation",
                 ethicsText: "We strictly oppose hate speech, scams, and spam.",
                 close: "Close"
@@ -83,6 +90,7 @@
             const [lang, setLang] = useState('pl');
             const [wallet, setWallet] = useState(null);
             const [nickname, setNickname] = useState('');
+            const [newTagInput, setNewTagInput] = useState('');
             const [postText, setPostText] = useState('');
             const [postTag, setPostTag] = useState('');
             const [searchFilter, setSearchFilter] = useState('');
@@ -98,7 +106,6 @@
                 setTimeout(() => setToast(null), 4000);
             };
 
-            // Pobieranie komentarzy bezpośrednio z kontraktu
             const loadPostsFromBlockchain = async () => {
                 try {
                     const provider = new ethers.providers.JsonRpcProvider(BASE_SEPOLIA_RPC);
@@ -119,7 +126,7 @@
                             author: c.author.slice(0,6) + '...' + c.author.slice(-4),
                             name: authorNick || 'Anonim',
                             text: c.content,
-                            tag: c.tag || 'ogolny',
+                            tag: c.tag || 'DEFAULT',
                             votes: c.votes.toNumber()
                         });
                     }
@@ -148,7 +155,6 @@
                 }
             };
 
-            // Głosowanie przez funkcję voteComment z kontraktu
             const handleVote = async (postId) => {
                 if (!window.ethereum || !wallet) {
                     showNotification("Połącz najpierw portfel!", "error");
@@ -196,20 +202,54 @@
                     const signer = provider.getSigner();
                     const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
-                    // Pierwszy nick jest darmowy, kolejne wymagają opłaty BASE_NICKNAME_CHANGE_FEE
                     const tx = await contract.setNickname(nickname, { gasLimit: 200000 });
                     await tx.wait();
 
                     showNotification(`Nick '${nickname}' został zapisany w sieci!`, "success");
                 } catch (err) {
                     console.error(err);
-                    showNotification("Błąd zapisu nicku (sprawdź środki na opłatę)", "error");
+                    showNotification("Błąd zapisu nicku", "error");
                 } finally {
                     setIsProcessing(false);
                 }
             };
 
-            // Publikowanie wpisu zgodne z addComment(string, string)
+            // REJESTRACJA NOWEGO TAGU ON-CHAIN
+            const handleRegisterTag = async () => {
+                if (!newTagInput.trim()) {
+                    showNotification("Wpisz nazwę tagu!", "error");
+                    return;
+                }
+                if (!window.ethereum || !wallet) {
+                    showNotification("Połącz najpierw portfel!", "error");
+                    connectWallet();
+                    return;
+                }
+
+                const cleanTag = newTagInput.trim().replace('#', '');
+
+                try {
+                    setIsProcessing(true);
+                    showNotification("Zatwierdź rejestrację tagu w MetaMask...", "info");
+
+                    const provider = new ethers.providers.Web3Provider(window.ethereum);
+                    const signer = provider.getSigner();
+                    const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+
+                    const tx = await contract.registerCustomTag(cleanTag, { gasLimit: 200000 });
+                    await tx.wait();
+
+                    setNewTagInput('');
+                    showNotification(`Tag #${cleanTag} zarejestrowany pomyślnie!`, "success");
+                } catch (err) {
+                    console.error(err);
+                    showNotification("Błąd rejestracji tagu (limit 3 darmowe lub tag już istnieje)", "error");
+                } finally {
+                    setIsProcessing(false);
+                }
+            };
+
+            // PUBLIKOWANIE WPISU Z OBSŁUGĄ TAGÓW I OPŁAT
             const handlePublish = async (e) => {
                 e.preventDefault();
                 if (!postText.trim()) {
@@ -223,18 +263,35 @@
                     return;
                 }
 
-                // Jeśli tag jest pusty, przekazujemy pusty string, żeby uniknąć błędu nieistniejącego tagu
-                const tagToSend = postTag.trim().replace('#', '');
+                const tagToSend = postTag.trim() ? postTag.trim().replace('#', '') : "";
 
                 try {
                     setIsProcessing(true);
-                    showNotification("Wysyłanie wpisu do sieci Base...", "info");
+                    showNotification("Sprawdzanie tagu i wysyłanie wpisu...", "info");
 
                     const provider = new ethers.providers.Web3Provider(window.ethereum);
                     const signer = provider.getSigner();
                     const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
-                    const tx = await contract.addComment(postText, tagToSend, { gasLimit: 300000 });
+                    let requiredValue = ethers.BigNumber.from(0);
+
+                    // Jeśli podano tag, sprawdzamy czy jest własnością kogoś (isOwned) i pobieramy opłatę
+                    if (tagToSend) {
+                        try {
+                            const tagInfo = await contract.tags(tagToSend);
+                            if (tagInfo && tagInfo.isOwned) {
+                                requiredValue = await contract.editableUseFee();
+                            }
+                        } catch (e) {
+                            console.log("Tag nie istnieje lub brak danych");
+                        }
+                    }
+
+                    const tx = await contract.addComment(postText, tagToSend, { 
+                        value: requiredValue,
+                        gasLimit: 350000 
+                    });
+                    
                     await tx.wait();
 
                     setPostText('');
@@ -243,7 +300,7 @@
                     loadPostsFromBlockchain();
                 } catch (err) {
                     console.error("Szczegóły błędu:", err);
-                    showNotification("Transakcja odrzucona (sprawdź czy tag istnieje)", "error");
+                    showNotification("Transakcja odrzucona (tag może nie istnieć lub wymaga rejestracji)", "error");
                 } finally {
                     setIsProcessing(false);
                 }
@@ -320,6 +377,27 @@
                         </div>
                     </div>
 
+                    {/* REJESTRACJA NOWEGO TAGU */}
+                    <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-2">
+                        <h2 className="text-sm font-semibold text-slate-200">{t.registerTagTitle}</h2>
+                        <div className="flex gap-2">
+                            <input 
+                                type="text" 
+                                value={newTagInput}
+                                onChange={(e) => setNewTagInput(e.target.value)}
+                                placeholder={t.tagRegPlaceholder} 
+                                className="bg-slate-950 border border-slate-800 rounded-xl p-2 text-sm flex-1 focus:outline-none focus:border-blue-500 text-slate-200"
+                            />
+                            <button 
+                                onClick={handleRegisterTag}
+                                disabled={isProcessing}
+                                className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-sm transition font-medium disabled:opacity-50"
+                            >
+                                {isProcessing ? "..." : t.registerTagBtn}
+                            </button>
+                        </div>
+                    </div>
+
                     {/* FORMULARZ PUBLIKACJI */}
                     <form onSubmit={handlePublish} className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-3">
                         <textarea 
@@ -371,11 +449,9 @@
                                         <button onClick={() => setSearchFilter(p.name)} className="font-bold text-slate-300 hover:text-blue-400 text-left transition">
                                             {p.name} <span className="text-[10px] text-slate-500">({p.author})</span>
                                         </button>
-                                        {p.tag && (
-                                            <button onClick={() => setSearchFilter(p.tag)} className="bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded-lg text-blue-400 font-medium transition">
-                                                #{p.tag}
-                                            </button>
-                                        )}
+                                        <button onClick={() => setSearchFilter(p.tag)} className="bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded-lg text-blue-400 font-medium transition">
+                                            #{p.tag}
+                                        </button>
                                     </div>
                                     <p className="text-sm text-slate-200">{p.text}</p>
                                     <div className="flex justify-end pt-1">
