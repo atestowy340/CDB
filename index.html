@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>(CDB)</title>
+    <title>CryptoDiscussionBoard (CDB)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- React & ReactDOM -->
@@ -34,7 +34,8 @@
             "function nicknames(address) external view returns (string memory)",
             "function nicknameChangesCount(address) external view returns (uint256)",
             "function tags(string) external view returns (string memory name, address owner, uint256 usesCount, uint256 currentPrice, bool isOwned)",
-            "function editableUseFee() external view returns (uint256)"
+            "function editableUseFee() external view returns (uint256)",
+            "function topCommentPerDay(uint256) external view returns (uint256)"
         ];
 
         const translations = {
@@ -54,10 +55,17 @@
                 publish: "Publish Post",
                 searchPlaceholder: "🔍 Search or inspect tag...",
                 clearFilter: "Clear",
-                rulesBtn: "Rules & Ethics",
-                rulesTitle: "CDB Rules & Governance",
-                rulesText1: "Platform runs 100% on Base L2 network and smart contracts.",
-                rulesText2: "First nickname set is free. Custom tags can be registered or bought out after 500 uses.",
+                rulesBtn: "Rules & Mechanics",
+                rulesTitle: "CDB Rules, Mechanics & Whitepaper",
+                rulesIntro: "CryptoDiscussionBoard (CDB) is a 100% decentralized, serverless Web3 platform operating on the Base L2 network via secure UUPS Proxy smart contracts.",
+                rule1Title: "1. Tags & Snipe System",
+                rule1Text: "• **Free Limit:** Every wallet can register up to 3 custom free tags.\n• **DEFAULT Tag:** Permanently protected at the smart contract level. It is always free and open for everyone.\n• **Buyout / Snipe:** Once a custom tag reaches 500+ uses, anyone can buyout/snipe ownership starting at 0.0005 ETH. Each buyout increases the price by 30%.\n• **Profit Split:** 70% of buyout proceeds go to the previous owner, and 30% to the platform.\n• **Usage Fee:** Owned tags charge a tiny fee (0.000004 ETH) split 50/50 between the tag owner and the platform.",
+                rule2Title: "2. Nickname System",
+                rule2Text: "• **First Setup:** Completely free of charge.\n• **Subsequent Changes:** Scaled dynamically based on your change count (Base fee × changes count), transferred to the platform.",
+                rule3Title: "3. Comments & Daily Voting",
+                rule3Text: "• **On-Chain Publishing:** All posts are permanently stored on Base L2.\n• **Voting:** One vote per wallet per comment per day (UTC midnight reset). Automatically tracks the Top Comment of the Day.",
+                rule4Title: "4. Dual-Mode Direct Chat",
+                rule4Text: "• **Off-Chain P2P:** Instant, 100% free encrypted messaging between wallets. Messages persist across browser sessions.\n• **On-Chain DMs:** Permanent decentralized records stored directly as blockchain transactions.",
                 ethicsTitle: "🛡️ Ethics & Moderation",
                 ethicsText: "We strictly prohibit hate speech, scams, and malicious spam.",
                 close: "Close",
@@ -76,7 +84,9 @@
                 freeOrInUse: "Free / In use",
                 tagStatusTitle: "Tag Status:",
                 usesCountLabel: "Uses count:",
-                buyoutPriceLabel: "Buyout price:"
+                buyoutPriceLabel: "Buyout price:",
+                topCommentTitle: "🏆 Comment of the Day",
+                noTopComment: "No votes recorded yet today. Be the first to vote!"
             },
             de: {
                 brand: "CryptoDiscussionBoard",
@@ -94,10 +104,17 @@
                 publish: "Beitrag veröffentlichen",
                 searchPlaceholder: "🔍 Tag suchen oder prüfen...",
                 clearFilter: "Löschen",
-                rulesBtn: "Regeln & Ethik",
-                rulesTitle: "CDB Regeln & Funktionen",
-                rulesText1: "Die Plattform läuft zu 100 % auf dem Base L2-Netzwerk.",
-                rulesText2: "Erster Name ist kostenlos. Tags können nach 500 Nutzungen abgekauft werden.",
+                rulesBtn: "Regeln & Mechanik",
+                rulesTitle: "CDB Regeln, Mechanik & Whitepaper",
+                rulesIntro: "CryptoDiscussionBoard (CDB) ist eine zu 100 % dezentrale Web3-Plattform im Base L2-Netzwerk über sichere UUPS-Proxy-Smart Contracts.",
+                rule1Title: "1. Tags & Snipe-System",
+                rule1Text: "• **Kostenloses Limit:** Jedes Wallet kann bis zu 3 eigene Tags kostenlos registrieren.\n• **DEFAULT-Tag:** Permanent im Smart Contract geschützt. Immer frei und für jeden nutzbar.\n• **Übernahme (Snipe):** Ab 500 Nutzungen kann jeder einen Tag ab 0.0005 ETH übernehmen. Jede Übernahme erhöht den Preis um 30%.\n• **Erlösaufteilung:** 70% gehen an den Vorbesitzer, 30% an die Plattform.\n• **Nutzungsgebühr:** Besessene Tags erheben eine geringe Gebühr (0.000004 ETH), aufgeteilt 50/50.",
+                rule2Title: "2. Spitznamen-System",
+                rule2Text: "• **Ersteinrichtung:** Völlig kostenlos.\n• **Änderungen:** Skalieren dynamisch basierend auf der Anzahl der Änderungen.",
+                rule3Title: "3. Kommentare & Tägliche Abstimmung",
+                rule3Text: "• **On-Chain Veröffentlichung:** Alle Beiträge werden permanent auf Base L2 gespeichert.\n• **Abstimmung:** Eine Stimme pro Wallet und Kommentar pro Tag (UTC-Mitternachtsreset).",
+                rule4Title: "4. Dual-Mode Direktchat",
+                rule4Text: "• **Off-Chain P2P:** Schnelle, 100% kostenlose verschlüsselte Nachrichten zwischen Wallets.\n• **On-Chain DMs:** Permanente dezentrale Aufzeichnungen als Blockchain-Transaktionen.",
                 ethicsTitle: "🛡️ Ethik & Moderation",
                 ethicsText: "Wir lehnen Hassrede, Betrug und Spam strikt ab.",
                 close: "Schließen",
@@ -116,7 +133,9 @@
                 freeOrInUse: "Kostenlos / In Verwendung",
                 tagStatusTitle: "Tag-Status:",
                 usesCountLabel: "Nutzungen:",
-                buyoutPriceLabel: "Kaufpreis:"
+                buyoutPriceLabel: "Kaufpreis:",
+                topCommentTitle: "🏆 Kommentar des Tages",
+                noTopComment: "Heute wurden noch keine Stimmen abgegeben. Sei der Erste!"
             },
             pl: {
                 brand: "CryptoDiscussionBoard",
@@ -134,12 +153,19 @@
                 publish: "Opublikuj wpis",
                 searchPlaceholder: "🔍 Szukaj lub sprawdź tag...",
                 clearFilter: "Wyczyść",
-                rulesBtn: "Zasady i Etyka",
-                rulesTitle: "Zasady i Funkcjonowanie CDB",
-                rulesText1: "Platforma działa w 100% w oparciu o sieć Base L2 oraz smart kontrakty.",
-                rulesText2: "Pierwszy nick darmowy. Tagi po 500 użyciach można przejąć na własność.",
+                rulesBtn: "Zasady i Mechanika",
+                rulesTitle: "Zasady, Mechanika i Whitepaper CDB",
+                rulesIntro: "CryptoDiscussionBoard (CDB) to w 100% zdecentralizowana platforma Web3 działająca w sieci Base L2 w oparciu o bezpieczne smart kontrakty UUPS Proxy.",
+                rule1Title: "1. System Tagów i Przejęcia (Snipe)",
+                rule1Text: "• **Darmowy limit:** Każdy portfel może zarejestrować do 3 własnych, darmowych tagów.\n• **Tag DEFAULT:** Trwale zabezpieczony na poziomie smart kontraktu. Jest zawsze darmowy i publiczny dla każdego.\n• **Wykup / Snipe:** Gdy tag osiągnie $\\ge 500$ użyć, każdy może go wykupić na własność (cena startowa 0.0005 ETH). Każdy kolejny wykup podnosi cenę o 30%.\n• **Podział zysków:** 70% kwoty wykupu trafia do poprzedniego właściciela, a 30% do platformy.\n• **Opłata za użycie:** Posiadane tagi pobierają symboliczną opłatę (0.000004 ETH) dzieloną 50/50 między właściciela tagu a platformę.",
+                rule2Title: "2. System Nicków",
+                rule2Text: "• **Pierwsza rejestracja:** Całkowicie darmowa.\n• **Kolejne zmiany:** Koszt rośnie multiplikatywnie w zależności od liczby dotychczasowych zmian (opłata bazowa × liczba zmian), trafiając do skarbca platformy.",
+                rule3Title: "3. Wpisy i Głosowanie Dnia",
+                rule3Text: "• **Zapis On-Chain:** Wszystkie publikowane posty są trwale zapisywane w łańcuchu Base L2.\n• **Głosowanie:** Jeden głos na portfel na dany komentarz dziennie (reset o północy UTC). Automatycznie wyłania Komentarz Dnia.",
+                rule4Title: "4. Dwa Tryby Chatu Bezpośredniego",
+                rule4Text: "• **Off-Chain P2P:** Szybka, całkowicie darmowa i szyfrowana komunikacja między portfelami. Historia nie znika po zamknięciu przeglądarki.\n• **On-Chain DMs:** Wiadomości zapisywane bezpośrednio jako permanentne transakcje w blockchainie.",
                 ethicsTitle: "🛡️ Etyka i Moderacja",
-                ethicsText: "Stanowczo sprzeciwiamy się mowie nienawiści, oszustwom i spamowi.",
+                ethicsText: "Stanowczo sprzeciwiamy się mowie nienawiści, oszustwom i złośliwemu spamowi.",
                 close: "Zamknij",
                 chatTitle: "Czat Bezpośredni",
                 onchainChat: "⛓️ On-Chain",
@@ -156,7 +182,9 @@
                 freeOrInUse: "Darmowy / W użyciu",
                 tagStatusTitle: "Status Tagu:",
                 usesCountLabel: "Liczba użyć:",
-                buyoutPriceLabel: "Cena wykupu:"
+                buyoutPriceLabel: "Cena wykupu:",
+                topCommentTitle: "🏆 Komentarz Dnia",
+                noTopComment: "Brak głosów dzisiaj. Bądź pierwszy i zagłosuj!"
             }
         };
 
@@ -178,6 +206,7 @@
             const [toast, setToast] = useState(null);
             const [isProcessing, setIsProcessing] = useState(false);
             const [posts, setPosts] = useState([]);
+            const [topComment, setTopComment] = useState(null);
 
             const t = translations[lang] || translations.en;
 
@@ -213,6 +242,21 @@
                     }
 
                     setPosts(loadedPosts.reverse());
+
+                    // ODCZYT KOMENTARZA DNIA (Top Comment of the Day)
+                    try {
+                        const currentDay = Math.floor(Date.now() / 1000 / 86400);
+                        const topCommentId = await contract.topCommentPerDay(currentDay);
+                        if (topCommentId && topCommentId.toNumber() > 0) {
+                            const found = loadedPosts.find(p => p.id === topCommentId.toNumber());
+                            setTopComment(found || null);
+                        } else {
+                            setTopComment(null);
+                        }
+                    } catch (e) {
+                        console.error("Top comment load error", e);
+                    }
+
                 } catch (err) {
                     console.error("Error loading posts:", err);
                 }
@@ -583,6 +627,29 @@
                         </div>
                     </header>
 
+                    {/* SEKACJA: KOMENTARZ DNIA (TOP COMMENT OF THE DAY) */}
+                    <section className="bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-yellow-500/10 border border-amber-500/30 p-4 rounded-2xl shadow-lg relative overflow-hidden">
+                        <div className="flex justify-between items-center mb-2">
+                            <h3 className="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                                {t.topCommentTitle}
+                            </h3>
+                            <span className="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full font-medium">UTC Today</span>
+                        </div>
+                        {topComment ? (
+                            <div className="space-y-1.5">
+                                <div className="flex justify-between items-center text-xs text-slate-300">
+                                    <span className="font-semibold text-slate-100">{topComment.name} <span className="text-[10px] text-slate-400">({topComment.author})</span></span>
+                                    <span className="text-amber-400 font-bold text-xs">👍 {topComment.votes} votes</span>
+                                </div>
+                                <p className="text-xs text-slate-200 italic bg-slate-950/40 p-2.5 rounded-xl border border-slate-800/60">
+                                    "{topComment.text}"
+                                </p>
+                            </div>
+                        ) : (
+                            <p className="text-xs text-slate-400 italic py-1">{t.noTopComment}</p>
+                        )}
+                    </section>
+
                     {/* MODUŁ CHATU BEZPOŚREDNIEGO */}
                     {showChat && (
                         <section className="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl shadow-xl space-y-3">
@@ -800,20 +867,40 @@
                         )}
                     </main>
 
-                    {/* MODAL Z ZASADAMI */}
+                    {/* MODAL Z ROZBUDOWANYMI ZASADAMI I MECHANIKĄ (WHITEPAPER) */}
                     {showRules && (
                         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-                            <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-lg w-full space-y-4 shadow-2xl">
-                                <h3 className="font-bold text-lg text-slate-100">{t.rulesTitle}</h3>
-                                <div className="space-y-2 text-sm text-slate-300">
-                                    <p>{t.rulesText1}</p>
-                                    <p>{t.rulesText2}</p>
-                                    <div className="bg-rose-500/10 border border-rose-500/20 p-3 rounded-xl space-y-1 mt-4">
+                            <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-2xl w-full space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
+                                <h3 className="font-bold text-lg text-slate-100 border-b border-slate-800 pb-3">{t.rulesTitle}</h3>
+                                <div className="space-y-4 text-xs text-slate-300 leading-relaxed">
+                                    <p className="text-slate-400">{t.rulesIntro}</p>
+                                    
+                                    <div className="space-y-1 bg-slate-950/60 p-3 rounded-xl border border-slate-800/80">
+                                        <h4 className="font-semibold text-blue-400 text-sm">{t.rule1Title}</h4>
+                                        <p className="whitespace-pre-line text-slate-300">{t.rule1Text}</p>
+                                    </div>
+
+                                    <div className="space-y-1 bg-slate-950/60 p-3 rounded-xl border border-slate-800/80">
+                                        <h4 className="font-semibold text-teal-400 text-sm">{t.rule2Title}</h4>
+                                        <p className="whitespace-pre-line text-slate-300">{t.rule2Text}</p>
+                                    </div>
+
+                                    <div className="space-y-1 bg-slate-950/60 p-3 rounded-xl border border-slate-800/80">
+                                        <h4 className="font-semibold text-emerald-400 text-sm">{t.rule3Title}</h4>
+                                        <p className="whitespace-pre-line text-slate-300">{t.rule3Text}</p>
+                                    </div>
+
+                                    <div className="space-y-1 bg-slate-950/60 p-3 rounded-xl border border-slate-800/80">
+                                        <h4 className="font-semibold text-indigo-400 text-sm">{t.rule4Title}</h4>
+                                        <p className="whitespace-pre-line text-slate-300">{t.rule4Text}</p>
+                                    </div>
+
+                                    <div className="bg-rose-500/10 border border-rose-500/20 p-3 rounded-xl space-y-1">
                                         <h4 className="font-semibold text-rose-400 text-xs uppercase">{t.ethicsTitle}</h4>
                                         <p className="text-xs text-slate-300">{t.ethicsText}</p>
                                     </div>
                                 </div>
-                                <button onClick={() => setShowRules(false)} className="w-full bg-slate-800 hover:bg-slate-700 text-white py-2 rounded-xl text-sm font-medium transition mt-4">
+                                <button onClick={() => setShowRules(false)} className="w-full bg-slate-800 hover:bg-slate-700 text-white py-2.5 rounded-xl text-xs font-medium transition mt-4">
                                     {t.close}
                                 </button>
                             </div>
