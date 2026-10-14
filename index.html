@@ -11,7 +11,7 @@
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <!-- Babel dla JSX -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Ethers.js -->
+    <!-- Ethers.js v5 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans min-h-screen">
@@ -24,8 +24,8 @@
         
         const CONTRACT_ABI = [
             "function zaglosuj(uint256 _komentarzId) public",
-            "function dodajKomentarz(string memory _tresc, string memory _tag) public",
-            "function setNickname(string memory _nickname) public"
+            "function dodajKomentarz(string memory _tresc, string memory _tag) public payable",
+            "function setNickname(string memory _nickname) public payable"
         ];
 
         const translations = {
@@ -33,20 +33,20 @@
                 brand: "CryptoDiscussionBoard",
                 tagline: "Zdecentralizowana tablica społecznościowa Web3",
                 connectWallet: "Połącz Portfel",
-                setNickname: "Ustaw swój nick",
+                setNickname: "Ustaw swój nick (Opcjonalnie)",
                 nicknamePlaceholder: "Wpisz unikalny nick...",
                 saveNickname: "Zapisz Nick",
-                freeNotice: "Najpierw ustaw nick on-chain, aby móc publikować.",
+                freeNotice: "Nick jest opcjonalny. Pierwsza zmiana darmowa.",
                 feedTitle: "Dyskusje Społeczności",
                 postPlaceholder: "O czym giełda szumi dzisiaj?",
-                tagPlaceholder: "Tag (np. ogolny, bitcoin)",
-                publish: "Opublikuj wpis (On-Chain)",
+                tagPlaceholder: "Tag (Opcjonalnie, np. #bitcoin)",
+                publish: "Opublikuj wpis",
                 filterPlaceholder: "🔍 Szukaj po tagu (#) lub użytkowniku...",
                 clearFilter: "Wyczyść filtr",
                 rulesBtn: "ℹ️ Zasady i Etyka",
                 rulesTitle: "Zasady i Funkcjonowanie CDB",
                 rulesText1: "Platforma działa w 100% w oparciu o sieć Base L2 oraz smart kontrakty.",
-                rulesText2: "Głosy i wpisy są zapisywane bezpośrednio na blockchainie.",
+                rulesText2: "Możesz dodawać wpisy anonimowo lub z własnym nickiem i tagiem.",
                 ethicsTitle: "🛡️ Etyka i Moderacja",
                 ethicsText: "Stanowczo sprzeciwiamy się mowie nienawiści, oszustwom i spamowi.",
                 close: "Zamknij"
@@ -55,20 +55,20 @@
                 brand: "CryptoDiscussionBoard",
                 tagline: "Decentralized Web3 Community Board",
                 connectWallet: "Connect Wallet",
-                setNickname: "Set Your Nickname",
+                setNickname: "Set Your Nickname (Optional)",
                 nicknamePlaceholder: "Enter unique nickname...",
                 saveNickname: "Save Nickname",
-                freeNotice: "Set your nickname on-chain first.",
+                freeNotice: "Nickname is optional. First change is free.",
                 feedTitle: "Community Discussions",
                 postPlaceholder: "What's happening in crypto today?",
-                tagPlaceholder: "Tag (e.g., general, bitcoin)",
-                publish: "Publish Post (On-Chain)",
+                tagPlaceholder: "Tag (Optional, e.g. #bitcoin)",
+                publish: "Publish Post",
                 filterPlaceholder: "🔍 Filter by tag (#) or user...",
                 clearFilter: "Clear filter",
                 rulesBtn: "ℹ️ Rules & Ethics",
                 rulesTitle: "CDB Rules & Features",
-                rulesText1: "The platform runs 100% on Base L2 network and smart contracts.",
-                rulesText2: "Votes and posts are recorded directly on the blockchain.",
+                rulesText1: "The platform runs 100% on Base L2 network.",
+                rulesText2: "You can post anonymously or with a custom nickname and tag.",
                 ethicsTitle: "🛡️ Ethics & Moderation",
                 ethicsText: "We strictly oppose hate speech, scams, and spam.",
                 close: "Close"
@@ -77,20 +77,20 @@
                 brand: "CryptoDiscussionBoard",
                 tagline: "Dezentrales Web3-Community-Board",
                 connectWallet: "Wallet verbinden",
-                setNickname: "Nickname festlegen",
+                setNickname: "Nickname festlegen (Optional)",
                 nicknamePlaceholder: "Einzigartigen Nickname eingeben...",
                 saveNickname: "Nickname speichern",
-                freeNotice: "Legen Sie zuerst Ihren Nickname fest.",
+                freeNotice: "Nickname ist optional.",
                 feedTitle: "Community-Diskussionen",
                 postPlaceholder: "Was passiert heute im Krypto-Markt?",
-                tagPlaceholder: "Tag (z. B. general, bitcoin)",
+                tagPlaceholder: "Tag (Optional)",
                 publish: "Beitrag veröffentlichen",
                 filterPlaceholder: "🔍 Filtern nach Tag oder Benutzer...",
                 clearFilter: "Filter löschen",
                 rulesBtn: "ℹ️ Regeln & Ethik",
                 rulesTitle: "CDB Regeln & Funktionen",
                 rulesText1: "Die Plattform läuft zu 100% über das Base L2-Netzwerk.",
-                rulesText2: "Stimmen werden direkt in der Blockchain gespeichert.",
+                rulesText2: "Sie können anonym oder mit einem Nickname posten.",
                 ethicsTitle: "🛡️ Ethik & Moderation",
                 ethicsText: "Wir lehnen Hassrede und Spam strikt ab.",
                 close: "Schließen"
@@ -110,8 +110,7 @@
             const [isProcessing, setIsProcessing] = useState(false);
 
             const [posts, setPosts] = useState([
-                { id: 0, author: "0x7a69...e55", name: "Atest", text: "English test on-chain structure", tag: "en", votes: 0 },
-                { id: 1, author: "0x7a69...e55", name: "Btest", text: "SECOND test entry", tag: "ogolny", votes: 0 }
+                { id: 0, author: "0x7a69...e55", name: "SatoshiFan", text: "Witaj na zdecentralizowanej tablicy CDB!", tag: "ogolny", votes: 3 }
             ]);
 
             const t = translations[lang];
@@ -126,7 +125,7 @@
                     try {
                         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
                         setWallet(accounts[0]);
-                        showNotification("Połączono z portfelem: " + accounts[0].slice(0,6) + "...");
+                        showNotification("Połączono z portfelem!");
                     } catch (err) {
                         showNotification("Błąd połączenia z portfelem!", "error");
                     }
@@ -137,28 +136,28 @@
 
             const handleVote = async (postId) => {
                 if (!window.ethereum || !wallet) {
-                    showNotification("Najpierw połącz portfel MetaMask!", "error");
+                    showNotification("Połącz najpierw portfel!", "error");
                     connectWallet();
                     return;
                 }
 
                 try {
                     setIsProcessing(true);
-                    showNotification("Zatwierdź transakcję głosowania w portfelu...", "info");
+                    showNotification("Otwieranie MetaMask dla głosowania...", "info");
 
                     const provider = new ethers.providers.Web3Provider(window.ethereum);
                     const signer = provider.getSigner();
                     const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
-                    const tx = await contract.zaglosuj(postId);
-                    showNotification("Transakcja wysłana. Oczekiwanie...", "info");
+                    const tx = await contract.zaglosuj(postId, { gasLimit: 150000 });
+                    showNotification("Transakcja w toku...", "info");
                     
                     await tx.wait();
                     setPosts(posts.map(item => item.id === postId ? {...item, votes: item.votes + 1} : item));
-                    showNotification("Głos zapisany na blockchainie!", "success");
+                    showNotification("Oddano głos!", "success");
                 } catch (err) {
                     console.error(err);
-                    showNotification("Błąd głosowania (mogłeś już głosować)", "error");
+                    showNotification("Głosowanie anulowane lub niedozwolone", "error");
                 } finally {
                     setIsProcessing(false);
                 }
@@ -177,67 +176,81 @@
 
                 try {
                     setIsProcessing(true);
-                    showNotification("Zatwierdź ustawienie nicku w portfelu...", "info");
+                    showNotification("Zatwierdź nick w MetaMask...", "info");
 
                     const provider = new ethers.providers.Web3Provider(window.ethereum);
                     const signer = provider.getSigner();
                     const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
-                    const tx = await contract.setNickname(nickname);
+                    const tx = await contract.setNickname(nickname, { gasLimit: 200000 });
                     await tx.wait();
 
                     setSavedNick(nickname);
-                    showNotification(`Nick '${nickname}' zapisany w sieci!`, "success");
+                    showNotification(`Nick '${nickname}' został zapisany!`, "success");
                 } catch (err) {
                     console.error(err);
-                    showNotification("Błąd zapisu nicku on-chain", "error");
+                    showNotification("Błąd podczas zapisywania nicku", "error");
                 } finally {
                     setIsProcessing(false);
                 }
             };
 
+            // BEZPIECZNE PUBLIKOWANIE WPISU (Działa zawsze)
             const handlePublish = async (e) => {
                 e.preventDefault();
                 if (!postText.trim()) {
                     showNotification("Wpis nie może być pusty!", "error");
                     return;
                 }
+
                 if (!window.ethereum || !wallet) {
-                    showNotification("Połącz najpierw portfel!", "error");
+                    showNotification("Połącz portfel, aby opublikować on-chain!", "error");
                     connectWallet();
                     return;
                 }
 
+                const cleanedTag = postTag.replace('#', '').trim() || 'ogolny';
+                const userDisplayName = savedNick || (nickname.trim() ? nickname : wallet.slice(0,6) + '...' + wallet.slice(-4));
+
                 try {
                     setIsProcessing(true);
-                    showNotification("Wysyłanie wpisu na blockchain...", "info");
+                    showNotification("Potwierdź publikację w portfelu...", "info");
 
                     const provider = new ethers.providers.Web3Provider(window.ethereum);
                     const signer = provider.getSigner();
                     const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
-                    const cleanedTag = postTag.replace('#', '').trim() || 'ogolny';
-                    
-                    // Bezpośrednie wywołanie funkcji kontraktu bez dołączania msg.value
-                    const tx = await contract.dodajKomentarz(postText, cleanedTag);
-                    
+                    let tx;
+                    try {
+                        // Próba bez opłat (darmowy wpis / darmowy tag)
+                        tx = await contract.dodajKomentarz(postText, cleanedTag, { gasLimit: 300000 });
+                    } catch (feeError) {
+                        // Jeśli kontrakt wymaga minimalnej opłaty za tag (~1 cent = 0.000004 ETH)
+                        tx = await contract.dodajKomentarz(postText, cleanedTag, { 
+                            value: ethers.utils.parseEther("0.000004"),
+                            gasLimit: 300000 
+                        });
+                    }
+
+                    showNotification("Transakcja w sieci Base...", "info");
                     await tx.wait();
 
                     const newPost = {
                         id: posts.length,
                         author: wallet.slice(0,6) + '...' + wallet.slice(-4),
-                        name: savedNick || nickname || 'Anonim',
+                        name: userDisplayName,
                         text: postText,
                         tag: cleanedTag,
                         votes: 0
                     };
+
                     setPosts([newPost, ...posts]);
                     setPostText('');
                     setPostTag('');
-                    showNotification("Wpis opublikowany na blockchainie!", "success");
+                    showNotification("Wpis pomyślnie dodany do sieci!", "success");
                 } catch (err) {
-                    console.error(err);
-                    showNotification("Błąd kontraktu (sprawdź czy ustawiono nick)", "error");
+                    console.error("Szczegóły błędu:", err);
+                    showNotification("Transakcja odrzucona lub anulowana", "error");
                 } finally {
                     setIsProcessing(false);
                 }
@@ -294,6 +307,7 @@
                         </button>
                     </div>
 
+                    {/* SEKCJA USTAWIENIA NICKU (OPCJONALNA) */}
                     <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-2">
                         <h2 className="text-sm font-semibold text-slate-200">{t.setNickname}</h2>
                         <div className="flex gap-2">
@@ -315,6 +329,7 @@
                         <p className="text-[11px] text-slate-500">{t.freeNotice}</p>
                     </div>
 
+                    {/* FORMULARZ DODAWANIA WPISU */}
                     <form onSubmit={handlePublish} className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-3">
                         <textarea 
                             rows="3"
@@ -337,6 +352,7 @@
                         </div>
                     </form>
 
+                    {/* PASEK FILTRÓW */}
                     <div className="bg-slate-900/60 border border-slate-800 p-3 rounded-xl flex items-center justify-between gap-2">
                         <input 
                             type="text" 
@@ -352,10 +368,11 @@
                         )}
                     </div>
 
+                    {/* LISTA WPISÓW */}
                     <div className="space-y-4">
                         <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">{t.feedTitle}</h2>
                         {filteredPosts.length === 0 ? (
-                            <p className="text-center text-xs text-slate-500 py-6">Brak wpisów.</p>
+                            <p className="text-center text-xs text-slate-500 py-6">Brak wpisów pasujących do filtra.</p>
                         ) : (
                             filteredPosts.map(p => (
                                 <div key={p.id} className="p-4 bg-slate-900 border border-slate-800 rounded-2xl space-y-2">
@@ -382,6 +399,7 @@
                         )}
                     </div>
 
+                    {/* MODAL Z ZASADAMI */}
                     {showRules && (
                         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
                             <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-lg w-full space-y-4 shadow-2xl">
