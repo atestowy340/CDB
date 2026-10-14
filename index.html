@@ -146,7 +146,7 @@
             const [searchFilter, setSearchFilter] = useState('');
             const [showRules, setShowRules] = useState(false);
             const [showChat, setShowChat] = useState(false);
-            const [chatMode, setChatMode] = useState('offchain'); // 'onchain' lub 'offchain'
+            const [chatMode, setChatMode] = useState('offchain');
             const [chatRecipient, setChatRecipient] = useState('');
             const [chatMessage, setChatMessage] = useState('');
             const [chatHistory, setChatHistory] = useState([]);
@@ -194,13 +194,27 @@
                 }
             };
 
-            // Dynamiczna weryfikacja statusu tagu
+            // Inspekcja tagu z pełną ochroną dla DEFAULT
             const inspectTag = async (tagName) => {
                 const clean = tagName.trim().replace('#', '');
                 if (!clean) {
                     setInspectTagInfo(null);
                     return;
                 }
+
+                if (clean.toUpperCase() === 'DEFAULT') {
+                    setInspectTagInfo({
+                        name: 'DEFAULT',
+                        owner: 'System / Public',
+                        usesCount: '∞',
+                        currentPrice: 'Free',
+                        isOwned: false,
+                        canSnipe: false,
+                        isSystemTag: true
+                    });
+                    return;
+                }
+
                 try {
                     const provider = new ethers.providers.JsonRpcProvider(BASE_SEPOLIA_RPC);
                     const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
@@ -213,7 +227,8 @@
                             usesCount: tagData.usesCount.toNumber(),
                             currentPrice: ethers.utils.formatEther(tagData.currentPrice),
                             isOwned: tagData.isOwned,
-                            canSnipe: tagData.usesCount.toNumber() >= 500
+                            canSnipe: tagData.usesCount.toNumber() >= 500,
+                            isSystemTag: false
                         });
                     } else {
                         setInspectTagInfo({ name: clean, notExists: true });
@@ -250,6 +265,10 @@
             };
 
             const handleBuyoutTag = async (tagName, priceInEth) => {
+                if (tagName.toUpperCase() === 'DEFAULT') {
+                    showNotification("Tag DEFAULT jest zawsze darmowy i publiczny!", "error");
+                    return;
+                }
                 if (!window.ethereum || !wallet) {
                     showNotification("Connect wallet first!", "error");
                     connectWallet();
@@ -286,7 +305,6 @@
                 }
 
                 if (chatMode === 'offchain') {
-                    // Darmowy czat P2P (zapis lokalny/XMTP)
                     const newMsg = {
                         sender: wallet ? wallet.slice(0,6) + '...' : 'Me',
                         recipient: chatRecipient.slice(0,6) + '...',
@@ -298,7 +316,6 @@
                     setChatMessage('');
                     showNotification("Message sent via Off-Chain network!", "success");
                 } else {
-                    // Czat On-Chain (transakcja)
                     if (!window.ethereum || !wallet) {
                         showNotification("Connect wallet first!", "error");
                         connectWallet();
@@ -312,8 +329,7 @@
                         const signer = provider.getSigner();
                         const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
-                        // Wykorzystujemy addComment z tagiem "DM"
-                        const tx = await contract.addComment(`[DM to ${chatRecipient}]: ${chatMessage}`, "DM", { gasLimit: 300000 });
+                        const tx = await contract.addComment(`[DM to ${chatRecipient}]: ${chatMessage}`, "", { gasLimit: 300000 });
                         await tx.wait();
 
                         setChatMessage('');
@@ -404,6 +420,10 @@
                     showNotification("Enter tag name", "error");
                     return;
                 }
+                if (newTagInput.trim().toUpperCase() === 'DEFAULT') {
+                    showNotification("DEFAULT is a reserved system tag!", "error");
+                    return;
+                }
                 if (!window.ethereum || !wallet) {
                     showNotification("Connect wallet first!", "error");
                     connectWallet();
@@ -458,7 +478,7 @@
 
                     let requiredValue = ethers.BigNumber.from(0);
 
-                    if (tagToSend) {
+                    if (tagToSend && tagToSend.toUpperCase() !== 'DEFAULT') {
                         try {
                             const tagInfo = await contract.tags(tagToSend);
                             if (tagInfo && tagInfo.isOwned) {
@@ -540,7 +560,7 @@
                         </div>
                     </header>
 
-                    {/* MODUŁ CHATU BEZPOŚREDNIEGO (ON-CHAIN + OFF-CHAIN) */}
+                    {/* MODUŁ CHATU BEZPOŚREDNIEGO */}
                     {showChat && (
                         <section className="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl shadow-xl space-y-3">
                             <div className="flex justify-between items-center border-b border-slate-800 pb-2">
@@ -573,7 +593,6 @@
                                 </button>
                             </div>
 
-                            {/* HISTORIA CZATU */}
                             {chatHistory.length > 0 && (
                                 <div className="max-h-32 overflow-y-auto space-y-1.5 pt-2 border-t border-slate-800/60">
                                     {chatHistory.map((m, idx) => (
@@ -615,9 +634,8 @@
                         </div>
                     </section>
 
-                    {/* POZIOMY PANEL KONTROLNY (NICK, REGISTRATION, SEARCH & INSPECTOR) */}
+                    {/* POZIOMY PANEL KONTROLNY */}
                     <section className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        {/* USTAWIENIE NICKU */}
                         <div className="bg-slate-900/80 border border-slate-800/80 p-3 rounded-2xl flex flex-col justify-between space-y-2">
                             <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">{t.setNickname}</span>
                             <div className="flex gap-1.5">
@@ -638,7 +656,6 @@
                             </div>
                         </div>
 
-                        {/* REJESTRACJA TAGU */}
                         <div className="bg-slate-900/80 border border-slate-800/80 p-3 rounded-2xl flex flex-col justify-between space-y-2">
                             <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">{t.registerTagTitle}</span>
                             <div className="flex gap-1.5">
@@ -659,7 +676,6 @@
                             </div>
                         </div>
 
-                        {/* WYSZUKIWARKA / FILTR */}
                         <div className="bg-slate-900/80 border border-slate-800/80 p-3 rounded-2xl flex flex-col justify-between space-y-2">
                             <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Search Filter & Tag Status</span>
                             <div className="flex gap-1.5">
@@ -679,14 +695,16 @@
                         </div>
                     </section>
 
-                    {/* MODUŁ INSPEKTORA TAGU / WYKUPU (TAG BUYOUT & SNIPE) */}
+                    {/* MODUŁ INSPEKTORA TAGU / WYKUPU */}
                     {inspectTagInfo && (
                         <div className="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl shadow-lg space-y-2 text-xs">
                             <div className="flex justify-between items-center">
                                 <span className="font-semibold text-slate-200 flex items-center gap-1.5">
                                     🔍 Status Tagu: <span className="text-blue-400">#{inspectTagInfo.name}</span>
                                 </span>
-                                {inspectTagInfo.notExists ? (
+                                {inspectTagInfo.isSystemTag ? (
+                                    <span className="bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-lg border border-emerald-500/20 font-medium">Systemowy / Publiczny (Zawsze darmowy)</span>
+                                ) : inspectTagInfo.notExists ? (
                                     <span className="bg-amber-500/10 text-amber-400 px-2.5 py-1 rounded-lg border border-amber-500/20 font-medium">Niezarejestrowany</span>
                                 ) : inspectTagInfo.isOwned ? (
                                     <span className="bg-purple-500/10 text-purple-400 px-2.5 py-1 rounded-lg border border-purple-500/20 font-medium">Posiadany (Owned)</span>
@@ -697,7 +715,7 @@
                                 )}
                             </div>
 
-                            {!inspectTagInfo.notExists && (
+                            {!inspectTagInfo.notExists && !inspectTagInfo.isSystemTag && (
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-slate-400">
                                     <div>Liczba użyć: <b className="text-slate-200">{inspectTagInfo.usesCount} / 500</b></div>
                                     <div>Cena wykupu: <b className="text-slate-200">{inspectTagInfo.currentPrice} ETH</b></div>
