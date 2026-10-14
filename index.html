@@ -1,17 +1,265 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="pl" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>(CDB)</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel dla JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Ethers.js do obsługi blockchain i portfela -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
 </head>
-<body class="bg-slate-950 text-slate-100 flex items-center justify-center h-screen">
-    <div class="text-center space-y-4">
-        <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
-            ⛓️ CryptoDiscussionBoard (CDB)
-        </h1>
-        <p class="text-sm text-slate-400">Platforma jest przygotowywana do działania!</p>
-    </div>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Słownik wielojęzyczny (PL, EN, DE)
+        const translations = {
+            pl: {
+                brand: "CryptoDiscussionBoard",
+                tagline: "Zdecentralizowana tablica społecznościowa Web3",
+                connectWallet: "Połącz Portfel",
+                connected: "Połączono",
+                setNickname: "Ustaw swój nick",
+                nicknamePlaceholder: "Wpisz unikalny nick...",
+                saveNickname: "Zapisz Nick",
+                freeNotice: "Pierwsza zmiana nicku jest darmowa! Kolejne są płatne.",
+                feedTitle: "Dyskusje Społeczności",
+                postPlaceholder: "O czym giełda szumi dzisiaj?",
+                tagPlaceholder: "Tag (np. #Bitcoin, #DeFi)",
+                publish: "Opublikuj wpis",
+                rulesBtn: "ℹ️ Zasady i Etyka",
+                rulesTitle: "Zasady i Funkcjonowanie CDB",
+                rulesText1: "Platforma działa w 100% w oparciu o sieć Base L2 oraz smart kontrakty. Brak centralnej bazy danych.",
+                rulesText2: "Możesz publikować wpisy, darmowo tworzyć własne tagi, głosować na wypowiedzi dnia oraz rozmawiać przez czat.",
+                ethicsTitle: "🛡️ Etyka i Moderacja",
+                ethicsText: "Choć technologia blockchain zapewnia niezmienność danych, stanowczo sprzeciwiamy się mowie nienawiści, oszustwom i spamowi. Zastrzegamy sobie prawo do filtrowania takich treści w interfejsie.",
+                close: "Zamknij"
+            },
+            en: {
+                brand: "CryptoDiscussionBoard",
+                tagline: "Decentralized Web3 Community Board",
+                connectWallet: "Connect Wallet",
+                connected: "Connected",
+                setNickname: "Set Your Nickname",
+                nicknamePlaceholder: "Enter unique nickname...",
+                saveNickname: "Save Nickname",
+                freeNotice: "First nickname change is free! Subsequent changes are paid.",
+                feedTitle: "Community Discussions",
+                postPlaceholder: "What's happening in crypto today?",
+                tagPlaceholder: "Tag (e.g., #Bitcoin, #DeFi)",
+                publish: "Publish Post",
+                rulesBtn: "ℹ️ Rules & Ethics",
+                rulesTitle: "CDB Rules & Features",
+                rulesText1: "The platform runs 100% on Base L2 network and smart contracts. No central database.",
+                rulesText2: "You can publish posts, create free tags, vote for comments of the day, and chat.",
+                ethicsTitle: "🛡️ Ethics & Moderation",
+                ethicsText: "Although blockchain ensures permanence, we strictly oppose hate speech, scams, and spam. We reserve the right to filter out such content.",
+                close: "Close"
+            },
+            de: {
+                brand: "CryptoDiscussionBoard",
+                tagline: "Dezentrales Web3-Community-Board",
+                connectWallet: "Wallet verbinden",
+                connected: "Verbunden",
+                setNickname: "Nickname festlegen",
+                nicknamePlaceholder: "Einzigartigen Nickname eingeben...",
+                saveNickname: "Nickname speichern",
+                freeNotice: "Die erste Nickname-Änderung ist kostenlos! Weitere sind kostenpflichtig.",
+                feedTitle: "Community-Diskussionen",
+                postPlaceholder: "Was passiert heute im Krypto-Markt?",
+                tagPlaceholder: "Tag (z. B. #Bitcoin, #DeFi)",
+                publish: "Beitrag veröffentlichen",
+                rulesBtn: "ℹ️ Regeln & Ethik",
+                rulesTitle: "CDB Regeln & Funktionen",
+                rulesText1: "Die Plattform läuft zu 100% über das Base L2-Netzwerk und Smart Contracts. Keine zentrale Datenbank.",
+                rulesText2: "Sie können Beiträge veröffentlichen, kostenlose Tags erstellen und abstimmen.",
+                ethicsTitle: "🛡️ Ethik & Moderation",
+                ethicsText: "Obwohl die Blockchain Beständigkeit garantiert, lehnen wir Hassrede und Spam strikt ab.",
+                close: "Schließen"
+            }
+        };
+
+        function App() {
+            const [lang, setLang] = useState('pl');
+            const [wallet, setWallet] = useState(null);
+            const [nickname, setNickname] = useState('');
+            const [postText, setPostText] = useState('');
+            const [postTag, setPostTag] = useState('');
+            const [showRules, setShowRules] = useState(false);
+            const [posts, setPosts] = useState([
+                { id: 1, author: "0x123...ABCD", name: "SatoshiFan", text: "Witaj na nowej zdecentralizowanej tablici CDB w sieci Base!", tag: "ogolny", votes: 12 }
+            ]);
+
+            const t = translations[lang];
+
+            // Łączenie z portfelem MetaMask
+            const connectWallet = async () => {
+                if (window.ethereum) {
+                    try {
+                        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                        setWallet(accounts[0]);
+                    } catch (err) {
+                        console.error(err);
+                    }
+                } else {
+                    alert("Zainstaluj MetaMask!");
+                }
+            };
+
+            const handlePublish = (e) => {
+                e.preventDefault();
+                if (!postText.trim()) return;
+                const newPost = {
+                    id: posts.length + 1,
+                    author: wallet ? wallet.slice(0,6) + '...' : 'Anonim',
+                    name: nickname || 'Anonimowy',
+                    text: postText,
+                    tag: postTag || 'ogolny',
+                    votes: 0
+                };
+                setPosts([newPost, ...posts]);
+                setPostText('');
+                setPostTag('');
+            };
+
+            return (
+                <div className="max-w-2xl mx-auto p-4 md:p-6 space-y-6">
+                    {/* NAGŁÓWEK */}
+                    <header className="flex justify-between items-center border-b border-slate-800 pb-4">
+                        <div>
+                            <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
+                                ⛓️ {t.brand}
+                            </h1>
+                            <p className="text-xs text-slate-400">{t.tagline}</p>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            {/* Przełącznik języków */}
+                            <div className="flex bg-slate-900 border border-slate-800 rounded-xl p-1 text-xs">
+                                <button onClick={() => setLang('pl')} className={`px-2 py-1 rounded-lg ${lang === 'pl' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}>PL</button>
+                                <button onClick={() => setLang('en')} className={`px-2 py-1 rounded-lg ${lang === 'en' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}>EN</button>
+                                <button onClick={() => setLang('de')} className={`px-2 py-1 rounded-lg ${lang === 'de' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}>DE</button>
+                            </div>
+
+                            <button 
+                                onClick={connectWallet}
+                                className="bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 rounded-xl text-xs font-semibold transition"
+                            >
+                                {wallet ? wallet.slice(0,6) + '...' : t.connectWallet}
+                            </button>
+                        </div>
+                    </header>
+
+                    {/* PRZYCISK ZASAD */}
+                    <div className="flex justify-end">
+                        <button 
+                            onClick={() => setShowRules(true)}
+                            className="text-xs text-slate-400 hover:text-slate-200 underline transition"
+                        >
+                            {t.rulesBtn}
+                        </button>
+                    </div>
+
+                    {/* SEKCJA NICKU */}
+                    <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-2">
+                        <h2 className="text-sm font-semibold text-slate-200">{t.setNickname}</h2>
+                        <div className="flex gap-2">
+                            <input 
+                                type="text" 
+                                value={nickname}
+                                onChange={(e) => setNickname(e.target.value)}
+                                placeholder={t.nicknamePlaceholder} 
+                                className="bg-slate-950 border border-slate-800 rounded-xl p-2 text-sm flex-1 focus:outline-none focus:border-blue-500 text-slate-200"
+                            />
+                            <button className="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-xl text-sm transition">
+                                {t.saveNickname}
+                            </button>
+                        </div>
+                        <p className="text-[11px] text-slate-500">{t.freeNotice}</p>
+                    </div>
+
+                    {/* FORMULARZ PUBLIKACJI */}
+                    <form onSubmit={handlePublish} className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-3">
+                        <textarea 
+                            rows="3"
+                            value={postText}
+                            onChange={(e) => setPostText(e.target.value)}
+                            placeholder={t.postPlaceholder}
+                            className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm focus:outline-none focus:border-blue-500 text-slate-200"
+                        />
+                        <div className="flex flex-col sm:flex-row gap-2">
+                            <input 
+                                type="text" 
+                                value={postTag}
+                                onChange={(e) => setPostTag(e.target.value)}
+                                placeholder={t.tagPlaceholder} 
+                                className="bg-slate-950 border border-slate-800 rounded-xl p-2 text-sm flex-1 focus:outline-none focus:border-blue-500 text-slate-200"
+                            />
+                            <button type="submit" className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-5 py-2 rounded-xl text-sm transition">
+                                {t.publish}
+                            </button>
+                        </div>
+                    </form>
+
+                    {/* STRUMIEŃ WPISÓW */}
+                    <div className="space-y-4">
+                        <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">{t.feedTitle}</h2>
+                        {posts.map(p => (
+                            <div key={p.id} className="p-4 bg-slate-900 border border-slate-800 rounded-2xl space-y-2">
+                                <div className="flex justify-between items-center text-xs text-slate-400">
+                                    <span className="font-bold text-slate-300">{p.name} <span className="text-[10px] text-slate-500">({p.author})</span></span>
+                                    <span className="bg-slate-800 px-2 py-1 rounded-lg text-blue-400">#{p.tag}</span>
+                                </div>
+                                <p className="text-sm text-slate-200">{p.text}</p>
+                                <div className="flex justify-end pt-1">
+                                    <button 
+                                        onClick={() => {
+                                            setposts(posts.map(item => item.id === p.id ? {...item, votes: item.votes + 1} : item));
+                                        }}
+                                        className="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-xl text-slate-300 transition"
+                                    >
+                                        👍 Podbij ({p.votes})
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* MODAL Z ZASADAMI */}
+                    {showRules && (
+                        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+                            <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-lg w-full space-y-4 shadow-2xl">
+                                <h3 className="font-bold text-lg text-slate-100">{t.rulesTitle}</h3>
+                                <div className="space-y-2 text-sm text-slate-300">
+                                    <p>{t.rulesText1}</p>
+                                    <p>{t.rulesText2}</p>
+                                    <div className="bg-rose-500/10 border border-rose-500/20 p-3 rounded-xl space-y-1 mt-4">
+                                        <h4 className="font-semibold text-rose-400 text-xs uppercase">{t.ethicsTitle}</h4>
+                                        <p className="text-xs text-slate-300">{t.ethicsText}</p>
+                                    </div>
+                                </div>
+                                <button 
+                                    onClick={() => setShowRules(false)}
+                                    className="w-full bg-slate-800 hover:bg-slate-700 text-white py-2 rounded-xl text-sm font-medium transition mt-4"
+                                >
+                                    {t.close}
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
 </body>
 </html>
