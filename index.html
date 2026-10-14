@@ -31,6 +31,7 @@
             "function commentsCount() external view returns (uint256)",
             "function comments(uint256) external view returns (uint256 id, address author, string memory content, string memory tag, uint256 votes, uint256 timestamp)",
             "function nicknames(address) external view returns (string memory)",
+            "function nicknameChangesCount(address) external view returns (uint256)",
             "function tags(string) external view returns (string memory name, address owner, uint256 usesCount, uint256 currentPrice, bool isOwned)",
             "function editableUseFee() external view returns (uint256)"
         ];
@@ -55,7 +56,7 @@
                 rulesBtn: "ℹ️ Zasady i Etyka",
                 rulesTitle: "Zasady i Funkcjonowanie CDB",
                 rulesText1: "Platforma działa w 100% w oparciu o sieć Base L2 oraz smart kontrakty.",
-                rulesText2: "Niestandardowe tagi muszą zostać najpierw zarejestrowane przed użyciem we wpisach.",
+                rulesText2: "Pierwsza zmiana nicku jest darmowa, kolejne wymagają opłaty sieciowej. Niestandardowe tagi muszą zostać najpierw zarejestrowane.",
                 ethicsTitle: "🛡️ Etyka i Moderacja",
                 ethicsText: "Stanowczo sprzeciwiamy się mowie nienawiści, oszustwom i spamowi.",
                 close: "Zamknij"
@@ -79,7 +80,7 @@
                 rulesBtn: "ℹ️ Rules & Ethics",
                 rulesTitle: "CDB Rules & Features",
                 rulesText1: "The platform runs 100% on Base L2 network.",
-                rulesText2: "Custom tags must be registered before being used in posts.",
+                rulesText2: "First nickname change is free, subsequent updates require a fee. Custom tags must be registered before use.",
                 ethicsTitle: "🛡️ Ethics & Moderation",
                 ethicsText: "We strictly oppose hate speech, scams, and spam.",
                 close: "Close"
@@ -183,6 +184,7 @@
                 }
             };
 
+            // OBSŁUGA DARMOWEJ ORAZ PŁATNEJ ZMIANY NICKU
             const handleSaveNickname = async () => {
                 if (!nickname.trim()) {
                     showNotification("Wpisz poprawny nick!", "error");
@@ -196,25 +198,40 @@
 
                 try {
                     setIsProcessing(true);
-                    showNotification("Zatwierdź zmianę nicku w MetaMask...", "info");
+                    showNotification("Sprawdzanie wymogów opłaty za nick...", "info");
 
                     const provider = new ethers.providers.Web3Provider(window.ethereum);
                     const signer = provider.getSigner();
                     const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
-                    const tx = await contract.setNickname(nickname, { gasLimit: 200000 });
+                    // Pobieranie liczby dotychczasowych zmian nicku
+                    const changesCount = await contract.nicknameChangesCount(wallet);
+                    let requiredFee = ethers.BigNumber.from(0);
+
+                    if (changesCount.gt(0)) {
+                        const baseFee = ethers.utils.parseEther("0.00005");
+                        requiredFee = baseFee.mul(changesCount);
+                        showNotification(`Wymagana opłata: ${ethers.utils.formatEther(requiredFee)} ETH`, "info");
+                    }
+
+                    const tx = await contract.setNickname(nickname, { 
+                        value: requiredFee,
+                        gasLimit: 250000 
+                    });
+
+                    showNotification("Zatwierdzanie w sieci Base...", "info");
                     await tx.wait();
 
                     showNotification(`Nick '${nickname}' został zapisany w sieci!`, "success");
                 } catch (err) {
-                    console.error(err);
-                    showNotification("Błąd zapisu nicku", "error");
+                    console.error("Błąd zapisu nicku:", err);
+                    showNotification("Błąd zapisu nicku lub brak wystarczających środków", "error");
                 } finally {
                     setIsProcessing(false);
                 }
             };
 
-            // REJESTRACJA NOWEGO TAGU ON-CHAIN
+            // REJESTRACJA TAGU ON-CHAIN
             const handleRegisterTag = async () => {
                 if (!newTagInput.trim()) {
                     showNotification("Wpisz nazwę tagu!", "error");
@@ -249,7 +266,7 @@
                 }
             };
 
-            // PUBLIKOWANIE WPISU Z OBSŁUGĄ TAGÓW I OPŁAT
+            // PUBLIKACJA WPISU Z DARMOWYM / PŁATNYM TAGIEM LUB DEFAULT
             const handlePublish = async (e) => {
                 e.preventDefault();
                 if (!postText.trim()) {
@@ -267,7 +284,7 @@
 
                 try {
                     setIsProcessing(true);
-                    showNotification("Sprawdzanie tagu i wysyłanie wpisu...", "info");
+                    showNotification("Sprawdzanie opłat i wysyłanie wpisu...", "info");
 
                     const provider = new ethers.providers.Web3Provider(window.ethereum);
                     const signer = provider.getSigner();
@@ -275,7 +292,6 @@
 
                     let requiredValue = ethers.BigNumber.from(0);
 
-                    // Jeśli podano tag, sprawdzamy czy jest własnością kogoś (isOwned) i pobieramy opłatę
                     if (tagToSend) {
                         try {
                             const tagInfo = await contract.tags(tagToSend);
@@ -283,7 +299,7 @@
                                 requiredValue = await contract.editableUseFee();
                             }
                         } catch (e) {
-                            console.log("Tag nie istnieje lub brak danych");
+                            console.log("Nie pobrano danych o opłacie tagu");
                         }
                     }
 
@@ -300,7 +316,7 @@
                     loadPostsFromBlockchain();
                 } catch (err) {
                     console.error("Szczegóły błędu:", err);
-                    showNotification("Transakcja odrzucona (tag może nie istnieć lub wymaga rejestracji)", "error");
+                    showNotification("Transakcja odrzucona (sprawdź czy tag istnieje)", "error");
                 } finally {
                     setIsProcessing(false);
                 }
@@ -476,6 +492,10 @@
                                 <div className="space-y-2 text-sm text-slate-300">
                                     <p>{t.rulesText1}</p>
                                     <p>{t.rulesText2}</p>
+                                    <div className="bg-rose-500/10 border border-rose-500/20 p-3 rounded-xl space-y-1 mt-4">
+                                        <h4 className="font-semibold text-rose-400 text-xs uppercase">{t.ethicsTitle}</h4>
+                                        <p className="text-xs text-slate-300">{t.ethicsText}</p>
+                                    </div>
                                 </div>
                                 <button onClick={() => setShowRules(false)} className="w-full bg-slate-800 hover:bg-slate-700 text-white py-2 rounded-xl text-sm font-medium transition mt-4">
                                     {t.close}
