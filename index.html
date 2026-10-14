@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CryptoDiscussionBoard (CDB)</title>
+    <title>(CDB)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- React & ReactDOM -->
@@ -68,7 +68,12 @@
                 msgPlaceholder: "Type private message...",
                 sendMsg: "Send",
                 buyoutTag: "Buyout Tag",
-                snipeTag: "Snipe Tag (500+ uses)"
+                snipeTag: "Snipe Tag (500+ uses)",
+                systemTag: "System / Public (Always free)",
+                unregisteredTag: "Unregistered",
+                ownedTag: "Owned",
+                readyForSnipe: "Ready for Snipe (500+ uses)",
+                freeOrInUse: "Free / In use"
             },
             de: {
                 brand: "CryptoDiscussionBoard",
@@ -100,7 +105,12 @@
                 msgPlaceholder: "Private Nachricht...",
                 sendMsg: "Senden",
                 buyoutTag: "Tag kaufen",
-                snipeTag: "Tag übernehmen (500+)"
+                snipeTag: "Tag übernehmen (500+)",
+                systemTag: "System / Öffentlich (Immer kostenlos)",
+                unregisteredTag: "Nicht registriert",
+                ownedTag: "Im Besitz",
+                readyForSnipe: "Bereit zur Übernahme (500+ Nutzungen)",
+                freeOrInUse: "Kostenlos / In Verwendung"
             },
             pl: {
                 brand: "CryptoDiscussionBoard",
@@ -132,7 +142,12 @@
                 msgPlaceholder: "Treść wiadomości...",
                 sendMsg: "Wyślij",
                 buyoutTag: "Wykup Tag",
-                snipeTag: "Przejmij Tag (500+)"
+                snipeTag: "Przejmij Tag (500+)",
+                systemTag: "Systemowy / Publiczny (Zawsze darmowy)",
+                unregisteredTag: "Niezarejestrowany",
+                ownedTag: "Posiadany (Owned)",
+                readyForSnipe: "Gotowy do Wykupu (500+ Użyć)",
+                freeOrInUse: "Darmowy / W użyciu"
             }
         };
 
@@ -194,7 +209,6 @@
                 }
             };
 
-            // Inspekcja tagu z pełną ochroną dla DEFAULT
             const inspectTag = async (tagName) => {
                 const clean = tagName.trim().replace('#', '');
                 if (!clean) {
@@ -703,15 +717,15 @@
                                     🔍 Status Tagu: <span className="text-blue-400">#{inspectTagInfo.name}</span>
                                 </span>
                                 {inspectTagInfo.isSystemTag ? (
-                                    <span className="bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-lg border border-emerald-500/20 font-medium">Systemowy / Publiczny (Zawsze darmowy)</span>
+                                    <span className="bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-lg border border-emerald-500/20 font-medium">{t.systemTag}</span>
                                 ) : inspectTagInfo.notExists ? (
-                                    <span className="bg-amber-500/10 text-amber-400 px-2.5 py-1 rounded-lg border border-amber-500/20 font-medium">Niezarejestrowany</span>
+                                    <span className="bg-amber-500/10 text-amber-400 px-2.5 py-1 rounded-lg border border-amber-500/20 font-medium">{t.unregisteredTag}</span>
                                 ) : inspectTagInfo.isOwned ? (
-                                    <span className="bg-purple-500/10 text-purple-400 px-2.5 py-1 rounded-lg border border-purple-500/20 font-medium">Posiadany (Owned)</span>
+                                    <span className="bg-purple-500/10 text-purple-400 px-2.5 py-1 rounded-lg border border-purple-500/20 font-medium">{t.ownedTag}</span>
                                 ) : inspectTagInfo.canSnipe ? (
-                                    <span className="bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-lg border border-emerald-500/20 font-medium">Gotowy do Wykupu (500+ Użyć)</span>
+                                    <span className="bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-lg border border-emerald-500/20 font-medium">{t.readyForSnipe}</span>
                                 ) : (
-                                    <span className="bg-blue-500/10 text-blue-400 px-2.5 py-1 rounded-lg border border-blue-500/20 font-medium">Darmowy / W użyciu</span>
+                                    <span className="bg-blue-500/10 text-blue-400 px-2.5 py-1 rounded-lg border border-blue-500/20 font-medium">{t.freeOrInUse}</span>
                                 )}
                             </div>
 
