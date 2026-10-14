@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl" class="dark">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +14,7 @@
     <!-- Ethers.js v5 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans min-h-screen">
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen antialiased">
     <div id="root"></div>
 
     <script type="text/babel">
@@ -37,6 +37,54 @@
         ];
 
         const translations = {
+            en: {
+                brand: "CryptoDiscussionBoard",
+                tagline: "Decentralized Web3 Community Board",
+                connectWallet: "Connect Wallet",
+                setNickname: "Nickname",
+                nicknamePlaceholder: "Set nickname...",
+                saveNickname: "Save",
+                registerTagTitle: "Register Tag",
+                tagRegPlaceholder: "New tag...",
+                registerTagBtn: "Register",
+                feedTitle: "Community Discussions (On-Chain)",
+                postPlaceholder: "What's happening in crypto today?",
+                tagPlaceholder: "Tag (leave empty for DEFAULT)",
+                publish: "Publish Post",
+                searchPlaceholder: "🔍 Search tag or user...",
+                clearFilter: "Clear",
+                rulesBtn: "ℹ️ Rules & Ethics",
+                rulesTitle: "CDB Rules & Governance",
+                rulesText1: "Platform runs 100% on Base L2 network and smart contracts.",
+                rulesText2: "First nickname set is free. Custom tags must be registered before use.",
+                ethicsTitle: "🛡️ Ethics & Moderation",
+                ethicsText: "We strictly prohibit hate speech, scams, and malicious spam.",
+                close: "Close"
+            },
+            de: {
+                brand: "CryptoDiscussionBoard",
+                tagline: "Dezentrales Web3-Community-Board",
+                connectWallet: "Wallet verbinden",
+                setNickname: "Spitzname",
+                nicknamePlaceholder: "Spitzname eingeben...",
+                saveNickname: "Speichern",
+                registerTagTitle: "Tag registrieren",
+                tagRegPlaceholder: "Neuer Tag...",
+                registerTagBtn: "Registrieren",
+                feedTitle: "Community-Diskussionen (On-Chain)",
+                postPlaceholder: "Was passiert heute im Krypto-Markt?",
+                tagPlaceholder: "Tag (leer lassen für DEFAULT)",
+                publish: "Beitrag veröffentlichen",
+                searchPlaceholder: "🔍 Tag oder Nutzer suchen...",
+                clearFilter: "Löschen",
+                rulesBtn: "ℹ️ Regeln & Ethik",
+                rulesTitle: "CDB Regeln & Funktionen",
+                rulesText1: "Die Plattform läuft zu 100 % auf dem Base L2-Netzwerk.",
+                rulesText2: "Die erste Namensänderung ist kostenlos. Benutzerdefinierte Tags müssen zuerst registriert werden.",
+                ethicsTitle: "🛡️ Ethik & Moderation",
+                ethicsText: "Wir lehnen Hassrede, Betrug und Spam strikt ab.",
+                close: "Schließen"
+            },
             pl: {
                 brand: "CryptoDiscussionBoard",
                 tagline: "Zdecentralizowana tablica społecznościowa Web3",
@@ -50,45 +98,22 @@
                 feedTitle: "Dyskusje Społeczności (On-Chain)",
                 postPlaceholder: "O czym giełda szumi dzisiaj?",
                 tagPlaceholder: "Tag (zostaw puste dla DEFAULT)",
-                publish: "Opublikuj wpis on-chain",
-                filterPlaceholder: "🔍 Szukaj po tagu (#) lub użytkowniku...",
+                publish: "Opublikuj wpis",
+                searchPlaceholder: "🔍 Szukaj po tagu lub nicku...",
                 clearFilter: "Wyczyść",
                 rulesBtn: "ℹ️ Zasady i Etyka",
                 rulesTitle: "Zasady i Funkcjonowanie CDB",
                 rulesText1: "Platforma działa w 100% w oparciu o sieć Base L2 oraz smart kontrakty.",
-                rulesText2: "Pierwsza zmiana nicku jest darmowa, kolejne wymagają opłaty sieciowej.",
+                rulesText2: "Pierwsze ustawienie nicku jest darmowe. Tagi muszą być najpierw zarejestrowane.",
                 ethicsTitle: "🛡️ Etyka i Moderacja",
                 ethicsText: "Stanowczo sprzeciwiamy się mowie nienawiści, oszustwom i spamowi.",
                 close: "Zamknij"
-            },
-            en: {
-                brand: "CryptoDiscussionBoard",
-                tagline: "Decentralized Web3 Community Board",
-                connectWallet: "Connect Wallet",
-                setNickname: "Your Nickname",
-                nicknamePlaceholder: "Enter nickname...",
-                saveNickname: "Save",
-                registerTagTitle: "Register Tag",
-                tagRegPlaceholder: "Enter tag...",
-                registerTagBtn: "Register",
-                feedTitle: "Community Discussions (On-Chain)",
-                postPlaceholder: "What's happening in crypto today?",
-                tagPlaceholder: "Tag (leave empty for DEFAULT)",
-                publish: "Publish Post On-Chain",
-                filterPlaceholder: "🔍 Filter by tag (#) or user...",
-                clearFilter: "Clear",
-                rulesBtn: "ℹ️ Rules & Ethics",
-                rulesTitle: "CDB Rules & Features",
-                rulesText1: "The platform runs 100% on Base L2 network.",
-                rulesText2: "First nickname change is free, subsequent updates require a fee.",
-                ethicsTitle: "🛡️ Ethics & Moderation",
-                ethicsText: "We strictly oppose hate speech, scams, and spam.",
-                close: "Close"
             }
         };
 
         function App() {
-            const [lang, setLang] = useState('pl');
+            // Domyślny język ustawiony na angielski (EN)
+            const [lang, setLang] = useState('en');
             const [wallet, setWallet] = useState(null);
             const [nickname, setNickname] = useState('');
             const [newTagInput, setNewTagInput] = useState('');
@@ -100,7 +125,7 @@
             const [isProcessing, setIsProcessing] = useState(false);
             const [posts, setPosts] = useState([]);
 
-            const t = translations[lang] || translations.pl;
+            const t = translations[lang] || translations.en;
 
             const showNotification = (msg, type = 'success') => {
                 setToast({ msg, type });
@@ -134,7 +159,7 @@
 
                     setPosts(loadedPosts.reverse());
                 } catch (err) {
-                    console.error("Błąd pobierania postów:", err);
+                    console.error("Error loading posts:", err);
                 }
             };
 
@@ -147,25 +172,25 @@
                     try {
                         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
                         setWallet(accounts[0]);
-                        showNotification("Połączono z portfelem!");
+                        showNotification("Wallet connected!");
                     } catch (err) {
-                        showNotification("Błąd połączenia z portfelem!", "error");
+                        showNotification("Connection error", "error");
                     }
                 } else {
-                    alert("Zainstaluj MetaMask!");
+                    alert("Please install MetaMask!");
                 }
             };
 
             const handleVote = async (postId) => {
                 if (!window.ethereum || !wallet) {
-                    showNotification("Połącz najpierw portfel!", "error");
+                    showNotification("Connect wallet first!", "error");
                     connectWallet();
                     return;
                 }
 
                 try {
                     setIsProcessing(true);
-                    showNotification("Zatwierdź głos w portfelu...", "info");
+                    showNotification("Confirm vote in wallet...", "info");
 
                     const provider = new ethers.providers.Web3Provider(window.ethereum);
                     const signer = provider.getSigner();
@@ -174,11 +199,11 @@
                     const tx = await contract.voteComment(postId, { gasLimit: 150000 });
                     await tx.wait();
 
-                    showNotification("Głos zapisany pomyślnie!", "success");
+                    showNotification("Vote recorded on-chain!", "success");
                     loadPostsFromBlockchain();
                 } catch (err) {
                     console.error(err);
-                    showNotification("Błąd głosowania (mogłeś już głosować dzisiaj)", "error");
+                    showNotification("Voting failed or already voted today", "error");
                 } finally {
                     setIsProcessing(false);
                 }
@@ -186,18 +211,18 @@
 
             const handleSaveNickname = async () => {
                 if (!nickname.trim()) {
-                    showNotification("Wpisz poprawny nick!", "error");
+                    showNotification("Enter valid nickname", "error");
                     return;
                 }
                 if (!window.ethereum || !wallet) {
-                    showNotification("Połącz najpierw portfel!", "error");
+                    showNotification("Connect wallet first!", "error");
                     connectWallet();
                     return;
                 }
 
                 try {
                     setIsProcessing(true);
-                    showNotification("Sprawdzanie wymogów opłaty za nick...", "info");
+                    showNotification("Checking fee requirements...", "info");
 
                     const provider = new ethers.providers.Web3Provider(window.ethereum);
                     const signer = provider.getSigner();
@@ -216,13 +241,13 @@
                         gasLimit: 250000 
                     });
 
-                    showNotification("Zatwierdzanie w sieci Base...", "info");
+                    showNotification("Confirming on Base network...", "info");
                     await tx.wait();
 
-                    showNotification(`Nick '${nickname}' zapisany!`, "success");
+                    showNotification(`Nickname '${nickname}' saved!`, "success");
                 } catch (err) {
-                    console.error("Błąd zapisu nicku:", err);
-                    showNotification("Błąd zapisu nicku lub brak środków", "error");
+                    console.error("Nickname error:", err);
+                    showNotification("Error saving nickname or insufficient fee", "error");
                 } finally {
                     setIsProcessing(false);
                 }
@@ -230,11 +255,11 @@
 
             const handleRegisterTag = async () => {
                 if (!newTagInput.trim()) {
-                    showNotification("Wpisz nazwę tagu!", "error");
+                    showNotification("Enter tag name", "error");
                     return;
                 }
                 if (!window.ethereum || !wallet) {
-                    showNotification("Połącz najpierw portfel!", "error");
+                    showNotification("Connect wallet first!", "error");
                     connectWallet();
                     return;
                 }
@@ -243,7 +268,7 @@
 
                 try {
                     setIsProcessing(true);
-                    showNotification("Zatwierdź rejestrację tagu w MetaMask...", "info");
+                    showNotification("Confirming tag registration...", "info");
 
                     const provider = new ethers.providers.Web3Provider(window.ethereum);
                     const signer = provider.getSigner();
@@ -253,10 +278,10 @@
                     await tx.wait();
 
                     setNewTagInput('');
-                    showNotification(`Tag #${cleanTag} zarejestrowany!`, "success");
+                    showNotification(`Tag #${cleanTag} registered!`, "success");
                 } catch (err) {
                     console.error(err);
-                    showNotification("Błąd rejestracji tagu (limit lub istnieje)", "error");
+                    showNotification("Tag registration error (limit reached or exists)", "error");
                 } finally {
                     setIsProcessing(false);
                 }
@@ -265,12 +290,12 @@
             const handlePublish = async (e) => {
                 e.preventDefault();
                 if (!postText.trim()) {
-                    showNotification("Wpis nie może być pusty!", "error");
+                    showNotification("Content cannot be empty", "error");
                     return;
                 }
 
                 if (!window.ethereum || !wallet) {
-                    showNotification("Połącz najpierw portfel!", "error");
+                    showNotification("Connect wallet first!", "error");
                     connectWallet();
                     return;
                 }
@@ -279,7 +304,7 @@
 
                 try {
                     setIsProcessing(true);
-                    showNotification("Wysyłanie wpisu...", "info");
+                    showNotification("Publishing to Base network...", "info");
 
                     const provider = new ethers.providers.Web3Provider(window.ethereum);
                     const signer = provider.getSigner();
@@ -305,11 +330,11 @@
 
                     setPostText('');
                     setPostTag('');
-                    showNotification("Wpis opublikowany!", "success");
+                    showNotification("Post published on-chain!", "success");
                     loadPostsFromBlockchain();
                 } catch (err) {
-                    console.error("Szczegóły błędu:", err);
-                    showNotification("Transakcja odrzucona", "error");
+                    console.error("Publish error:", err);
+                    showNotification("Transaction reverted (check if tag exists)", "error");
                 } finally {
                     setIsProcessing(false);
                 }
@@ -324,9 +349,9 @@
             });
 
             return (
-                <div className="max-w-3xl mx-auto p-3 md:p-6 space-y-4">
+                <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-6">
                     {toast && (
-                        <div className={`fixed top-4 right-4 z-50 px-3 py-2 rounded-xl shadow-xl text-xs font-medium border flex items-center gap-2 transition-all duration-300 ${
+                        <div className={`fixed top-4 right-4 z-50 px-4 py-2.5 rounded-xl shadow-2xl text-xs font-medium border flex items-center gap-2 transition-all duration-300 ${
                             toast.type === 'error' ? 'bg-rose-950/90 border-rose-800 text-rose-200' :
                             toast.type === 'info' ? 'bg-blue-950/90 border-blue-800 text-blue-200' :
                             'bg-emerald-950/90 border-emerald-800 text-emerald-200'
@@ -336,155 +361,160 @@
                         </div>
                     )}
 
-                    <header className="flex justify-between items-center border-b border-slate-800 pb-3">
+                    {/* NAGŁÓWEK Z WYBOREM JĘZYKÓW (EN / DE / PL) */}
+                    <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-800 pb-4">
                         <div>
-                            <h1 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
+                            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">
                                 ⛓️ {t.brand}
                             </h1>
-                            <p className="text-[11px] text-slate-400">{t.tagline}</p>
+                            <p className="text-xs text-slate-400 mt-0.5">{t.tagline}</p>
                         </div>
 
-                        <div className="flex items-center gap-2">
-                            <div className="flex bg-slate-900 border border-slate-800 rounded-xl p-1 text-[11px]">
-                                <button onClick={() => setLang('pl')} className={`px-2 py-0.5 rounded-lg ${lang === 'pl' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}>PL</button>
-                                <button onClick={() => setLang('en')} className={`px-2 py-0.5 rounded-lg ${lang === 'en' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}>EN</button>
+                        <div className="flex items-center gap-3 self-end sm:self-auto">
+                            <button onClick={() => setShowRules(true)} className="text-xs text-slate-400 hover:text-slate-200 underline transition mr-1">
+                                {t.rulesBtn}
+                            </button>
+
+                            <div className="flex bg-slate-900 border border-slate-800 rounded-xl p-1 text-xs">
+                                <button onClick={() => setLang('en')} className={`px-2.5 py-1 rounded-lg font-medium transition ${lang === 'en' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-slate-200'}`}>EN</button>
+                                <button onClick={() => setLang('de')} className={`px-2.5 py-1 rounded-lg font-medium transition ${lang === 'de' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-slate-200'}`}>DE</button>
+                                <button onClick={() => setLang('pl')} className={`px-2.5 py-1 rounded-lg font-medium transition ${lang === 'pl' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-slate-200'}`}>PL</button>
                             </div>
 
                             <button 
                                 onClick={connectWallet}
-                                className="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-xl text-xs font-semibold transition"
+                                className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-lg shadow-blue-900/30 transition"
                             >
-                                {wallet ? wallet.slice(0,6) + '...' : t.connectWallet}
+                                {wallet ? wallet.slice(0,6) + '...' + wallet.slice(-4) : t.connectWallet}
                             </button>
                         </div>
                     </header>
 
-                    <div className="flex justify-end">
-                        <button onClick={() => setShowRules(true)} className="text-xs text-slate-400 hover:text-slate-200 underline transition">
-                            {t.rulesBtn}
-                        </button>
-                    </div>
+                    {/* FORMULARZ PUBLIKACJI POSTU */}
+                    <section className="bg-slate-900/90 border border-slate-800/80 p-4 rounded-2xl shadow-xl space-y-3">
+                        <textarea 
+                            rows="3"
+                            value={postText}
+                            onChange={(e) => setPostText(e.target.value)}
+                            placeholder={t.postPlaceholder}
+                            className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm focus:outline-none focus:border-blue-500 text-slate-100 placeholder-slate-500 resize-none transition"
+                        />
+                        <div className="flex flex-col sm:flex-row gap-2.5">
+                            <input 
+                                type="text" 
+                                value={postTag}
+                                onChange={(e) => setPostTag(e.target.value)}
+                                placeholder={t.tagPlaceholder} 
+                                className="bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs flex-1 focus:outline-none focus:border-blue-500 text-slate-100 placeholder-slate-500 transition"
+                            />
+                            <button 
+                                type="submit" 
+                                onClick={handlePublish}
+                                disabled={isProcessing} 
+                                className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-6 py-2 rounded-xl text-xs transition shadow-lg shadow-emerald-900/20 disabled:opacity-50"
+                            >
+                                {isProcessing ? "..." : t.publish}
+                            </button>
+                        </div>
+                    </section>
 
-                    {/* GŁÓWNY UKŁAD: KOMPAKTOWY PANEL BOCZNY / GRID DLA PC */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        
-                        {/* SEKCJA USTAWIENIA NICKU I TAGÓW (KOMPAKTOWA) */}
-                        <div className="md:col-span-1 space-y-3">
-                            <div className="bg-slate-900 border border-slate-800 p-3 rounded-2xl space-y-2">
-                                <h2 className="text-xs font-semibold text-slate-300">{t.setNickname}</h2>
-                                <div className="flex gap-1.5">
-                                    <input 
-                                        type="text" 
-                                        value={nickname}
-                                        onChange={(e) => setNickname(e.target.value)}
-                                        placeholder={t.nicknamePlaceholder} 
-                                        className="bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs flex-1 focus:outline-none focus:border-blue-500 text-slate-200"
-                                    />
-                                    <button 
-                                        onClick={handleSaveNickname}
-                                        disabled={isProcessing}
-                                        className="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-xl text-xs transition font-medium disabled:opacity-50"
-                                    >
-                                        {isProcessing ? "..." : t.saveNickname}
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div className="bg-slate-900 border border-slate-800 p-3 rounded-2xl space-y-2">
-                                <h2 className="text-xs font-semibold text-slate-300">{t.registerTagTitle}</h2>
-                                <div className="flex gap-1.5">
-                                    <input 
-                                        type="text" 
-                                        value={newTagInput}
-                                        onChange={(e) => setNewTagInput(e.target.value)}
-                                        placeholder={t.tagRegPlaceholder} 
-                                        className="bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs flex-1 focus:outline-none focus:border-blue-500 text-slate-200"
-                                    />
-                                    <button 
-                                        onClick={handleRegisterTag}
-                                        disabled={isProcessing}
-                                        className="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-xl text-xs transition font-medium disabled:opacity-50"
-                                    >
-                                        {isProcessing ? "..." : t.registerTagBtn}
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div className="bg-slate-900/60 border border-slate-800 p-3 rounded-2xl space-y-2">
-                                <div className="flex items-center gap-2">
-                                    <input 
-                                        type="text" 
-                                        value={searchFilter}
-                                        onChange={(e) => setSearchFilter(e.target.value)}
-                                        placeholder={t.filterPlaceholder}
-                                        className="bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none w-full"
-                                    />
-                                    {searchFilter && (
-                                        <button onClick={() => setSearchFilter('')} className="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1.5 rounded-xl transition">
-                                            {t.clearFilter}
-                                        </button>
-                                    )}
-                                </div>
+                    {/* POZIOMY PANEL KONTROLNY (NICK, REGISTRATION, SEARCH) */}
+                    <section className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        {/* USTAWIENIE NICKU */}
+                        <div className="bg-slate-900/80 border border-slate-800/80 p-3 rounded-2xl flex flex-col justify-between space-y-2">
+                            <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">{t.setNickname}</span>
+                            <div className="flex gap-1.5">
+                                <input 
+                                    type="text" 
+                                    value={nickname}
+                                    onChange={(e) => setNickname(e.target.value)}
+                                    placeholder={t.nicknamePlaceholder} 
+                                    className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs w-full focus:outline-none focus:border-blue-500 text-slate-200 placeholder-slate-500"
+                                />
+                                <button 
+                                    onClick={handleSaveNickname}
+                                    disabled={isProcessing}
+                                    className="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-xl text-xs font-medium transition shrink-0 disabled:opacity-50"
+                                >
+                                    {isProcessing ? "..." : t.saveNickname}
+                                </button>
                             </div>
                         </div>
 
-                        {/* SEKCJA TWORZENIA WPISU I STRUMIEŃ */}
-                        <div className="md:col-span-2 space-y-3">
-                            <form onSubmit={handlePublish} className="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl space-y-2.5">
-                                <textarea 
-                                    rows="3"
-                                    value={postText}
-                                    onChange={(e) => setPostText(e.target.value)}
-                                    placeholder={t.postPlaceholder}
-                                    className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs focus:outline-none focus:border-blue-500 text-slate-200 resize-none"
+                        {/* REJESTRACJA TAGU */}
+                        <div className="bg-slate-900/80 border border-slate-800/80 p-3 rounded-2xl flex flex-col justify-between space-y-2">
+                            <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">{t.registerTagTitle}</span>
+                            <div className="flex gap-1.5">
+                                <input 
+                                    type="text" 
+                                    value={newTagInput}
+                                    onChange={(e) => setNewTagInput(e.target.value)}
+                                    placeholder={t.tagRegPlaceholder} 
+                                    className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs w-full focus:outline-none focus:border-blue-500 text-slate-200 placeholder-slate-500"
                                 />
-                                <div className="flex gap-2">
-                                    <input 
-                                        type="text" 
-                                        value={postTag}
-                                        onChange={(e) => setPostTag(e.target.value)}
-                                        placeholder={t.tagPlaceholder} 
-                                        className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs flex-1 focus:outline-none focus:border-blue-500 text-slate-200"
-                                    />
-                                    <button type="submit" disabled={isProcessing} className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-4 py-1.5 rounded-xl text-xs transition disabled:opacity-50">
-                                        {isProcessing ? "..." : t.publish}
-                                    </button>
-                                </div>
-                            </form>
+                                <button 
+                                    onClick={handleRegisterTag}
+                                    disabled={isProcessing}
+                                    className="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-xl text-xs font-medium transition shrink-0 disabled:opacity-50"
+                                >
+                                    {isProcessing ? "..." : t.registerTagBtn}
+                                </button>
+                            </div>
+                        </div>
 
-                            {/* STRUMIEŃ WPISÓW */}
-                            <div className="space-y-3 pt-1">
-                                <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{t.feedTitle}</h2>
-                                {filteredPosts.length === 0 ? (
-                                    <p className="text-center text-xs text-slate-500 py-6">Brak wpisów w sieci lub wczytywanie...</p>
-                                ) : (
-                                    filteredPosts.map(p => (
-                                        <div key={p.id} className="p-3.5 bg-slate-900 border border-slate-800 rounded-2xl space-y-2">
-                                            <div className="flex justify-between items-center text-xs text-slate-400">
-                                                <button onClick={() => setSearchFilter(p.name)} className="font-bold text-slate-300 hover:text-blue-400 text-left transition">
-                                                    {p.name} <span className="text-[10px] text-slate-500">({p.author})</span>
-                                                </button>
-                                                <button onClick={() => setSearchFilter(p.tag)} className="bg-slate-800 hover:bg-slate-700 px-2 py-0.5 rounded-lg text-blue-400 text-[11px] font-medium transition">
-                                                    #{p.tag}
-                                                </button>
-                                            </div>
-                                            <p className="text-xs text-slate-200">{p.text}</p>
-                                            <div className="flex justify-end pt-1">
-                                                <button 
-                                                    onClick={() => handleVote(p.id)}
-                                                    disabled={isProcessing}
-                                                    className="text-[11px] bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded-xl text-slate-300 transition disabled:opacity-50"
-                                                >
-                                                    👍 Podbij ({p.votes})
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ))
+                        {/* WYSZUKIWARKA / FILTR */}
+                        <div className="bg-slate-900/80 border border-slate-800/80 p-3 rounded-2xl flex flex-col justify-between space-y-2">
+                            <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Search Filter</span>
+                            <div className="flex gap-1.5">
+                                <input 
+                                    type="text" 
+                                    value={searchFilter}
+                                    onChange={(e) => setSearchFilter(e.target.value)}
+                                    placeholder={t.searchPlaceholder}
+                                    className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs w-full focus:outline-none focus:border-blue-500 text-slate-200 placeholder-slate-500"
+                                />
+                                {searchFilter && (
+                                    <button onClick={() => setSearchFilter('')} className="bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1.5 rounded-xl text-xs transition shrink-0">
+                                        {t.clearFilter}
+                                    </button>
                                 )}
                             </div>
                         </div>
+                    </section>
 
-                    </div>
+                    {/* STRUMIEŃ WPISÓW */}
+                    <main className="space-y-3 pt-2">
+                        <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{t.feedTitle}</h2>
+                        {filteredPosts.length === 0 ? (
+                            <div className="text-center text-xs text-slate-500 py-10 bg-slate-900/30 border border-slate-800/50 rounded-2xl">
+                                No posts found on-chain.
+                            </div>
+                        ) : (
+                            filteredPosts.map(p => (
+                                <article key={p.id} className="p-4 bg-slate-900/90 border border-slate-800/80 rounded-2xl space-y-2.5 shadow-md hover:border-slate-700 transition">
+                                    <div className="flex justify-between items-center text-xs text-slate-400">
+                                        <button onClick={() => setSearchFilter(p.name)} className="font-semibold text-slate-200 hover:text-blue-400 text-left transition flex items-center gap-1.5">
+                                            <span>{p.name}</span>
+                                            <span className="text-[10px] text-slate-500 font-normal">({p.author})</span>
+                                        </button>
+                                        <button onClick={() => setSearchFilter(p.tag)} className="bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded-lg text-blue-400 text-[11px] font-medium transition border border-slate-700/50">
+                                            #{p.tag}
+                                        </button>
+                                    </div>
+                                    <p className="text-xs text-slate-200 leading-relaxed">{p.text}</p>
+                                    <div className="flex justify-end pt-1">
+                                        <button 
+                                            onClick={() => handleVote(p.id)}
+                                            disabled={isProcessing}
+                                            className="text-[11px] bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-xl text-slate-300 transition disabled:opacity-50 flex items-center gap-1 border border-slate-700/40"
+                                        >
+                                            👍 ({p.votes})
+                                        </button>
+                                    </div>
+                                </article>
+                            ))
+                        )}
+                    </main>
 
                     {/* MODAL Z ZASADAMI */}
                     {showRules && (
@@ -494,6 +524,10 @@
                                 <div className="space-y-2 text-sm text-slate-300">
                                     <p>{t.rulesText1}</p>
                                     <p>{t.rulesText2}</p>
+                                    <div className="bg-rose-500/10 border border-rose-500/20 p-3 rounded-xl space-y-1 mt-4">
+                                        <h4 className="font-semibold text-rose-400 text-xs uppercase">{t.ethicsTitle}</h4>
+                                        <p className="text-xs text-slate-300">{t.ethicsText}</p>
+                                    </div>
                                 </div>
                                 <button onClick={() => setShowRules(false)} className="w-full bg-slate-800 hover:bg-slate-700 text-white py-2 rounded-xl text-sm font-medium transition mt-4">
                                     {t.close}
