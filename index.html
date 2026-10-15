@@ -20,9 +20,8 @@
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        // ADRESY DWÓCH KONTRAKTÓW WPROWADZONYCH DZISIAJ
-        const CONTRACT_ADDRESS = "0x27174F7303D818EDDFFDEFB3d1007EaE61C3a2a6"; // Adres SSOCBoard
-        const TOKEN_ADDRESS = "0x6472093554b518E6627C1f4E101031aA66C8C009";    // Adres SSOCToken
+        const CONTRACT_ADDRESS = "0x27174F7303D818EDDFFDEFB3d1007EaE61C3a2a6"; // SSOCBoard
+        const TOKEN_ADDRESS = "0x6472093554b518E6627C1f4E101031aA66C8C009";    // SSOCToken
         const BASE_SEPOLIA_RPC = "https://sepolia.base.org";
         
         const CONTRACT_ABI = [
@@ -67,104 +66,46 @@
                 searchPlaceholder: "🔍 Search or inspect tag...",
                 clearFilter: "Clear",
                 rulesBtn: "Rules & Mechanics",
-                rulesTitle: "SSOC Comprehensive Whitepaper & Mechanics Guide",
+                rulesTitle: "SSOC Comprehensive Mechanics Guide",
                 rulesIntro: "SSOC (Say Something On Chain) is a fully decentralized Web3 discussion platform operating securely on the Base L2 network.",
-                rule1Title: "1. Tag Registration, Buyout & Ownership Economics",
-                rule1Text: "• Custom Tag Registration: Every connected wallet can register up to 3 custom tags for free.\n• DEFAULT System Tag: `#DEFAULT` is protected, free, and public forever.\n• Buyout (50+ / 100+ uses): Unowned tags can be bought at 50 uses; owned tags can be sniped at 100+ uses.\n• Revenue Split: 70% goes to the tag owner, 30% to the platform.",
-                rule2Title: "2. Daily Limits & $SSOC Token Mechanics",
-                rule2Text: "• Daily Free Allowance: Every user gets 150 free messages per day.\n• Utility Token: After 150 messages, publishing consumes $SSOC tokens.\n• Instant Exchange: Buy $SSOC tokens directly using ETH.",
+                rule1Title: "1. Tag Registration & Ownership",
+                rule1Text: "• Free registration for up to 3 custom tags.\n• DEFAULT tag is protected and always free.",
+                rule2Title: "2. Daily Limits & $SSOC Token",
+                rule2Text: "• 150 free messages daily. After limit, publishing uses $SSOC tokens.\n• Buy tokens instantly using ETH.",
                 rule3Title: "3. Nickname System",
-                rule3Text: "• First setup is free; subsequent changes scale dynamically.",
-                rule4Title: "4. Daily Voting & Comment of the Day",
-                rule4Text: "• Vote once daily (resets 00:00 UTC). Top voted comment gets featured at the top banner.",
-                rule5Title: "5. Dual-Mode Direct Chat",
+                rule3Text: "• First setup is free.",
+                rule4Title: "4. Daily Voting",
+                rule4Text: "• Vote once daily. Top voted comment is featured at the top banner.",
+                rule5Title: "5. Direct Chat",
                 rule5Text: "• Free Off-Chain P2P messaging or permanent On-Chain DMs.",
-                ethicsTitle: "🛡️ Ethics, Moderation & Security",
-                ethicsText: "All posts and states are cryptographically secured on Base L2.",
+                ethicsTitle: "🛡️ Security",
+                ethicsText: "Secured cryptographically on Base L2.",
                 close: "Close",
                 chatTitle: "Direct Chat",
                 onchainChat: "⛓️ On-Chain",
                 offchainChat: "⚡ Off-Chain (Free)",
-                recipientPlaceholder: "Recipient address (0x...)",
+                recipientPlaceholder: "Recipient address...",
                 msgPlaceholder: "Type private message...",
                 sendMsg: "Send",
                 buyoutTag: "Buyout Tag",
-                snipeTag: "Snipe Tag (100+ uses)",
-                firstBuyoutTag: "First Buyout (50+ uses)",
-                systemTag: "System / Public (Always free)",
+                snipeTag: "Snipe Tag",
+                firstBuyoutTag: "First Buyout",
+                systemTag: "System / Public",
                 unregisteredTag: "Unregistered",
-                ownedTag: "Owned (Requires 100+ uses to snipe)",
-                readyForSnipe: "Ready for Buyout (50+ uses)",
+                ownedTag: "Owned",
+                readyForSnipe: "Ready for Buyout",
                 freeOrInUse: "Free / In use",
                 tagStatusTitle: "Tag Status:",
-                usesCountLabel: "Uses count:",
-                buyoutPriceLabel: "Buyout price:",
+                usesCountLabel: "Uses:",
+                buyoutPriceLabel: "Price:",
                 topCommentTitle: "🏆 Comment of the Day",
-                noTopComment: "No votes recorded yet today. Be the first to vote!",
+                noTopComment: "No votes recorded yet today.",
                 freeMsgLabel: "Daily Free Allowance:",
-                tokenBalanceLabel: "Your $SSOC Balance:",
+                tokenBalanceLabel: "$SSOC Balance:",
                 buyTokensBtn: "Buy $SSOC Tokens",
                 buyModalTitle: "Buy $SSOC Tokens",
-                buyModalDesc: "Need more messages beyond your daily free limit? Buy $SSOC tokens using ETH (0.00001 ETH / token).",
+                buyModalDesc: "Need more messages? Buy $SSOC tokens using ETH (0.00001 ETH / token).",
                 buyAction: "Buy with ETH"
-            },
-            de: {
-                brand: "SSOC",
-                tagline: "Say Something On Chain",
-                connectWallet: "Wallet verbinden",
-                setNickname: "Spitzname",
-                nicknamePlaceholder: "Spitzname eingeben...",
-                saveNickname: "Speichern",
-                registerTagTitle: "Tag registrieren",
-                tagRegPlaceholder: "Neuer Tag...",
-                registerTagBtn: "Registrieren",
-                feedTitle: "Community-Diskussionen (On-Chain)",
-                postPlaceholder: "Schreibe etwas...",
-                tagPlaceholder: "Tag (leer lassen für DEFAULT)",
-                publish: "Beitrag veröffentlichen",
-                searchPlaceholder: "🔍 Tag suchen oder prüfen...",
-                clearFilter: "Löschen",
-                rulesBtn: "Regeln & Mechanik",
-                rulesTitle: "SSOC Whitepaper & Ausführliche Mechanik",
-                rulesIntro: "SSOC ist eine dezentrale Web3-Plattform im Base L2-Netzwerk.",
-                rule1Title: "1. Tag-Registrierung & Übernahme",
-                rule1Text: "• Registrierung gratis. Übernahme ab 50 bzw. 100 Nutzungen.",
-                rule2Title: "2. Tägliches Limit & $SSOC Token",
-                rule2Text: "• 150 Nachrichten täglich gratis. Danach Nutzung von $SSOC Token.",
-                rule3Title: "3. Spitznamen-System",
-                rule3Text: "• Ersteinrichtung gratis.",
-                rule4Title: "4. Tägliche Abstimmung",
-                rule4Text: "• Tägliche Stimmabgabe mit Banner-Anzeige.",
-                rule5Title: "5. Dual-Mode Direktchat",
-                rule5Text: "• Gratis Off-Chain oder permanente On-Chain Nachrichten.",
-                ethicsTitle: "🛡️ Ethik & Sicherheit",
-                ethicsText: "Schutz vor Spam auf Base L2.",
-                close: "Schließen",
-                chatTitle: "Direktchat",
-                onchainChat: "⛓️ On-Chain",
-                offchainChat: "⚡ Off-Chain (Gratis)",
-                recipientPlaceholder: "Empfängeradresse (0x...)",
-                msgPlaceholder: "Private Nachricht...",
-                sendMsg: "Senden",
-                buyoutTag: "Tag kaufen",
-                snipeTag: "Tag übernehmen (100+)",
-                firstBuyoutTag: "Erster Kauf (50+)",
-                systemTag: "System / Öffentlich",
-                unregisteredTag: "Nicht registriert",
-                ownedTag: "Im Besitz",
-                readyForSnipe: "Bereit zum Kauf",
-                freeOrInUse: "Kostenlos / In Verwendung",
-                tagStatusTitle: "Tag-Status:",
-                usesCountLabel: "Nutzungen:",
-                buyoutPriceLabel: "Kaufpreis:",
-                topCommentTitle: "🏆 Kommentar des Tages",
-                noTopComment: "Heute wurden noch keine Stimmen abgegeben.",
-                freeMsgLabel: "Tägliche Gratis-Nachrichten:",
-                tokenBalanceLabel: "Dein $SSOC Guthaben:",
-                buyTokensBtn: "SSOC Token kaufen",
-                buyModalTitle: "SSOC Token kaufen",
-                buyModalDesc: "Kaufe SSOC Token für ETH (0.00001 ETH / Token).",
-                buyAction: "Kaufen mit ETH"
             },
             pl: {
                 brand: "SSOC",
@@ -183,45 +124,45 @@
                 searchPlaceholder: "🔍 Szukaj lub sprawdź tag...",
                 clearFilter: "Wyczyść",
                 rulesBtn: "Zasady i Mechanika",
-                rulesTitle: "Kompleksowy Whitepaper i Zasady Działania SSOC",
-                rulesIntro: "SSOC (Say Something On Chain) to w pełni zdecentralizowana, bezserwerowa platforma społecznościowa Web3 działająca w sieci Base L2.",
-                rule1Title: "1. Rejestracja Tagów, Wykupy i Ekonomia Własności",
-                rule1Text: "• Rejestracja własnych tagów: Każdy połączony portfel może zarejestrować do 3 własnych tagów za darmo.\n• Ochrona tagu DEFAULT: Tag `#DEFAULT` jest w 100% publiczny i zawsze darmowy.\n• Wykupy (50+ / 100+ użyć): Nieprzypisany tag staje się dostępny do pierwszego wykupu po 50 użyciach. Cudzy tag można podkupić (snipe) po 100 użyciach.\n• Podział zysków: 70% kwoty wykupu trafia do poprzedniego właściciela, a 30% do skarbca platformy.",
-                rule2Title: "2. Dzienny Limit i Mechanika Tokena $SSOC",
-                rule2Text: "• Darmowy Dzienny Limit: Każdy użytkownik otrzymuje 150 darmowych wiadomości na dobę (resetowanie odnawia limit).\n• Własny Token $SSOC: Po wykorzystaniu 150 wiadomości kolejne wpisy pobierają 1 token $SSOC.\n• Wymiana za ETH: W każdej chwili możesz dokupić tokeny $SSOC przesyłając ETH bezpośrednio do kontraktu.",
-                rule3Title: "3. System Pseudonimów (Nicków)",
-                rule3Text: "• Pierwsza rejestracja jest darmowa; kolejne zmiany kosztują `0.00005 ETH × liczba zmian`.",
-                rule4Title: "4. Codzienne Głosowanie i Komentarz Dnia",
-                rule4Text: "• Reset głosowania o 00:00 UTC. Najpopularniejszy komentarz trafia na baner wyróżniony na samej górze.",
-                rule5Title: "5. Dwa Tryby Chatu Bezpośredniego",
-                rule5Text: "• Szybki, darmowy chat Off-Chain P2P lub trwałe wiadomości On-Chain DMs.",
-                ethicsTitle: "🛡️ Etyka, Moderacja i Bezpieczeństwo",
-                ethicsText: "Wszystkie dane są zabezpieczone kryptograficznie w sieci Base L2.",
+                rulesTitle: "Kompleksowe Zasady Działania SSOC",
+                rulesIntro: "SSOC (Say Something On Chain) to zdecentralizowana platforma społecznościowa Web3 w sieci Base L2.",
+                rule1Title: "1. Rejestracja Tagów i Własność",
+                rule1Text: "• Zarejestruj do 3 własnych tagów za darmo.\n• Tag DEFAULT jest zawsze darmowy i chroniony.",
+                rule2Title: "2. Dzienny Limit i Token $SSOC",
+                rule2Text: "• 150 darmowych wiadomości dziennie. Po limicie wpisy pobierają token $SSOC.\n• Możesz dokupić tokeny w każdej chwili za ETH.",
+                rule3Title: "3. System Nicków",
+                rule3Text: "• Pierwsze ustawienie nicku jest darmowe.",
+                rule4Title: "4. Głosowanie i Komentarz Dnia",
+                rule4Text: "• Oddaj 1 głos dziennie na ulubiony komentarz.",
+                rule5Title: "5. Chat Bezpośredni",
+                rule5Text: "• Darmowy chat off-chain lub trwałe wiadomości on-chain.",
+                ethicsTitle: "🛡️ Bezpieczeństwo",
+                ethicsText: "Zabezpieczone w sieci Base L2.",
                 close: "Zamknij",
                 chatTitle: "Direct Chat",
                 onchainChat: "⛓️ On-Chain",
                 offchainChat: "⚡ Off-Chain (Free)",
                 recipientPlaceholder: "Adres odbiorcy (0x...)",
-                msgPlaceholder: "Wpisz wiadomość prywatną...",
+                msgPlaceholder: "Wpisz wiadomość...",
                 sendMsg: "Wyślij",
                 buyoutTag: "Wykup Tag",
-                snipeTag: "Podkup Tag (100+ użyć)",
-                firstBuyoutTag: "Pierwszy Wykup (50+ użyć)",
-                systemTag: "System / Publiczny (Zawsze darmowy)",
+                snipeTag: "Podkup Tag",
+                firstBuyoutTag: "Pierwszy Wykup",
+                systemTag: "System / Publiczny",
                 unregisteredTag: "Niezarejestrowany",
-                ownedTag: "Posiadany (Wymaga 100+ użyć do podkupienia)",
-                readyForSnipe: "Gotowy do Wykupu (50+ użyć)",
+                ownedTag: "Posiadany",
+                readyForSnipe: "Gotowy do Wykupu",
                 freeOrInUse: "Darmowy / W użyciu",
                 tagStatusTitle: "Status Tagu:",
                 usesCountLabel: "Liczba użyć:",
                 buyoutPriceLabel: "Cena wykupu:",
                 topCommentTitle: "🏆 Komentarz Dnia",
-                noTopComment: "Brak głosów dzisiaj. Bądź pierwszy!",
+                noTopComment: "Brak głosów dzisiaj.",
                 freeMsgLabel: "Darmowe wiadomości dzisiaj:",
                 tokenBalanceLabel: "Twoje saldo $SSOC:",
                 buyTokensBtn: "Dokup Tokeny $SSOC",
                 buyModalTitle: "Dokup Tokeny $SSOC",
-                buyModalDesc: "Wyczerpałeś limit 150 darmowych wiadomości? Dokup tokeny $SSOC za ETH (0.00001 ETH / token).",
+                buyModalDesc: "Wyczerpałeś limit darmowych wiadomości? Dokup tokeny $SSOC za ETH (0.00001 ETH / token).",
                 buyAction: "Kup za ETH"
             }
         };
@@ -248,7 +189,6 @@
             const [posts, setPosts] = useState([]);
             const [topComment, setTopComment] = useState(null);
 
-            // Stany dla darmowego limitu i tokena $SSOC
             const [usedMessagesToday, setUsedMessagesToday] = useState(0);
             const [dailyLimit, setDailyLimit] = useState(150);
             const [ssocBalance, setSsocBalance] = useState("0");
@@ -275,7 +215,7 @@
                     setDailyLimit(limit.toNumber());
                     setSsocBalance(ethers.utils.formatUnits(bal, 18));
                 } catch (err) {
-                    console.error("Błąd pobierania danych użytkownika:", err);
+                    console.error("Błąd ładowania danych użytkownika:", err);
                 }
             };
 
@@ -313,13 +253,11 @@
                         if (topCommentId && topCommentId.toNumber() > 0) {
                             const found = loadedPosts.find(p => p.id === topCommentId.toNumber());
                             setTopComment(found || null);
-                        } else {
-                            setTopComment(null);
                         }
                     } catch (e) {}
 
                 } catch (err) {
-                    console.error("Błąd pobierania postów:", err);
+                    console.error("Błąd ładowania postów:", err);
                 }
             };
 
@@ -351,7 +289,6 @@
                     if (tagData && tagData.name) {
                         const uses = tagData.usesCount.toNumber();
                         const owned = tagData.isOwned;
-
                         const canBuy = (!owned && uses >= 50) || (owned && uses >= 100);
 
                         setInspectTagInfo({
@@ -363,8 +300,6 @@
                             canBuy: canBuy,
                             isSystemTag: false
                         });
-                    } else {
-                        setInspectTagInfo({ name: clean, notExists: true });
                     }
                 } catch (err) {
                     setInspectTagInfo(null);
@@ -391,7 +326,7 @@
                         showNotification("Portfel połączony!");
                         await loadUserData(accounts[0]);
                     } catch (err) {
-                        showNotification("Błąd połączenia z portfelem", "error");
+                        showNotification("Błąd połączenia", "error");
                     }
                 } else {
                     alert("Zainstaluj MetaMask!");
@@ -399,19 +334,13 @@
             };
 
             const handleBuyoutTag = async (tagName, priceInEth) => {
-                if (tagName.toUpperCase() === 'DEFAULT') {
-                    showNotification("Tag DEFAULT jest zawsze darmowy i publiczny!", "error");
-                    return;
-                }
                 if (!window.ethereum || !wallet) {
-                    showNotification("Połącz najpierw portfel!", "error");
                     connectWallet();
                     return;
                 }
                 try {
                     setIsProcessing(true);
-                    showNotification("Zatwierdzanie wykupu w portfelu...", "info");
-
+                    showNotification("Przetwarzanie wykupu tagu...", "info");
                     const provider = new ethers.providers.Web3Provider(window.ethereum);
                     const signer = provider.getSigner();
                     const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
@@ -420,27 +349,352 @@
                         value: ethers.utils.parseEther(priceInEth),
                         gasLimit: 300000
                     });
-
                     await tx.wait();
-                    showNotification(`Tag #${tagName} został przejęty!`, "success");
+                    showNotification(`Tag #${tagName} przejęty pomyślnie!`, "success");
                     inspectTag(tagName);
                 } catch (err) {
-                    console.error(err);
-                    showNotification("Transakcja wykupu odrzucona", "error");
+                    showNotification("Wykup odrzucony", "error");
                 } finally {
                     setIsProcessing(false);
                 }
             };
 
             const handleSendChatMessage = async () => {
-                if (!chatRecipient || !chatMessage) {
-                    showNotification("Wpisz adres odbiorcy oraz treść", "error");
+                if (!chatRecipient || !chatMessage) return;
+                if (chatMode === 'offchain') {
+                    setChatHistory([...chatHistory, { recipient: chatRecipient.slice(0,6), text: chatMessage, time: new Date().toLocaleTimeString(), mode: 'Off-Chain' }]);
+                    setChatMessage('');
+                } else {
+                    if (!window.ethereum || !wallet) {
+                        connectWallet();
+                        return;
+                    }
+                    try {
+                        setIsProcessing(true);
+                        const provider = new ethers.providers.Web3Provider(window.ethereum);
+                        const signer = provider.getSigner();
+                        const board = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+                        const tx = await board.postMessage("", `[DM]: ${chatMessage}`, { gasLimit: 300000 });
+                        await tx.wait();
+                        setChatMessage('');
+                        showNotification("Wiadomość On-Chain wysłana!", "success");
+                        loadPostsFromBlockchain();
+                    } catch (err) {
+                        showNotification("Błąd wysyłania chatu", "error");
+                    } finally {
+                        setIsProcessing(false);
+                    }
+                }
+            };
+
+            const handleVote = async (postId) => {
+                if (!window.ethereum || !wallet) {
+                    connectWallet();
+                    return;
+                }
+                try {
+                    setIsProcessing(true);
+                    const provider = new ethers.providers.Web3Provider(window.ethereum);
+                    const signer = provider.getSigner();
+                    const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+                    const tx = await contract.voteComment(postId, { gasLimit: 150000 });
+                    await tx.wait();
+                    showNotification("Głos odnotowany!", "success");
+                    loadPostsFromBlockchain();
+                } catch (err) {
+                    showNotification("Głosowanie nie powiodło się", "error");
+                } finally {
+                    setIsProcessing(false);
+                }
+            };
+
+            const handleSaveNickname = async () => {
+                if (!nickname.trim()) return;
+                if (!window.ethereum || !wallet) {
+                    connectWallet();
+                    return;
+                }
+                try {
+                    setIsProcessing(true);
+                    const provider = new ethers.providers.Web3Provider(window.ethereum);
+                    const signer = provider.getSigner();
+                    const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+                    const changesCount = await contract.nicknameChangesCount(wallet);
+                    let requiredFee = changesCount.gt(0) ? ethers.utils.parseEther("0.00005").mul(changesCount) : 0;
+
+                    const tx = await contract.setNickname(nickname, { value: requiredFee, gasLimit: 250000 });
+                    await tx.wait();
+                    showNotification("Nick zapisany!", "success");
+                } catch (err) {
+                    showNotification("Błąd zapisu nicka", "error");
+                } finally {
+                    setIsProcessing(false);
+                }
+            };
+
+            const handleRegisterTag = async () => {
+                if (!newTagInput.trim()) return;
+                if (!window.ethereum || !wallet) {
+                    connectWallet();
+                    return;
+                }
+                try {
+                    setIsProcessing(true);
+                    const provider = new ethers.providers.Web3Provider(window.ethereum);
+                    const signer = provider.getSigner();
+                    const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+                    const tx = await contract.registerCustomTag(newTagInput.trim().replace('#',''), { gasLimit: 200000 });
+                    await tx.wait();
+                    setNewTagInput('');
+                    showNotification("Tag zarejestrowany!", "success");
+                } catch (err) {
+                    showNotification("Błąd rejestracji tagu", "error");
+                } finally {
+                    setIsProcessing(false);
+                }
+            };
+
+            const handlePublish = async (e) => {
+                e.preventDefault();
+                if (!postText.trim()) return;
+                if (!window.ethereum || !wallet) {
+                    connectWallet();
                     return;
                 }
 
-                if (chatMode === 'offchain') {
-                    const newMsg = {
-                        sender: wallet ? wallet.slice(0,6) + '...' : 'Ja',
-                        recipient: chatRecipient.slice(0,6) + '...',
-                        text: chatMessage,
-                        time: new Date
+                const tagToSend = postTag.trim() ? postTag.trim().replace('#', '') : "DEFAULT";
+
+                try {
+                    setIsProcessing(true);
+                    const provider = new ethers.providers.Web3Provider(window.ethereum);
+                    const signer = provider.getSigner();
+                    const board = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+                    const token = new ethers.Contract(TOKEN_ADDRESS, TOKEN_ABI, signer);
+
+                    if (usedMessagesToday >= dailyLimit) {
+                        showNotification("Darmowy limit wyczerpany. Sprawdzanie tokenów $SSOC...", "info");
+                        const allowance = await token.allowance(wallet, CONTRACT_ADDRESS);
+                        if (allowance.lt(ethers.utils.parseUnits("1", 18))) {
+                            showNotification("Zatwierdzanie tokenów w MetaMask...", "info");
+                            const appTx = await token.approve(CONTRACT_ADDRESS, ethers.constants.MaxUint256);
+                            await appTx.wait();
+                        }
+                    }
+
+                    showNotification("Publikowanie w sieci Base...", "info");
+                    const tx = await board.postMessage(tagToSend, postText, { gasLimit: 350000 });
+                    await tx.wait();
+
+                    setPostText('');
+                    setPostTag('');
+                    showNotification("Wiadomość opublikowana on-chain!", "success");
+                    loadPostsFromBlockchain();
+                    loadUserData(wallet);
+                } catch (err) {
+                    console.error(err);
+                    showNotification("Transakcja odrzucona", "error");
+                } finally {
+                    setIsProcessing(false);
+                }
+            };
+
+            const handleBuyTokens = async () => {
+                if (!buyAmount || parseInt(buyAmount) <= 0) return;
+                if (!window.ethereum || !wallet) {
+                    connectWallet();
+                    return;
+                }
+                try {
+                    setIsProcessing(true);
+                    showNotification("Kupowanie tokenów $SSOC...", "info");
+                    const provider = new ethers.providers.Web3Provider(window.ethereum);
+                    const signer = provider.getSigner();
+                    const board = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+
+                    const pricePerToken = ethers.utils.parseEther("0.00001");
+                    const totalCost = pricePerToken.mul(buyAmount);
+
+                    const tx = await board.buyTokens(buyAmount, { value: totalCost });
+                    await tx.wait();
+
+                    showNotification(`Zakupiono ${buyAmount} tokenów $SSOC!`, "success");
+                    setShowBuyModal(false);
+                    loadUserData(wallet);
+                } catch (err) {
+                    showNotification("Zakup nie powiódł się", "error");
+                } finally {
+                    setIsProcessing(false);
+                }
+            };
+
+            const filteredPosts = posts.filter(p => {
+                if (!searchFilter) return true;
+                const filter = searchFilter.toLowerCase().replace('#', '');
+                return p.tag.toLowerCase().includes(filter) || p.name.toLowerCase().includes(filter);
+            });
+
+            return (
+                <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-6">
+                    {toast && (
+                        <div className={`fixed top-4 right-4 z-50 px-4 py-2 rounded-xl shadow-2xl text-xs font-medium border flex items-center gap-2 ${
+                            toast.type === 'error' ? 'bg-rose-950 border-rose-800 text-rose-200' : 'bg-emerald-950 border-emerald-800 text-emerald-200'
+                        }`}>
+                            {toast.msg}
+                        </div>
+                    )}
+
+                    <header className="flex flex-col sm:flex-row justify-between items-center gap-4 border-b border-slate-800 pb-4">
+                        <div>
+                            <h1 className="text-2xl font-bold text-indigo-400">⛓️ {t.brand}</h1>
+                            <p className="text-xs text-slate-400">{t.tagline}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <button onClick={() => setShowChat(!showChat)} className="bg-slate-800 hover:bg-slate-700 text-blue-400 px-3 py-1.5 rounded-xl text-xs font-medium">💬 {t.chatTitle}</button>
+                            <button onClick={() => setShowRules(true)} className="text-xs text-slate-400 underline">{t.rulesBtn}</button>
+                            <button onClick={() => setLang(lang === 'pl' ? 'en' : 'pl')} className="bg-slate-800 px-3 py-1.5 rounded-xl text-xs font-bold">🌐 {lang.toUpperCase()}</button>
+                            <button onClick={connectWallet} className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-xs font-semibold">
+                                {wallet ? `${wallet.slice(0,6)}...${wallet.slice(-4)}` : t.connectWallet}
+                            </button>
+                        </div>
+                    </header>
+
+                    {wallet && (
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-900/90 p-4 rounded-2xl border border-indigo-900/50">
+                            <div className="text-center">
+                                <p className="text-[11px] text-slate-400 uppercase">{t.freeMsgLabel}</p>
+                                <p className="text-xl font-bold text-emerald-400">{usedMessagesToday} / {dailyLimit}</p>
+                            </div>
+                            <div className="text-center">
+                                <p className="text-[11px] text-slate-400 uppercase">{t.tokenBalanceLabel}</p>
+                                <p className="text-xl font-bold text-indigo-400">{parseFloat(ssocBalance).toFixed(2)} $SSOC</p>
+                            </div>
+                            <div className="flex items-center justify-center">
+                                <button onClick={() => setShowBuyModal(true)} className="w-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold py-2.5 px-4 rounded-xl">
+                                    + {t.buyTokensBtn}
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {topComment && (
+                        <section className="bg-amber-500/10 border border-amber-500/30 p-4 rounded-2xl">
+                            <h3 className="text-xs font-bold text-amber-400 uppercase mb-1">{t.topCommentTitle}</h3>
+                            <p className="text-xs text-slate-200 italic">"{topComment.text}" - {topComment.name} (👍 {topComment.votes})</p>
+                        </section>
+                    )}
+
+                    {showChat && (
+                        <section className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-3">
+                            <div className="flex justify-between items-center border-b border-slate-800 pb-2">
+                                <h3 className="text-xs font-semibold text-slate-200">💬 {t.chatTitle}</h3>
+                                <div className="flex bg-slate-950 p-1 rounded-xl text-[11px]">
+                                    <button onClick={() => setChatMode('offchain')} className={`px-2 py-0.5 rounded-lg ${chatMode === 'offchain' ? 'bg-indigo-600 text-white' : 'text-slate-400'}`}>{t.offchainChat}</button>
+                                    <button onClick={() => setChatMode('onchain')} className={`px-2 py-0.5 rounded-lg ${chatMode === 'onchain' ? 'bg-indigo-600 text-white' : 'text-slate-400'}`}>{t.onchainChat}</button>
+                                </div>
+                            </div>
+                            <div className="flex gap-2">
+                                <input type="text" value={chatRecipient} onChange={(e) => setChatRecipient(e.target.value)} placeholder={t.recipientPlaceholder} className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs flex-1 text-slate-200" />
+                                <input type="text" value={chatMessage} onChange={(e) => setChatMessage(e.target.value)} placeholder={t.msgPlaceholder} className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs flex-1 text-slate-200" />
+                                <button onClick={handleSendChatMessage} className="bg-blue-600 text-white px-4 py-1.5 rounded-xl text-xs">{t.sendMsg}</button>
+                            </div>
+                        </section>
+                    )}
+
+                    <section className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-3">
+                        <textarea rows="3" value={postText} onChange={(e) => setPostText(e.target.value)} placeholder={t.postPlaceholder} className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-100 resize-none" />
+                        <div className="flex gap-2.5">
+                            <input type="text" value={postTag} onChange={(e) => setPostTag(e.target.value)} placeholder={t.tagPlaceholder} className="bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs flex-1 text-slate-100" />
+                            <button onClick={handlePublish} disabled={isProcessing} className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-6 py-2 rounded-xl text-xs">{t.publish}</button>
+                        </div>
+                    </section>
+
+                    <section className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div className="bg-slate-900 border border-slate-800 p-3 rounded-2xl space-y-2">
+                            <span className="text-[11px] font-semibold text-slate-400 uppercase">{t.setNickname}</span>
+                            <div className="flex gap-1.5">
+                                <input type="text" value={nickname} onChange={(e) => setNickname(e.target.value)} placeholder={t.nicknamePlaceholder} className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs w-full text-slate-200" />
+                                <button onClick={handleSaveNickname} className="bg-slate-800 text-white px-3 py-1.5 rounded-xl text-xs">{t.saveNickname}</button>
+                            </div>
+                        </div>
+                        <div className="bg-slate-900 border border-slate-800 p-3 rounded-2xl space-y-2">
+                            <span className="text-[11px] font-semibold text-slate-400 uppercase">{t.registerTagTitle}</span>
+                            <div className="flex gap-1.5">
+                                <input type="text" value={newTagInput} onChange={(e) => setNewTagInput(e.target.value)} placeholder={t.tagRegPlaceholder} className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs w-full text-slate-200" />
+                                <button onClick={handleRegisterTag} className="bg-indigo-600 text-white px-3 py-1.5 rounded-xl text-xs">{t.registerTagBtn}</button>
+                            </div>
+                        </div>
+                        <div className="bg-slate-900 border border-slate-800 p-3 rounded-2xl space-y-2">
+                            <span className="text-[11px] font-semibold text-slate-400 uppercase">Szukaj tagu</span>
+                            <div className="flex gap-1.5">
+                                <input type="text" value={searchFilter} onChange={(e) => setSearchFilter(e.target.value)} placeholder={t.searchPlaceholder} className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs w-full text-slate-200" />
+                                {searchFilter && <button onClick={() => setSearchFilter('')} className="bg-slate-800 text-slate-300 px-2.5 py-1.5 rounded-xl text-xs">{t.clearFilter}</button>}
+                            </div>
+                        </div>
+                    </section>
+
+                    {inspectTagInfo && (
+                        <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-2 text-xs">
+                            <div className="flex justify-between items-center">
+                                <span className="font-semibold text-slate-200">🔍 Status tagu <span className="text-blue-400">#{inspectTagInfo.name}</span></span>
+                                <span className="bg-blue-500/10 text-blue-400 px-2.5 py-1 rounded-lg">{inspectTagInfo.isOwned ? t.ownedTag : t.unregisteredTag}</span>
+                            </div>
+                            {!inspectTagInfo.isSystemTag && (
+                                <div className="flex justify-between items-center pt-1 text-slate-400">
+                                    <span>Użycia: <b className="text-slate-200">{inspectTagInfo.usesCount}</b> | Cena: <b className="text-slate-200">{inspectTagInfo.currentPrice} ETH</b></span>
+                                    {inspectTagInfo.canBuy && <button onClick={() => handleBuyoutTag(inspectTagInfo.name, inspectTagInfo.currentPrice)} className="bg-amber-600 text-white px-3 py-1 rounded-xl">{t.buyoutTag}</button>}
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    <main className="space-y-3 pt-2">
+                        <h2 className="text-xs font-semibold text-slate-400 uppercase">{t.feedTitle}</h2>
+                        {filteredPosts.length === 0 ? (
+                            <div className="text-center text-xs text-slate-500 py-10 bg-slate-900/30 rounded-2xl">Brak wpisów on-chain.</div>
+                        ) : (
+                            filteredPosts.map(p => (
+                                <article key={p.id} className="p-4 bg-slate-900 border border-slate-800 rounded-2xl space-y-2">
+                                    <div className="flex justify-between items-center text-xs text-slate-400">
+                                        <span className="font-semibold text-slate-200">{p.name} <span className="text-[10px] text-slate-500">({p.author})</span></span>
+                                        <button onClick={() => setSearchFilter(p.tag)} className="bg-slate-800 px-2 py-0.5 rounded text-blue-400 text-[11px]">#{p.tag}</button>
+                                    </div>
+                                    <p className="text-xs text-slate-200">{p.text}</p>
+                                    <div className="flex justify-end">
+                                        <button onClick={() => handleVote(p.id)} className="text-[11px] bg-slate-800 px-3 py-1 rounded-xl text-slate-300">👍 ({p.votes})</button>
+                                    </div>
+                                </article>
+                            ))
+                        )}
+                    </main>
+
+                    {showBuyModal && (
+                        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
+                            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full space-y-4">
+                                <h3 className="text-base font-bold text-indigo-400">{t.buyModalTitle}</h3>
+                                <p className="text-xs text-slate-400">{t.buyModalDesc}</p>
+                                <input type="number" value={buyAmount} onChange={(e) => setBuyAmount(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white" />
+                                <div className="flex gap-2">
+                                    <button onClick={handleBuyTokens} className="flex-1 bg-indigo-600 text-white font-bold py-2 text-xs rounded-xl">{t.buyAction}</button>
+                                    <button onClick={() => setShowBuyModal(false)} className="bg-slate-800 text-white font-bold py-2 px-4 text-xs rounded-xl">{t.close}</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {showRules && (
+                        <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+                            <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-lg w-full space-y-3">
+                                <h3 className="font-bold text-sm text-slate-100">{t.rulesTitle}</h3>
+                                <p className="text-xs text-slate-300">{t.rulesIntro}</p>
+                                <button onClick={() => setShowRules(false)} className="w-full bg-slate-800 text-white py-2 rounded-xl text-xs">{t.close}</button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
