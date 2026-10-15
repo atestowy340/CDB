@@ -55,7 +55,7 @@
             flex-wrap: wrap;
         }
 
-        .nav-links button {
+        .nav-links button, .nav-links a {
             background: none;
             border: 1px solid #334155;
             color: #94a3b8;
@@ -63,10 +63,11 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 13px;
+            text-decoration: none;
             transition: all 0.2s;
         }
 
-        .nav-links button:hover, .nav-links button.active {
+        .nav-links button:hover, .nav-links button.active, .nav-links a:hover {
             border-color: #38bdf8;
             color: #38bdf8;
             background: rgba(56, 189, 248, 0.1);
@@ -283,7 +284,7 @@
                 <button id="lang-pl" onclick="setLanguage('pl')">PL</button>
                 <button id="lang-en" onclick="setLanguage('en')">EN</button>
                 <button id="lang-de" onclick="setLanguage('de')">DE</button>
-                <button onclick="openRulesModal()" data-i18n="rulesLink">Zasady</button>
+                <button onclick="openRulesModal()" data-i18n="rulesLink">Zasady i Mechanika</button>
                 <button class="connect-btn" id="connectWalletBtn" onclick="connectWallet()">Połącz portfel</button>
             </div>
         </header>
@@ -293,11 +294,11 @@
             <div class="stats-grid">
                 <div class="stat-box">
                     <h3 data-i18n="freeLimitTitle">DARMOWE WIADOMOŚCI DZISIAJ:</h3>
-                    <p id="freeLimitCount">0 / 150</p>
+                    <p id="freeLimitCount">5 / 3</p>
                 </div>
                 <div class="stat-box">
                     <h3 data-i18n="tokenBalanceTitle">TWOJE SALDO $SSOC:</h3>
-                    <p id="userTokenBalance">0.00 $SSOC</p>
+                    <p id="userTokenBalance">999998.00 $SSOC</p>
                 </div>
             </div>
             <button class="full-width-btn" onclick="openBuyModal()" data-i18n="buyTokenBtn">+ Dokup Tokeny $SSOC</button>
@@ -306,7 +307,7 @@
         <!-- Komentarz Dnia -->
         <div class="card top-comment-banner">
             <h3 data-i18n="topCommentTitle">🏆 KOMENTARZ DNIA</h3>
-            <div id="topCommentContent" data-i18n="noTopComment">Brak wyróżnionego komentarza na dziś.</div>
+            <div id="topCommentContent">"3" - ADMIN (👍 1)</div>
         </div>
 
         <!-- Formularz dodawania wiadomości -->
@@ -317,7 +318,7 @@
             </div>
             <div class="form-group">
                 <label for="messageTag" data-i18n="tagLabel">Tag (zostaw puste dla DEFAULT):</label>
-                <input type="text" id="messageTag" placeholder="np. #crypto">
+                <input type="text" id="messageTag" placeholder="Szukaj lub sprawdź tag...">
             </div>
             <button class="publish-btn" onclick="postMessage()" data-i18n="publishBtn">Opublikuj wpis</button>
         </div>
@@ -326,7 +327,28 @@
         <div class="card">
             <h3 style="margin-top:0;" data-i18n="feedTitle">DYSKUSJE SPOŁECZNOŚCI (ON-CHAIN)</h3>
             <div id="commentsFeed">
-                <p style="color: #94a3b8; text-align: center;" data-i18n="loadingFeed">Ładowanie wpisów z sieci...</p>
+                <div class="comment-item">
+                    <div class="comment-header">
+                        <span>ADMIN (0x7A69...e5593)</span>
+                        <span>-</span>
+                    </div>
+                    <div class="comment-body">5</div>
+                    <div class="comment-footer">
+                        <span class="tag-badge">#DEFAULT</span>
+                        <button class="vote-btn">👍 (0)</button>
+                    </div>
+                </div>
+                <div class="comment-item">
+                    <div class="comment-header">
+                        <span>ADMIN (0x7A69...e5593)</span>
+                        <span>-</span>
+                    </div>
+                    <div class="comment-body">4</div>
+                    <div class="comment-footer">
+                        <span class="tag-badge">#test2</span>
+                        <button class="vote-btn">👍 (0)</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -337,11 +359,11 @@
             <h3 data-i18n="rulesModalTitle">Zasady i Mechanika Projektu SSOC</h3>
             <p data-i18n="rulesModalDesc">Witaj w oficjalnym przewodniku po mechanikach zdecentralizowanej platformy społecznościowej <strong>Say Something On Chain (SSOC)</strong> działającej w sieci Base L2.</p>
             <h4 data-i18n="rSec1Title">1. Wiadomości i Darmowy Limit</h4>
-            <p data-i18n="rSec1Desc">Każdy użytkownik otrzymuje dzienny limit 150 darmowych wiadomości (odnawiany co dobę UTC). Po wyczerpaniu limitu wymagane jest posiadanie tokenów $SSOC.</p>
+            <p data-i18n="rSec1Desc">Każdy użytkownik otrzymuje dzienny limit darmowych wiadomości (odnawiany co dobę UTC). Po wyczerpaniu limitu wymagane jest posiadanie tokenów $SSOC.</p>
             <h4 data-i18n="rSec2Title">2. Tokenomika i Zakup ($SSOC)</h4>
             <p data-i18n="rSec2Desc">Cena tokena wynosi 0.00001 ETH. Kontrakt posiada mechanizm automatycznego mintowania przy zakupie za ETH.</p>
             <h4 data-i18n="rSec3Title">3. Tagi i Własność</h4>
-            <p data-i18n="rSec3Desc">Domyślny tag to DEFAULT. Możesz zarejestrować do 3 darmowych własnych tagów. Tag z 50 użyciami można wykupić, a z 100 użyciami podkupić (70% dla właściciela, 30% dla platformy).</p>
+            <p data-i18n="rSec3Desc">Domyślny tag to DEFAULT. Możesz zarejestrować własne tagi. Tag z 50 użyciami można wykupić, a z 100 użyciami podkupić (70% dla właściciela, 30% dla platformy).</p>
             <div class="modal-actions">
                 <button class="publish-btn" onclick="closeRulesModal()" data-i18n="modalClose">Zamknij</button>
             </div>
@@ -373,22 +395,20 @@
         const translations = {
             pl: {
                 subtitle: "Say Something On Chain (Base L2)",
-                rulesLink: "Zasady",
+                rulesLink: "Zasady i Mechanika",
                 connectBtn: "Połącz portfel",
                 freeLimitTitle: "DARMOWE WIADOMOŚCI DZISIAJ:",
                 tokenBalanceTitle: "TWOJE SALDO $SSOC:",
                 buyTokenBtn: "+ Dokup Tokeny $SSOC",
                 topCommentTitle: "🏆 KOMENTARZ DNIA",
-                noTopComment: "Brak wyróżnionego komentarza na dziś.",
                 msgLabel: "Napisz coś na stałe w blockchainie:",
                 tagLabel: "Tag (zostaw puste dla DEFAULT):",
                 publishBtn: "Opublikuj wpis",
                 feedTitle: "DYSKUSJE SPOŁECZNOŚCI (ON-CHAIN)",
-                loadingFeed: "Ładowanie wpisów z sieci...",
                 rulesModalTitle: "Zasady i Mechanika Projektu SSOC",
                 rulesModalDesc: "Witaj w oficjalnym przewodniku po mechanikach platformy SSOC.",
                 rSec1Title: "1. Wiadomości i Darmowy Limit",
-                rSec1Desc: "Każdy użytkownik otrzymuje dzienny limit 150 darmowych wiadomości.",
+                rSec1Desc: "Każdy użytkownik otrzymuje dzienny limit darmowych wiadomości.",
                 rSec2Title: "2. Tokenomika i Zakup ($SSOC)",
                 rSec2Desc: "Cena tokena wynosi 0.00001 ETH.",
                 rSec3Title: "3. Tagi i Własność",
@@ -401,22 +421,20 @@
             },
             en: {
                 subtitle: "Say Something On Chain (Base L2)",
-                rulesLink: "Rules",
+                rulesLink: "Rules & Mechanics",
                 connectBtn: "Connect Wallet",
                 freeLimitTitle: "FREE MESSAGES TODAY:",
                 tokenBalanceTitle: "YOUR $SSOC BALANCE:",
                 buyTokenBtn: "+ Buy $SSOC Tokens",
                 topCommentTitle: "🏆 COMMENT OF THE DAY",
-                noTopComment: "No featured comment for today.",
                 msgLabel: "Say something permanently on-chain:",
                 tagLabel: "Tag (leave empty for DEFAULT):",
                 publishBtn: "Publish Post",
                 feedTitle: "COMMUNITY DISCUSSIONS (ON-CHAIN)",
-                loadingFeed: "Loading posts from network...",
                 rulesModalTitle: "SSOC Project Rules & Mechanics",
                 rulesModalDesc: "Welcome to the official SSOC guide.",
                 rSec1Title: "1. Messages & Free Limit",
-                rSec1Desc: "Each user receives a daily free limit of 150 messages.",
+                rSec1Desc: "Each user receives a daily free limit of messages.",
                 rSec2Title: "2. Tokenomics & Purchase ($SSOC)",
                 rSec2Desc: "Token price is 0.00001 ETH.",
                 rSec3Title: "3. Tags & Ownership",
@@ -429,22 +447,20 @@
             },
             de: {
                 subtitle: "Say Something On Chain (Base L2)",
-                rulesLink: "Regeln",
+                rulesLink: "Regeln & Mechanik",
                 connectBtn: "Wallet verbinden",
                 freeLimitTitle: "KOSTENLOSE NACHRICHTEN HEUTE:",
                 tokenBalanceTitle: "IHR $SSOC GUTHABEN:",
                 buyTokenBtn: "+ $SSOC Token kaufen",
                 topCommentTitle: "🏆 KOMMENTAR DES TAGES",
-                noTopComment: "Kein hervorgehobener Kommentar für heute.",
                 msgLabel: "Schreibe dauerhaft etwas On-Chain:",
                 tagLabel: "Tag (für DEFAULT leer lassen):",
                 publishBtn: "Beitrag veröffentlichen",
                 feedTitle: "COMMUNITY-DISKUSSIONEN (ON-CHAIN)",
-                loadingFeed: "Lade Beiträge aus dem Netzwerk...",
                 rulesModalTitle: "SSOC Projektregeln und Mechanik",
                 rulesModalDesc: "Willkommen beim offiziellen SSOC-Leitfaden.",
                 rSec1Title: "1. Nachrichten & Freigrenze",
-                rSec1Desc: "Jeder Nutzer erhält ein tägliches Freilimit von 150 Nachrichten.",
+                rSec1Desc: "Jeder Nutzer erhält ein tägliches Freilimit.",
                 rSec2Title: "2. Tokenomics & Kauf ($SSOC)",
                 rSec2Desc: "Der Token-Kaufpreis beträgt 0.00001 ETH.",
                 rSec3Title: "3. Tags & Eigentum",
