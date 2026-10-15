@@ -191,7 +191,6 @@
             localStorage.setItem('ssoc_rules_lang', lang);
         }
 
-        // Automatyczne wczytanie zapamiętanego języka lub domyślnie PL
         const savedLang = localStorage.getItem('ssoc_rules_lang') || 'pl';
         document.getElementById('langSelect').value = savedLang;
         changeLanguage(savedLang);
