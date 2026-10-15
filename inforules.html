@@ -2,514 +2,198 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSOC - Say Something On Chain</title>
-    <!-- Ethers.js library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+    <title id="page-title">Zasady i Mechanika - SSOC</title>
     <style>
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-color: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent-color: #38bdf8;
-            --accent-hover: #0ea5e9;
-            --border-color: #334155;
-            --danger-color: #ef4444;
-            --success-color: #22c55e;
-        }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            background-color: #0f172a;
+            color: #f8fafc;
+            line-height: 1.6;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
         }
-
-        .container {
-            width: 100%;
-            max-width: 700px;
+        h1, h2 { color: #38bdf8; }
+        .card {
+            background: #1e293b;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
-
-        header {
+        ul { padding-left: 20px; }
+        li { margin-bottom: 8px; }
+        a { color: #38bdf8; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .top-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
-            background: var(--card-bg);
-            padding: 16px 24px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            flex-wrap: wrap;
-            gap: 12px;
+            margin-bottom: 20px;
         }
-
-        .logo-area {
-            display: flex;
-            flex-direction: column;
+        .back-btn {
+            background: #3b82f6;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
         }
-
-        .logo-area h1 {
-            margin: 0;
-            font-size: 24px;
-            color: var(--accent-color);
-        }
-
-        .logo-area span {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .nav-links button.nav-link-btn, .nav-links button.lang-btn {
-            background: none;
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            padding: 6px 12px;
+        .back-btn:hover { background: #2563eb; }
+        .lang-select {
+            background: #1e293b;
+            color: #f8fafc;
+            border: 1px solid #334155;
+            padding: 8px 12px;
             border-radius: 6px;
             cursor: pointer;
-            text-decoration: none;
-            font-size: 13px;
-            transition: all 0.2s;
-        }
-
-        .nav-links button.nav-link-btn:hover, .nav-links button.lang-btn:hover, .nav-links button.lang-btn.active {
-            border-color: var(--accent-color);
-            color: var(--accent-color);
-            background: rgba(56, 189, 248, 0.1);
-        }
-
-        .connect-btn {
-            background: var(--accent-color);
-            color: #0f172a;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .connect-btn:hover {
-            background: var(--accent-hover);
-        }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .stat-box {
-            background: rgba(15, 23, 42, 0.5);
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            border: 1px solid var(--border-color);
-        }
-
-        .stat-box h3 {
-            margin: 0 0 8px 0;
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-
-        .stat-box p {
-            margin: 0;
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--accent-color);
-        }
-
-        .full-width-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: opacity 0.2s;
-        }
-
-        .full-width-btn:hover {
-            opacity: 0.9;
-        }
-
-        .top-comment-banner {
-            border-left: 4px solid var(--accent-color);
-            background: rgba(56, 189, 248, 0.05);
-        }
-
-        .top-comment-banner h3 {
-            margin: 0 0 8px 0;
-            color: var(--accent-color);
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-
-        textarea, input[type="text"], input[type="number"] {
-            width: 100%;
-            background: var(--bg-color);
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            padding: 12px;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-family: inherit;
-            resize: vertical;
-        }
-
-        textarea:focus, input:focus {
-            outline: none;
-            border-color: var(--accent-color);
-        }
-
-        .publish-btn {
-            background: var(--success-color);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        .publish-btn:hover {
-            opacity: 0.9;
-        }
-
-        /* Modal / Popup */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 12px;
-            max-width: 550px;
-            width: 90%;
-            max-height: 85vh;
-            overflow-y: auto;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            border: 1px solid var(--border-color);
-        }
-
-        .modal-content h3 { margin-top: 0; color: var(--accent-color); }
-        .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
-
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--card-bg);
-            border: 1px solid var(--accent-color);
-            padding: 12px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            display: none;
-            z-index: 2000;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- Nagłówek -->
-        <header>
-            <div class="logo-area">
-                <h1>SSOC</h1>
-                <span data-i18n="subtitle">Say Something On Chain (Base L2)</span>
-            </div>
-            <div class="nav-links">
-                <!-- Widoczne przyciski języków -->
-                <button class="lang-btn" id="lang-pl" onclick="setLanguage('pl')">PL</button>
-                <button class="lang-btn" id="lang-en" onclick="setLanguage('en')">EN</button>
-                <button class="lang-btn" id="lang-de" onclick="setLanguage('de')">DE</button>
-
-                <button class="nav-link-btn" onclick="openRulesModal()" data-i18n="rulesLink">Zasady i Mechanika</button>
-                <button class="connect-btn" id="connectWalletBtn" onclick="connectWallet()">Połącz portfel</button>
-            </div>
-        </header>
-
-        <!-- Statystyka / Stan użytkownika -->
-        <div class="card">
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <h3 data-i18n="freeLimitTitle">DARMOWE WIADOMOŚCI DZISIAJ:</h3>
-                    <p id="freeLimitCount">0 / 150</p>
-                </div>
-                <div class="stat-box">
-                    <h3 data-i18n="tokenBalanceTitle">TWOJE SALDO $SSOC:</h3>
-                    <p id="userTokenBalance">0.00 $SSOC</p>
-                </div>
-            </div>
-            <button class="full-width-btn" onclick="openBuyModal()" data-i18n="buyTokenBtn">+ Dokup Tokeny $SSOC</button>
-        </div>
-
-        <!-- Komentarz Dnia -->
-        <div class="card top-comment-banner">
-            <h3 data-i18n="topCommentTitle">🏆 KOMENTARZ DNIA</h3>
-            <div id="topCommentContent" data-i18n="noTopComment">Brak wyróżnionego komentarza na dziś.</div>
-        </div>
-
-        <!-- Formularz dodawania wiadomości -->
-        <div class="card">
-            <div class="form-group">
-                <label for="messageContent" data-i18n="msgLabel">Napisz coś na stałe w blockchainie:</label>
-                <textarea id="messageContent" rows="3" placeholder="Twoja wiadomość..."></textarea>
-            </div>
-            <div class="form-group">
-                <label for="messageTag" data-i18n="tagLabel">Tag (zostaw puste dla DEFAULT):</label>
-                <input type="text" id="messageTag" placeholder="np. #crypto lub moje-tag">
-            </div>
-            <button class="publish-btn" onclick="postMessage()" data-i18n="publishBtn">Opublikuj wpis</button>
-        </div>
-
-        <!-- Lista dyskusji -->
-        <div class="card">
-            <h3 style="margin-top:0;" data-i18n="feedTitle">DYSKUSJE SPOŁECZNOŚCI (ON-CHAIN)</h3>
-            <div id="commentsFeed">
-                <p style="color: var(--text-muted); text-align: center;" data-i18n="loadingFeed">Ładowanie wpisów z sieci...</p>
-            </div>
-        </div>
+    <div class="top-bar">
+        <a href="index.html" class="back-btn" id="btn-back">&larr; Powrót do aplikacji</a>
+        <select id="langSelect" class="lang-select" onchange="changeLanguage(this.value)">
+            <option value="pl">🇵🇱 Polski</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="de">🇩🇪 Deutsch</option>
+        </select>
     </div>
 
-    <!-- Modal Zasad i Mechaniki (Popup) -->
-    <div class="modal" id="rulesModal">
-        <div class="modal-content">
-            <h3 data-i18n="rulesModalTitle">Zasady i Mechanika Projektu SSOC</h3>
-            <p data-i18n="rulesModalDesc">Witaj w oficjalnym przewodniku po mechanikach zdecentralizowanej platformy społecznościowej <strong>Say Something On Chain (SSOC)</strong> działającej w sieci Base L2.</p>
-            
-            <h4 data-i18n="rSec1Title">1. Wiadomości i Darmowy Limit</h4>
-            <p data-i18n="rSec1Desc">Każdy użytkownik otrzymuje dzienny, darmowy limit 150 wiadomości (odnawiany automatycznie co dobę UTC). Po wyczerpaniu limitu publikacja wymaga posiadania i zużycia tokenów $SSOC.</p>
+    <h1 id="main-heading">Zasady i Mechanika Projektu SSOC</h1>
+    <p id="main-desc">Witaj w oficjalnym przewodniku po mechanikach zdecentralizowanej platformy społecznościowej <strong>Say Something On Chain (SSOC)</strong> działającej w sieci Base L2.</p>
 
-            <h4 data-i18n="rSec2Title">2. Tokenomika i Zakup ($SSOC)</h4>
-            <p data-i18n="rSec2Desc">Cena zakupu tokena bezpośrednio w smart kontrakcie wynosi 0.00001 ETH za 1 token. Wbudowany mechanizm automatycznego mintowania dba o to, by pula kontraktu nigdy się nie wyczerpała.</p>
-
-            <h4 data-i18n="rSec3Title">3. System Tagów i Własność</h4>
-            <p data-i18n="rSec3Desc">Domyślny tag to DEFAULT (darmowy). Możesz zarejestrować do 3 własnych tagów. Tag z 50 użyciami można wykupić, a z 100 użyciami podkupić (Snipe). Podział opłat: 70% dla właściciela, 30% dla platformy.</p>
-
-            <h4 data-i18n="rSec4Title">4. Głosowanie i Komentarz Dnia</h4>
-            <p data-i18n="rSec4Desc">Użytkownicy mogą oddawać 1 głos dziennie na najciekawszy komentarz, który trafia do wyróżnionej sekcji Komentarz Dnia.</p>
-
-            <div class="modal-actions" style="margin-top: 25px;">
-                <button class="publish-btn" onclick="closeRulesModal()" data-i18n="modalClose">Zamknij</button>
-            </div>
-        </div>
+    <div class="card">
+        <h2 id="sec1-title">1. Wiadomości i Darmowy Limit</h2>
+        <ul>
+            <li id="sec1-1">Każdy użytkownik otrzymuje dzienny, darmowy limit <strong>150 wiadomości</strong> (odnawiany automatycznie co dobę UTC).</li>
+            <li id="sec1-2">Po wyczerpaniu darmowego limitu, publikacja kolejnych wiadomości wymaga posiadania i zużycia tokenów <strong>$SSOC</strong>.</li>
+        </ul>
     </div>
 
-    <!-- Modal zakupu tokenów -->
-    <div class="modal" id="buyTokensModal">
-        <div class="modal-content">
-            <h3 data-i18n="modalBuyTitle">Dokup Tokeny $SSOC</h3>
-            <p data-i18n="modalBuyDesc">Wyczerpałeś limit darmowych wiadomości? Dokup tokeny $SSOC za ETH (0.00001 ETH / token).</p>
-            <div class="form-group">
-                <label data-i18n="modalAmountLabel">Ilość tokenów:</label>
-                <input type="number" id="tokenAmountInput" value="10" min="1">
-            </div>
-            <div class="modal-actions">
-                <button class="publish-btn" onclick="buyTokens()" data-i18n="modalBuyAction">Kup za ETH</button>
-                <button class="full-width-btn" style="background:var(--border-color); margin-top:0;" onclick="closeBuyModal()" data-i18n="modalClose">Zamknij</button>
-            </div>
-        </div>
+    <div class="card">
+        <h2 id="sec2-title">2. Tokenomika i Zakup Tokenów ($SSOC)</h2>
+        <ul>
+            <li id="sec2-1">Oficjalny token platformy: <strong>$SSOC</strong>.</li>
+            <li id="sec2-2">Cena zakupu tokena bezpośrednio w smart kontrakcie wynosi <strong>0.00001 ETH</strong> za 1 token.</li>
+            <li id="sec2-3">Wbudowany mechanizm automatycznego mintowania dba o to, by pula kontraktu nigdy się nie wyczerpała przy zakupie za ETH.</li>
+        </ul>
     </div>
 
-    <div class="notification" id="notificationBox">Powiadomienie</div>
+    <div class="card">
+        <h2 id="sec3-title">3. System Tagów i Własność</h2>
+        <ul>
+            <li id="sec3-1">Domyślny tag wiadomości to <code>DEFAULT</code> (całkowicie darmowy i dostępny dla każdego).</li>
+            <li id="sec3-2">Każdy użytkownik może zarejestrować do <strong>3 własnych, darmowych tagów</strong> customowych.</li>
+            <li id="sec3-3"><strong>Wykup i podkupienie (Snipe):</strong> Tag, który osiągnie 50 użyć, może zostać wykupiony. Po osiągnięciu 100 użyć, tag posiadany przez kogoś może zostać podkupiony.</li>
+            <li id="sec3-4"><strong>Podział opłat z tagów:</strong> 70% trafia do dotychczasowego właściciela tagu, a 30% zasila prowizję platformy.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2 id="sec4-title">4. Głosowanie i Komentarz Dnia</h2>
+        <ul>
+            <li id="sec4-1">Użytkownicy mogą oddawać 1 głos dziennie na najciekawszy komentarz.</li>
+            <li id="sec4-2">Komentarz z największą liczbą głosów w danym dniu automatycznie ląduje w sekcji wyróżnionej jako <strong>Komentarz Dnia</strong>.</li>
+        </ul>
+    </div>
 
     <script>
-        const CONTRACT_ADDRESS = "TUTAJ_WKLEJ_ADRES_PROXY";
-        const TOKEN_ADDRESS = "0x6477f2320740a14b3d2016fda13aea704187bc09";
-
         const translations = {
             pl: {
-                subtitle: "Say Something On Chain (Base L2)",
-                rulesLink: "Zasady i Mechanika",
-                connectBtn: "Połącz portfel",
-                freeLimitTitle: "DARMOWE WIADOMOŚCI DZISIAJ:",
-                tokenBalanceTitle: "TWOJE SALDO $SSOC:",
-                buyTokenBtn: "+ Dokup Tokeny $SSOC",
-                topCommentTitle: "🏆 KOMENTARZ DNIA",
-                noTopComment: "Brak wyróżnionego komentarza na dziś.",
-                msgLabel: "Napisz coś na stałe w blockchainie:",
-                tagLabel: "Tag (zostaw puste dla DEFAULT):",
-                publishBtn: "Opublikuj wpis",
-                feedTitle: "DYSKUSJE SPOŁECZNOŚCI (ON-CHAIN)",
-                loadingFeed: "Ładowanie wpisów z sieci...",
-                rulesModalTitle: "Zasady i Mechanika Projektu SSOC",
-                rulesModalDesc: "Witaj w oficjalnym przewodniku po mechanikach zdecentralizowanej platformy społecznościowej <strong>Say Something On Chain (SSOC)</strong> działającej w sieci Base L2.",
-                rSec1Title: "1. Wiadomości i Darmowy Limit",
-                rSec1Desc: "Każdy użytkownik otrzymuje dzienny, darmowy limit 150 wiadomości (odnawiany automatycznie co dobę UTC). Po wyczerpaniu limitu publikacja wymaga posiadania i zużycia tokenów $SSOC.",
-                rSec2Title: "2. Tokenomika i Zakup ($SSOC)",
-                rSec2Desc: "Cena zakupu tokena bezpośrednio w smart kontrakcie wynosi 0.00001 ETH za 1 token. Wbudowany mechanizm automatycznego mintowania dba o to, by pula kontraktu nigdy się nie wyczerpała.",
-                rSec3Title: "3. System Tagów i Własność",
-                rSec3Desc: "Domyślny tag to DEFAULT (darmowy). Możesz zarejestrować do 3 własnych tagów. Tag z 50 użyciami można wykupić, a z 100 użyciami podkupić (Snipe). Podział opłat: 70% dla właściciela, 30% dla platformy.",
-                rSec4Title: "4. Głosowanie i Komentarz Dnia",
-                rSec4Desc: "Użytkownicy mogą oddawać 1 głos dziennie na najciekawszy komentarz, który trafia do wyróżnionej sekcji Komentarz Dnia.",
-                modalBuyTitle: "Dokup Tokeny $SSOC",
-                modalBuyDesc: "Wyczerpałeś limit darmowych wiadomości? Dokup tokeny $SSOC za ETH (0.00001 ETH / token).",
-                modalAmountLabel: "Ilość tokenów:",
-                modalBuyAction: "Kup za ETH",
-                modalClose: "Zamknij"
+                pageTitle: "Zasady i Mechanika - SSOC",
+                btnBack: "← Powrót do aplikacji",
+                mainHeading: "Zasady i Mechanika Projektu SSOC",
+                mainDesc: "Witaj w oficjalnym przewodniku po mechanikach zdecentralizowanej platformy społecznościowej <strong>Say Something On Chain (SSOC)</strong> działającej w sieci Base L2.",
+                sec1Title: "1. Wiadomości i Darmowy Limit",
+                sec11: "Każdy użytkownik otrzymuje dzienny, darmowy limit <strong>150 wiadomości</strong> (odnawiany automatycznie co dobę UTC).",
+                sec12: "Po wyczerpaniu darmowego limitu, publikacja kolejnych wiadomości wymaga posiadania i zużycia tokenów <strong>$SSOC</strong>.",
+                sec2Title: "2. Tokenomika i Zakup Tokenów ($SSOC)",
+                sec21: "Oficjalny token platformy: <strong>$SSOC</strong>.",
+                sec22: "Cena zakupu tokena bezpośrednio w smart kontrakcie wynosi <strong>0.00001 ETH</strong> za 1 token.",
+                sec23: "Wbudowany mechanizm automatycznego mintowania dba o to, by pula kontraktu nigdy się nie wyczerpała przy zakupie za ETH.",
+                sec3Title: "3. System Tagów i Własność",
+                sec31: "Domyślny tag wiadomości to <code>DEFAULT</code> (całkowicie darmowy i dostępny dla każdego).",
+                sec32: "Każdy użytkownik może zarejestrować do <strong>3 własnych, darmowych tagów</strong> customowych.",
+                sec33: "<strong>Wykup i podkupienie (Snipe):</strong> Tag, który osiągnie 50 użyć, może zostać wykupiony. Po osiągnięciu 100 użyć, tag posiadany przez kogoś może zostać podkupiony.",
+                sec34: "<strong>Podział opłat z tagów:</strong> 70% trafia do dotychczasowego właściciela tagu, a 30% zasila prowizję platformy.",
+                sec4Title: "4. Głosowanie i Komentarz Dnia",
+                sec41: "Użytkownicy mogą oddawać 1 głos dziennie na najciekawszy komentarz.",
+                sec42: "Komentarz z największą liczbą głosów w danym dniu automatycznie ląduje w sekcji wyróżnionej jako <strong>Komentarz Dnia</strong>."
             },
             en: {
-                subtitle: "Say Something On Chain (Base L2)",
-                rulesLink: "Rules & Mechanics",
-                connectBtn: "Connect Wallet",
-                freeLimitTitle: "FREE MESSAGES TODAY:",
-                tokenBalanceTitle: "YOUR $SSOC BALANCE:",
-                buyTokenBtn: "+ Buy $SSOC Tokens",
-                topCommentTitle: "🏆 COMMENT OF THE DAY",
-                noTopComment: "No featured comment for today.",
-                msgLabel: "Say something permanently on-chain:",
-                tagLabel: "Tag (leave empty for DEFAULT):",
-                publishBtn: "Publish Post",
-                feedTitle: "COMMUNITY DISCUSSIONS (ON-CHAIN)",
-                loadingFeed: "Loading posts from network...",
-                rulesModalTitle: "SSOC Project Rules & Mechanics",
-                rulesModalDesc: "Welcome to the official guide to the mechanics of the decentralized social platform <strong>Say Something On Chain (SSOC)</strong> running on Base L2.",
-                rSec1Title: "1. Messages & Free Limit",
-                rSec1Desc: "Each user receives a daily free limit of 150 messages (automatically renewed every UTC day). After exhausting the limit, publishing requires holding and spending $SSOC tokens.",
-                rSec2Title: "2. Tokenomics & Purchase ($SSOC)",
-                rSec2Desc: "The token purchase price directly in the smart contract is 0.00001 ETH per 1 token. A built-in automatic minting mechanism ensures the contract pool never runs out.",
-                rSec3Title: "3. Tag System & Ownership",
-                rSec3Desc: "The default tag is DEFAULT (free). You can register up to 3 custom tags. A tag with 50 uses can be bought out, and with 100 uses sniped. Fee split: 70% to owner, 30% to platform.",
-                rSec4Title: "4. Voting & Comment of the Day",
-                rSec4Desc: "Users can cast 1 vote per day for the most interesting comment, which goes to the highlighted Comment of the Day section.",
-                modalBuyTitle: "Buy $SSOC Tokens",
-                modalBuyDesc: "Exhausted your free message limit? Buy $SSOC tokens with ETH (0.00001 ETH / token).",
-                modalAmountLabel: "Token amount:",
-                modalBuyAction: "Buy with ETH",
-                modalClose: "Close"
+                pageTitle: "Rules & Mechanics - SSOC",
+                btnBack: "← Back to App",
+                mainHeading: "SSOC Project Rules & Mechanics",
+                mainDesc: "Welcome to the official guide to the mechanics of the decentralized social platform <strong>Say Something On Chain (SSOC)</strong> running on Base L2.",
+                sec1Title: "1. Messages & Free Limit",
+                sec11: "Each user receives a daily free limit of <strong>150 messages</strong> (automatically renewed every UTC day).",
+                sec12: "After exhausting the free limit, publishing further messages requires holding and spending <strong>$SSOC</strong> tokens.",
+                sec2Title: "2. Tokenomics & Token Purchase ($SSOC)",
+                sec21: "Official platform token: <strong>$SSOC</strong>.",
+                sec22: "The token purchase price directly in the smart contract is <strong>0.00001 ETH</strong> per 1 token.",
+                sec23: "A built-in automatic minting mechanism ensures the contract pool never runs out when purchasing with ETH.",
+                sec3Title: "3. Tag System & Ownership",
+                sec31: "The default message tag is <code>DEFAULT</code> (completely free and available to everyone).",
+                sec32: "Each user can register up to <strong>3 custom free tags</strong>.",
+                sec33: "<strong>Buyout & Snipe:</strong> A tag that reaches 50 uses can be bought out. Upon reaching 100 uses, an owned tag can be sniped.",
+                sec34: "<strong>Tag fee split:</strong> 70% goes to the previous tag owner, and 30% goes to the platform fee.",
+                sec4Title: "4. Voting & Comment of the Day",
+                sec41: "Users can cast 1 vote per day for the most interesting comment.",
+                sec42: "The comment with the highest number of votes on a given day automatically lands in the highlighted <strong>Comment of the Day</strong> section."
             },
             de: {
-                subtitle: "Say Something On Chain (Base L2)",
-                rulesLink: "Regeln & Mechanik",
-                connectBtn: "Wallet verbinden",
-                freeLimitTitle: "KOSTENLOSE NACHRICHTEN HEUTE:",
-                tokenBalanceTitle: "IHR $SSOC GUTHABEN:",
-                buyTokenBtn: "+ $SSOC Token kaufen",
-                topCommentTitle: "🏆 KOMMENTAR DES TAGES",
-                noTopComment: "Kein hervorgehobener Kommentar für heute.",
-                msgLabel: "Schreibe dauerhaft etwas On-Chain:",
-                tagLabel: "Tag (für DEFAULT leer lassen):",
-                publishBtn: "Beitrag veröffentlichen",
-                feedTitle: "COMMUNITY-DISKUSSIONEN (ON-CHAIN)",
-                loadingFeed: "Lade Beiträge aus dem Netzwerk...",
-                rulesModalTitle: "SSOC Projektregeln und Mechanik",
-                rulesModalDesc: "Willkommen beim offiziellen Leitfaden zur Mechanik der dezentralen Social-Plattform <strong>Say Something On Chain (SSOC)</strong> auf Base L2.",
-                rSec1Title: "1. Nachrichten & Freigrenze",
-                rSec1Desc: "Jeder Nutzer erhält ein tägliches Freilimit von 150 Nachrichten (wird jeden UTC-Tag erneuert). Nach Ausschöpfung erfordert das Veröffentlichen das Halten von $SSOC-Token.",
-                rSec2Title: "2. Tokenomics & Kauf ($SSOC)",
-                rSec2Desc: "Der Token-Kaufpreis direkt im Smart Contract beträgt 0.00001 ETH pro 1 Token. Ein integrierter automatischer Minting-Mechanismus sorgt dafür, dass der Pool nie ausgeht.",
-                rSec3Title: "3. Tag-System & Eigentum",
-                rSec3Desc: "Der Standard-Tag ist DEFAULT (kostenlos). Sie können bis zu 3 eigene Tags registrieren. Ein Tag mit 50 Verwendungen kann gekauft und mit 100 gesnipt werden. Aufteilung: 70% Inhaber, 30% Plattform.",
-                rSec4Title: "4. Abstimmung & Kommentar des Tages",
-                rSec4Desc: "Benutzer können täglich 1 Stimme für den interessantesten Kommentar abgeben, der im Bereich Kommentar des Tages hervorgehoben wird.",
-                modalBuyTitle: "$SSOC Token kaufen",
-                modalBuyDesc: "Freilimit aufgebraucht? Kaufen Sie $SSOC Token mit ETH (0.00001 ETH / Token).",
-                modalAmountLabel: "Token-Menge:",
-                modalBuyAction: "Mit ETH kaufen",
-                modalClose: "Schließen"
+                pageTitle: "Regeln & Mechanik - SSOC",
+                btnBack: "← Zurück zur App",
+                mainHeading: "SSOC Projektregeln und Mechanik",
+                mainDesc: "Willkommen beim offiziellen Leitfaden zur Mechanik der dezentralen Social-Plattform <strong>Say Something On Chain (SSOC)</strong> auf Base L2.",
+                sec1Title: "1. Nachrichten & Freigrenze",
+                sec11: "Jeder Nutzer erhält ein tägliches Freilimit von <strong>150 Nachrichten</strong> (wird jeden UTC-Tag automatisch erneuert).",
+                sec12: "Nach Ausschöpfung des Freilimits erfordert das Veröffentlichen weiterer Nachrichten das Halten und Ausgeben von <strong>$SSOC</strong>-Token.",
+                sec2Title: "2. Tokenomics & Token-Kauf ($SSOC)",
+                sec21: "Offizieller Plattform-Token: <strong>$SSOC</strong>.",
+                sec22: "Der Token-Kaufpreis direkt im Smart Contract beträgt <strong>0.00001 ETH</strong> pro 1 Token.",
+                sec23: "Ein integrierter automatischer Minting-Mechanismus sorgt dafür, dass der Vertragspool beim ETH-Kauf nie ausgeht.",
+                sec3Title: "3. Tag-System & Eigentum",
+                sec31: "Der Standard-Nachrichten-Tag ist <code>DEFAULT</code> (völlig kostenlos und für jeden verfügbar).",
+                sec32: "Jeder Benutzer kann bis zu <strong>3 eigene, kostenlose Tags</strong> registrieren.",
+                sec33: "<strong>Kauf und Snipe:</strong> Ein Tag, der 50 Verwendungen erreicht, kann gekauft werden. Nach Erreichen von 100 Verwendungen kann ein besessener Tag gesnipt werden.",
+                sec34: "<strong>Tag-Gebührenaufteilung:</strong> 70% gehen an den bisherigen Tag-Inhaber und 30% an die Plattformgebühr.",
+                sec4Title: "4. Abstimmung & Kommentar des Tages",
+                sec41: "Benutzer können täglich 1 Stimme für den interessantesten Kommentar abgeben.",
+                sec42: "Der Kommentar mit den meisten Stimmen an einem Tag landet automatisch im hervorgehobenen Bereich <strong>Kommentar des Tages</strong>."
             }
         };
 
-        function setLanguage(lang) {
-            localStorage.setItem('ssoc_lang', lang);
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (translations[lang] && translations[lang][key]) {
-                    el.innerHTML = translations[lang][key];
-                }
-            });
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('lang-' + lang).classList.add('active');
+        function changeLanguage(lang) {
+            const t = translations[lang];
+            if (!t) return;
+            document.getElementById('page-title').innerText = t.pageTitle;
+            document.getElementById('btn-back').innerHTML = t.btnBack;
+            document.getElementById('main-heading').innerText = t.mainHeading;
+            document.getElementById('main-desc').innerHTML = t.mainDesc;
+            document.getElementById('sec1-title').innerText = t.sec1Title;
+            document.getElementById('sec1-1').innerHTML = t.sec11;
+            document.getElementById('sec1-2').innerHTML = t.sec12;
+            document.getElementById('sec2-title').innerText = t.sec2Title;
+            document.getElementById('sec2-1').innerHTML = t.sec21;
+            document.getElementById('sec2-2').innerHTML = t.sec22;
+            document.getElementById('sec2-3').innerHTML = t.sec23;
+            document.getElementById('sec3-title').innerText = t.sec3Title;
+            document.getElementById('sec31').innerHTML = t.sec31;
+            document.getElementById('sec32').innerHTML = t.sec32;
+            document.getElementById('sec33').innerHTML = t.sec33;
+            document.getElementById('sec34').innerHTML = t.sec34;
+            document.getElementById('sec4-title').innerText = t.sec4Title;
+            document.getElementById('sec41').innerHTML = t.sec41;
+            document.getElementById('sec42').innerHTML = t.sec42;
+            localStorage.setItem('ssoc_rules_lang', lang);
         }
 
-        const currentLang = localStorage.getItem('ssoc_lang') || 'pl';
-        setLanguage(currentLang);
-
-        function showNotification(text) {
-            const box = document.getElementById('notificationBox');
-            box.innerText = text;
-            box.style.display = 'block';
-            setTimeout(() => { box.style.display = 'none'; }, 4000);
-        }
-
-        function openRulesModal() { document.getElementById('rulesModal').style.display = 'flex'; }
-        function closeRulesModal() { document.getElementById('rulesModal').style.display = 'none'; }
-        function openBuyModal() { document.getElementById('buyTokensModal').style.display = 'flex'; }
-        function closeBuyModal() { document.getElementById('buyTokensModal').style.display = 'none'; }
-
-        async function connectWallet() {
-            if (window.ethereum) {
-                try {
-                    const provider = new ethers.BrowserProvider(window.ethereum);
-                    await provider.send("eth_requestAccounts", []);
-                    const signer = await provider.getSigner();
-                    const address = await signer.getAddress();
-                    document.getElementById('connectWalletBtn').innerText = address.substring(0, 6) + "..." + address.substring(38);
-                    showNotification("Portfel połączony pomyślnie!");
-                } catch (err) {
-                    console.error(err);
-                    showNotification("Błąd łączenia z portfelem.");
-                }
-            } else {
-                alert("Zainstaluj MetaMask!");
-            }
-        }
-
-        function postMessage() {
-            showNotification("Funkcja publikacji gotowa do spięcia z kontraktem Proxy.");
-        }
-
-        function buyTokens() {
-            showNotification("Zakup tokenów w toku...");
-            closeBuyModal();
-        }
+        const savedLang = localStorage.getItem('ssoc_rules_lang') || 'pl';
+        document.getElementById('langSelect').value = savedLang;
+        changeLanguage(savedLang);
     </script>
 </body>
 </html>
