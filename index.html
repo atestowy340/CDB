@@ -1,700 +1,515 @@
 <!DOCTYPE html>
-<html lang="pl" class="dark">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SSOC - Say Something On Chain</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- React & ReactDOM -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <!-- Babel dla JSX -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Ethers.js v5 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <!-- Ethers.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-color: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --border-color: #334155;
+            --danger-color: #ef4444;
+            --success-color: #22c55e;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            background: var(--card-bg);
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .logo-area {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-area h1 {
+            margin: 0;
+            font-size: 24px;
+            color: var(--accent-color);
+        }
+
+        .logo-area span {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links button.nav-link-btn, .nav-links button.lang-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .nav-links button.nav-link-btn:hover, .nav-links button.lang-btn:hover, .nav-links button.lang-btn.active {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        .connect-btn {
+            background: var(--accent-color);
+            color: #0f172a;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .connect-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-box h3 {
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .stat-box p {
+            margin: 0;
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .full-width-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: opacity 0.2s;
+        }
+
+        .full-width-btn:hover {
+            opacity: 0.9;
+        }
+
+        .top-comment-banner {
+            border-left: 4px solid var(--accent-color);
+            background: rgba(56, 189, 248, 0.05);
+        }
+
+        .top-comment-banner h3 {
+            margin: 0 0 8px 0;
+            color: var(--accent-color);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        textarea, input[type="text"], input[type="number"] {
+            width: 100%;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 12px;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        textarea:focus, input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .publish-btn {
+            background: var(--success-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .publish-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Modal / Popup */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 550px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-content h3 { margin-top: 0; color: var(--accent-color); }
+        .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--accent-color);
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            display: none;
+            z-index: 2000;
+        }
+    </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans min-h-screen antialiased">
-    <div id="root"></div>
+<body>
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
+    <div class="container">
+        <!-- Nagłówek -->
+        <header>
+            <div class="logo-area">
+                <h1>SSOC</h1>
+                <span data-i18n="subtitle">Say Something On Chain (Base L2)</span>
+            </div>
+            <div class="nav-links">
+                <!-- Widoczne przyciski języków -->
+                <button class="lang-btn" id="lang-pl" onclick="setLanguage('pl')">PL</button>
+                <button class="lang-btn" id="lang-en" onclick="setLanguage('en')">EN</button>
+                <button class="lang-btn" id="lang-de" onclick="setLanguage('de')">DE</button>
 
-        const CONTRACT_ADDRESS = "0x7b02DD4EE7FE7F17B891d7fbEC6ABd0e3A764ee0"; // SSOCBoard
-        const TOKEN_ADDRESS = "0x6477f2320740a14b3d2016fda13aEA704187bC09";    // SSOCToken
-        const BASE_SEPOLIA_RPC = "https://sepolia.base.org";
-        
-        const CONTRACT_ABI = [
-            "function voteComment(uint256 _commentId) external",
-            "function postMessage(string calldata tag, string calldata content) external",
-            "function buyTokens(uint256 amountOfTokens) external payable",
-            "function dailyMessageCount(address user, uint256 day) external view returns (uint256)",
-            "function dailyFreeLimit() external view returns (uint256)",
-            "function setNickname(string memory _nickname) external payable",
-            "function registerCustomTag(string memory _tagName) external",
-            "function buyOrSnipeTag(string memory _tagName) external payable",
-            "function commentsCount() external view returns (uint256)",
-            "function comments(uint256) external view returns (uint256 id, address author, string memory content, string memory tag, uint256 votes, uint256 timestamp)",
-            "function nicknames(address) external view returns (string memory)",
-            "function nicknameChangesCount(address) external view returns (uint256)",
-            "function tags(string) external view returns (string memory name, address owner, uint256 usesCount, uint256 currentPrice, bool isOwned)",
-            "function editableUseFee() external view returns (uint256)",
-            "function topCommentPerDay(uint256) external view returns (uint256)"
-        ];
+                <button class="nav-link-btn" onclick="openRulesModal()" data-i18n="rulesLink">Zasady i Mechanika</button>
+                <button class="connect-btn" id="connectWalletBtn" onclick="connectWallet()">Połącz portfel</button>
+            </div>
+        </header>
 
-        const TOKEN_ABI = [
-            "function balanceOf(address account) external view returns (uint256)",
-            "function allowance(address owner, address spender) external view returns (uint256)",
-            "function approve(address spender, uint256 amount) external returns (bool)"
-        ];
+        <!-- Statystyka / Stan użytkownika -->
+        <div class="card">
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <h3 data-i18n="freeLimitTitle">DARMOWE WIADOMOŚCI DZISIAJ:</h3>
+                    <p id="freeLimitCount">0 / 150</p>
+                </div>
+                <div class="stat-box">
+                    <h3 data-i18n="tokenBalanceTitle">TWOJE SALDO $SSOC:</h3>
+                    <p id="userTokenBalance">0.00 $SSOC</p>
+                </div>
+            </div>
+            <button class="full-width-btn" onclick="openBuyModal()" data-i18n="buyTokenBtn">+ Dokup Tokeny $SSOC</button>
+        </div>
+
+        <!-- Komentarz Dnia -->
+        <div class="card top-comment-banner">
+            <h3 data-i18n="topCommentTitle">🏆 KOMENTARZ DNIA</h3>
+            <div id="topCommentContent" data-i18n="noTopComment">Brak wyróżnionego komentarza na dziś.</div>
+        </div>
+
+        <!-- Formularz dodawania wiadomości -->
+        <div class="card">
+            <div class="form-group">
+                <label for="messageContent" data-i18n="msgLabel">Napisz coś na stałe w blockchainie:</label>
+                <textarea id="messageContent" rows="3" placeholder="Twoja wiadomość..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="messageTag" data-i18n="tagLabel">Tag (zostaw puste dla DEFAULT):</label>
+                <input type="text" id="messageTag" placeholder="np. #crypto lub moje-tag">
+            </div>
+            <button class="publish-btn" onclick="postMessage()" data-i18n="publishBtn">Opublikuj wpis</button>
+        </div>
+
+        <!-- Lista dyskusji -->
+        <div class="card">
+            <h3 style="margin-top:0;" data-i18n="feedTitle">DYSKUSJE SPOŁECZNOŚCI (ON-CHAIN)</h3>
+            <div id="commentsFeed">
+                <p style="color: var(--text-muted); text-align: center;" data-i18n="loadingFeed">Ładowanie wpisów z sieci...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Zasad i Mechaniki (Popup) -->
+    <div class="modal" id="rulesModal">
+        <div class="modal-content">
+            <h3 data-i18n="rulesModalTitle">Zasady i Mechanika Projektu SSOC</h3>
+            <p data-i18n="rulesModalDesc">Witaj w oficjalnym przewodniku po mechanikach zdecentralizowanej platformy społecznościowej <strong>Say Something On Chain (SSOC)</strong> działającej w sieci Base L2.</p>
+            
+            <h4 data-i18n="rSec1Title">1. Wiadomości i Darmowy Limit</h4>
+            <p data-i18n="rSec1Desc">Każdy użytkownik otrzymuje dzienny, darmowy limit 150 wiadomości (odnawiany automatycznie co dobę UTC). Po wyczerpaniu limitu publikacja wymaga posiadania i zużycia tokenów $SSOC.</p>
+
+            <h4 data-i18n="rSec2Title">2. Tokenomika i Zakup ($SSOC)</h4>
+            <p data-i18n="rSec2Desc">Cena zakupu tokena bezpośrednio w smart kontrakcie wynosi 0.00001 ETH za 1 token. Wbudowany mechanizm automatycznego mintowania dba o to, by pula kontraktu nigdy się nie wyczerpała.</p>
+
+            <h4 data-i18n="rSec3Title">3. System Tagów i Własność</h4>
+            <p data-i18n="rSec3Desc">Domyślny tag to DEFAULT (darmowy). Możesz zarejestrować do 3 własnych tagów. Tag z 50 użyciami można wykupić, a z 100 użyciami podkupić (Snipe). Podział opłat: 70% dla właściciela, 30% dla platformy.</p>
+
+            <h4 data-i18n="rSec4Title">4. Głosowanie i Komentarz Dnia</h4>
+            <p data-i18n="rSec4Desc">Użytkownicy mogą oddawać 1 głos dziennie na najciekawszy komentarz, który trafia do wyróżnionej sekcji Komentarz Dnia.</p>
+
+            <div class="modal-actions" style="margin-top: 25px;">
+                <button class="publish-btn" onclick="closeRulesModal()" data-i18n="modalClose">Zamknij</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal zakupu tokenów -->
+    <div class="modal" id="buyTokensModal">
+        <div class="modal-content">
+            <h3 data-i18n="modalBuyTitle">Dokup Tokeny $SSOC</h3>
+            <p data-i18n="modalBuyDesc">Wyczerpałeś limit darmowych wiadomości? Dokup tokeny $SSOC za ETH (0.00001 ETH / token).</p>
+            <div class="form-group">
+                <label data-i18n="modalAmountLabel">Ilość tokenów:</label>
+                <input type="number" id="tokenAmountInput" value="10" min="1">
+            </div>
+            <div class="modal-actions">
+                <button class="publish-btn" onclick="buyTokens()" data-i18n="modalBuyAction">Kup za ETH</button>
+                <button class="full-width-btn" style="background:var(--border-color); margin-top:0;" onclick="closeBuyModal()" data-i18n="modalClose">Zamknij</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notificationBox">Powiadomienie</div>
+
+    <script>
+        const CONTRACT_ADDRESS = "TUTAJ_WKLEJ_ADRES_PROXY";
+        const TOKEN_ADDRESS = "0x6477f2320740a14b3d2016fda13aea704187bc09";
 
         const translations = {
-            en: {
-                brand: "SSOC",
-                tagline: "Say Something On Chain",
-                connectWallet: "Connect Wallet",
-                setNickname: "Nickname",
-                nicknamePlaceholder: "Set nickname...",
-                saveNickname: "Save",
-                registerTagTitle: "Register Tag",
-                tagRegPlaceholder: "New tag...",
-                registerTagBtn: "Register",
-                feedTitle: "Community Discussions (On-Chain)",
-                postPlaceholder: "Write something permanently on-chain...",
-                tagPlaceholder: "Tag (leave empty for DEFAULT)",
-                publish: "Publish Post",
-                searchPlaceholder: "🔍 Search or inspect tag...",
-                clearFilter: "Clear",
-                rulesBtn: "Rules & Mechanics",
-                rulesTitle: "SSOC Comprehensive Mechanics Guide",
-                rulesIntro: "SSOC (Say Something On Chain) is a fully decentralized Web3 discussion platform operating securely on the Base L2 network.",
-                rule1Title: "1. Tag Registration & Ownership",
-                rule1Text: "• Free registration for up to 3 custom tags.\n• DEFAULT tag is protected and always free.",
-                rule2Title: "2. Daily Limits & $SSOC Token",
-                rule2Text: "• 150 free messages daily. After limit, publishing uses $SSOC tokens.\n• Buy tokens instantly using ETH.",
-                rule3Title: "3. Nickname System",
-                rule3Text: "• First setup is free.",
-                rule4Title: "4. Daily Voting",
-                rule4Text: "• Vote once daily. Top voted comment is featured at the top banner.",
-                rule5Title: "5. Direct Chat",
-                rule5Text: "• Free Off-Chain P2P messaging or permanent On-Chain DMs.",
-                ethicsTitle: "🛡️ Security",
-                ethicsText: "Secured cryptographically on Base L2.",
-                close: "Close",
-                chatTitle: "Direct Chat",
-                onchainChat: "⛓️ On-Chain",
-                offchainChat: "⚡ Off-Chain (Free)",
-                recipientPlaceholder: "Recipient address...",
-                msgPlaceholder: "Type private message...",
-                sendMsg: "Send",
-                buyoutTag: "Buyout Tag",
-                snipeTag: "Snipe Tag",
-                firstBuyoutTag: "First Buyout",
-                systemTag: "System / Public",
-                unregisteredTag: "Unregistered",
-                ownedTag: "Owned",
-                readyForSnipe: "Ready for Buyout",
-                freeOrInUse: "Free / In use",
-                tagStatusTitle: "Tag Status:",
-                usesCountLabel: "Uses:",
-                buyoutPriceLabel: "Price:",
-                topCommentTitle: "🏆 Comment of the Day",
-                noTopComment: "No votes recorded yet today.",
-                freeMsgLabel: "Daily Free Allowance:",
-                tokenBalanceLabel: "$SSOC Balance:",
-                buyTokensBtn: "Buy $SSOC Tokens",
-                buyModalTitle: "Buy $SSOC Tokens",
-                buyModalDesc: "Need more messages? Buy $SSOC tokens using ETH (0.00001 ETH / token).",
-                buyAction: "Buy with ETH"
-            },
             pl: {
-                brand: "SSOC",
-                tagline: "Say Something On Chain (Napisz coś on-chain)",
-                connectWallet: "Połącz Portfel",
-                setNickname: "Twój Nick",
-                nicknamePlaceholder: "Wpisz nick...",
-                saveNickname: "Zapisz",
-                registerTagTitle: "Rejestracja Tagu",
-                tagRegPlaceholder: "Wpisz tag...",
-                registerTagBtn: "Rejestruj",
-                feedTitle: "Dyskusje Społeczności (On-Chain)",
-                postPlaceholder: "Napisz coś na stałe w blockchainie...",
-                tagPlaceholder: "Tag (zostaw puste dla DEFAULT)",
-                publish: "Opublikuj wpis",
-                searchPlaceholder: "🔍 Szukaj lub sprawdź tag...",
-                clearFilter: "Wyczyść",
-                rulesBtn: "Zasady i Mechanika",
-                rulesTitle: "Kompleksowe Zasady Działania SSOC",
-                rulesIntro: "SSOC (Say Something On Chain) to zdecentralizowana platforma społecznościowa Web3 w sieci Base L2.",
-                rule1Title: "1. Rejestracja Tagów i Własność",
-                rule1Text: "• Zarejestruj do 3 własnych tagów za darmo.\n• Tag DEFAULT jest zawsze darmowy i chroniony.",
-                rule2Title: "2. Dzienny Limit i Token $SSOC",
-                rule2Text: "• 150 darmowych wiadomości dziennie. Po limicie wpisy pobierają token $SSOC.\n• Możesz dokupić tokeny w każdej chwili za ETH.",
-                rule3Title: "3. System Nicków",
-                rule3Text: "• Pierwsze ustawienie nicku jest darmowe.",
-                rule4Title: "4. Głosowanie i Komentarz Dnia",
-                rule4Text: "• Oddaj 1 głos dziennie na ulubiony komentarz.",
-                rule5Title: "5. Chat Bezpośredni",
-                rule5Text: "• Darmowy chat off-chain lub trwałe wiadomości on-chain.",
-                ethicsTitle: "🛡️ Bezpieczeństwo",
-                ethicsText: "Zabezpieczone w sieci Base L2.",
-                close: "Zamknij",
-                chatTitle: "Direct Chat",
-                onchainChat: "⛓️ On-Chain",
-                offchainChat: "⚡ Off-Chain (Free)",
-                recipientPlaceholder: "Adres odbiorcy (0x...)",
-                msgPlaceholder: "Wpisz wiadomość...",
-                sendMsg: "Wyślij",
-                buyoutTag: "Wykup Tag",
-                snipeTag: "Podkup Tag",
-                firstBuyoutTag: "Pierwszy Wykup",
-                systemTag: "System / Publiczny",
-                unregisteredTag: "Niezarejestrowany",
-                ownedTag: "Posiadany",
-                readyForSnipe: "Gotowy do Wykupu",
-                freeOrInUse: "Darmowy / W użyciu",
-                tagStatusTitle: "Status Tagu:",
-                usesCountLabel: "Liczba użyć:",
-                buyoutPriceLabel: "Cena wykupu:",
-                topCommentTitle: "🏆 Komentarz Dnia",
-                noTopComment: "Brak głosów dzisiaj.",
-                freeMsgLabel: "Darmowe wiadomości dzisiaj:",
-                tokenBalanceLabel: "Twoje saldo $SSOC:",
-                buyTokensBtn: "Dokup Tokeny $SSOC",
-                buyModalTitle: "Dokup Tokeny $SSOC",
-                buyModalDesc: "Wyczerpałeś limit darmowych wiadomości? Dokup tokeny $SSOC za ETH (0.00001 ETH / token).",
-                buyAction: "Kup za ETH"
+                subtitle: "Say Something On Chain (Base L2)",
+                rulesLink: "Zasady i Mechanika",
+                connectBtn: "Połącz portfel",
+                freeLimitTitle: "DARMOWE WIADOMOŚCI DZISIAJ:",
+                tokenBalanceTitle: "TWOJE SALDO $SSOC:",
+                buyTokenBtn: "+ Dokup Tokeny $SSOC",
+                topCommentTitle: "🏆 KOMENTARZ DNIA",
+                noTopComment: "Brak wyróżnionego komentarza na dziś.",
+                msgLabel: "Napisz coś na stałe w blockchainie:",
+                tagLabel: "Tag (zostaw puste dla DEFAULT):",
+                publishBtn: "Opublikuj wpis",
+                feedTitle: "DYSKUSJE SPOŁECZNOŚCI (ON-CHAIN)",
+                loadingFeed: "Ładowanie wpisów z sieci...",
+                rulesModalTitle: "Zasady i Mechanika Projektu SSOC",
+                rulesModalDesc: "Witaj w oficjalnym przewodniku po mechanikach zdecentralizowanej platformy społecznościowej <strong>Say Something On Chain (SSOC)</strong> działającej w sieci Base L2.",
+                rSec1Title: "1. Wiadomości i Darmowy Limit",
+                rSec1Desc: "Każdy użytkownik otrzymuje dzienny, darmowy limit 150 wiadomości (odnawiany automatycznie co dobę UTC). Po wyczerpaniu limitu publikacja wymaga posiadania i zużycia tokenów $SSOC.",
+                rSec2Title: "2. Tokenomika i Zakup ($SSOC)",
+                rSec2Desc: "Cena zakupu tokena bezpośrednio w smart kontrakcie wynosi 0.00001 ETH za 1 token. Wbudowany mechanizm automatycznego mintowania dba o to, by pula kontraktu nigdy się nie wyczerpała.",
+                rSec3Title: "3. System Tagów i Własność",
+                rSec3Desc: "Domyślny tag to DEFAULT (darmowy). Możesz zarejestrować do 3 własnych tagów. Tag z 50 użyciami można wykupić, a z 100 użyciami podkupić (Snipe). Podział opłat: 70% dla właściciela, 30% dla platformy.",
+                rSec4Title: "4. Głosowanie i Komentarz Dnia",
+                rSec4Desc: "Użytkownicy mogą oddawać 1 głos dziennie na najciekawszy komentarz, który trafia do wyróżnionej sekcji Komentarz Dnia.",
+                modalBuyTitle: "Dokup Tokeny $SSOC",
+                modalBuyDesc: "Wyczerpałeś limit darmowych wiadomości? Dokup tokeny $SSOC za ETH (0.00001 ETH / token).",
+                modalAmountLabel: "Ilość tokenów:",
+                modalBuyAction: "Kup za ETH",
+                modalClose: "Zamknij"
+            },
+            en: {
+                subtitle: "Say Something On Chain (Base L2)",
+                rulesLink: "Rules & Mechanics",
+                connectBtn: "Connect Wallet",
+                freeLimitTitle: "FREE MESSAGES TODAY:",
+                tokenBalanceTitle: "YOUR $SSOC BALANCE:",
+                buyTokenBtn: "+ Buy $SSOC Tokens",
+                topCommentTitle: "🏆 COMMENT OF THE DAY",
+                noTopComment: "No featured comment for today.",
+                msgLabel: "Say something permanently on-chain:",
+                tagLabel: "Tag (leave empty for DEFAULT):",
+                publishBtn: "Publish Post",
+                feedTitle: "COMMUNITY DISCUSSIONS (ON-CHAIN)",
+                loadingFeed: "Loading posts from network...",
+                rulesModalTitle: "SSOC Project Rules & Mechanics",
+                rulesModalDesc: "Welcome to the official guide to the mechanics of the decentralized social platform <strong>Say Something On Chain (SSOC)</strong> running on Base L2.",
+                rSec1Title: "1. Messages & Free Limit",
+                rSec1Desc: "Each user receives a daily free limit of 150 messages (automatically renewed every UTC day). After exhausting the limit, publishing requires holding and spending $SSOC tokens.",
+                rSec2Title: "2. Tokenomics & Purchase ($SSOC)",
+                rSec2Desc: "The token purchase price directly in the smart contract is 0.00001 ETH per 1 token. A built-in automatic minting mechanism ensures the contract pool never runs out.",
+                rSec3Title: "3. Tag System & Ownership",
+                rSec3Desc: "The default tag is DEFAULT (free). You can register up to 3 custom tags. A tag with 50 uses can be bought out, and with 100 uses sniped. Fee split: 70% to owner, 30% to platform.",
+                rSec4Title: "4. Voting & Comment of the Day",
+                rSec4Desc: "Users can cast 1 vote per day for the most interesting comment, which goes to the highlighted Comment of the Day section.",
+                modalBuyTitle: "Buy $SSOC Tokens",
+                modalBuyDesc: "Exhausted your free message limit? Buy $SSOC tokens with ETH (0.00001 ETH / token).",
+                modalAmountLabel: "Token amount:",
+                modalBuyAction: "Buy with ETH",
+                modalClose: "Close"
+            },
+            de: {
+                subtitle: "Say Something On Chain (Base L2)",
+                rulesLink: "Regeln & Mechanik",
+                connectBtn: "Wallet verbinden",
+                freeLimitTitle: "KOSTENLOSE NACHRICHTEN HEUTE:",
+                tokenBalanceTitle: "IHR $SSOC GUTHABEN:",
+                buyTokenBtn: "+ $SSOC Token kaufen",
+                topCommentTitle: "🏆 KOMMENTAR DES TAGES",
+                noTopComment: "Kein hervorgehobener Kommentar für heute.",
+                msgLabel: "Schreibe dauerhaft etwas On-Chain:",
+                tagLabel: "Tag (für DEFAULT leer lassen):",
+                publishBtn: "Beitrag veröffentlichen",
+                feedTitle: "COMMUNITY-DISKUSSIONEN (ON-CHAIN)",
+                loadingFeed: "Lade Beiträge aus dem Netzwerk...",
+                rulesModalTitle: "SSOC Projektregeln und Mechanik",
+                rulesModalDesc: "Willkommen beim offiziellen Leitfaden zur Mechanik der dezentralen Social-Plattform <strong>Say Something On Chain (SSOC)</strong> auf Base L2.",
+                rSec1Title: "1. Nachrichten & Freigrenze",
+                rSec1Desc: "Jeder Nutzer erhält ein tägliches Freilimit von 150 Nachrichten (wird jeden UTC-Tag erneuert). Nach Ausschöpfung erfordert das Veröffentlichen das Halten von $SSOC-Token.",
+                rSec2Title: "2. Tokenomics & Kauf ($SSOC)",
+                rSec2Desc: "Der Token-Kaufpreis direkt im Smart Contract beträgt 0.00001 ETH pro 1 Token. Ein integrierter automatischer Minting-Mechanismus sorgt dafür, dass der Pool nie ausgeht.",
+                rSec3Title: "3. Tag-System & Eigentum",
+                rSec3Desc: "Der Standard-Tag ist DEFAULT (kostenlos). Sie können bis zu 3 eigene Tags registrieren. Ein Tag mit 50 Verwendungen kann gekauft und mit 100 gesnipt werden. Aufteilung: 70% Inhaber, 30% Plattform.",
+                rSec4Title: "4. Abstimmung & Kommentar des Tages",
+                rSec4Desc: "Benutzer können täglich 1 Stimme für den interessantesten Kommentar abgeben, der im Bereich Kommentar des Tages hervorgehoben wird.",
+                modalBuyTitle: "$SSOC Token kaufen",
+                modalBuyDesc: "Freilimit aufgebraucht? Kaufen Sie $SSOC Token mit ETH (0.00001 ETH / Token).",
+                modalAmountLabel: "Token-Menge:",
+                modalBuyAction: "Mit ETH kaufen",
+                modalClose: "Schließen"
             }
         };
 
-        function App() {
-            const [lang, setLang] = useState('pl');
-            const [wallet, setWallet] = useState(null);
-            const [nickname, setNickname] = useState('');
-            const [newTagInput, setNewTagInput] = useState('');
-            const [postText, setPostText] = useState('');
-            const [postTag, setPostTag] = useState('');
-            const [searchFilter, setSearchFilter] = useState('');
-            const [showRules, setShowRules] = useState(false);
-            const [showChat, setShowChat] = useState(false);
-            const [showBuyModal, setShowBuyModal] = useState(false);
-            const [buyAmount, setBuyAmount] = useState('10');
-            const [chatMode, setChatMode] = useState('offchain');
-            const [chatRecipient, setChatRecipient] = useState('');
-            const [chatMessage, setChatMessage] = useState('');
-            const [chatHistory, setChatHistory] = useState([]);
-            const [inspectTagInfo, setInspectTagInfo] = useState(null);
-            const [toast, setToast] = useState(null);
-            const [isProcessing, setIsProcessing] = useState(false);
-            const [posts, setPosts] = useState([]);
-            const [topComment, setTopComment] = useState(null);
-
-            const [usedMessagesToday, setUsedMessagesToday] = useState(0);
-            const [dailyLimit, setDailyLimit] = useState(150);
-            const [ssocBalance, setSsocBalance] = useState("0");
-
-            const t = translations[lang] || translations.pl;
-
-            const showNotification = (msg, type = 'success') => {
-                setToast({ msg, type });
-                setTimeout(() => setToast(null), 4000);
-            };
-
-            const loadUserData = async (userAddr) => {
-                try {
-                    const provider = new ethers.providers.JsonRpcProvider(BASE_SEPOLIA_RPC);
-                    const board = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
-                    const token = new ethers.Contract(TOKEN_ADDRESS, TOKEN_ABI, provider);
-
-                    const currentDay = Math.floor(Date.now() / 1000 / 86400);
-                    const used = await board.dailyMessageCount(userAddr, currentDay);
-                    const limit = await board.dailyFreeLimit();
-                    const bal = await token.balanceOf(userAddr);
-
-                    setUsedMessagesToday(used.toNumber());
-                    setDailyLimit(limit.toNumber());
-                    setSsocBalance(ethers.utils.formatUnits(bal, 18));
-                } catch (err) {
-                    console.error("Błąd ładowania danych użytkownika:", err);
+        function setLanguage(lang) {
+            localStorage.setItem('ssoc_lang', lang);
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
                 }
-            };
-
-            const loadPostsFromBlockchain = async () => {
-                try {
-                    const provider = new ethers.providers.JsonRpcProvider(BASE_SEPOLIA_RPC);
-                    const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
-                    
-                    const count = await contract.commentsCount();
-                    const loadedPosts = [];
-
-                    for (let i = 1; i <= count.toNumber(); i++) {
-                        const c = await contract.comments(i);
-                        let authorNick = "";
-                        try {
-                            authorNick = await contract.nicknames(c.author);
-                        } catch (e) {}
-
-                        loadedPosts.push({
-                            id: c.id.toNumber(),
-                            author: c.author.slice(0,6) + '...' + c.author.slice(-4),
-                            fullAuthor: c.author,
-                            name: authorNick || 'Anonim',
-                            text: c.content,
-                            tag: c.tag || 'DEFAULT',
-                            votes: c.votes.toNumber()
-                        });
-                    }
-
-                    setPosts(loadedPosts.reverse());
-
-                    try {
-                        const currentDay = Math.floor(Date.now() / 1000 / 86400);
-                        const topCommentId = await contract.topCommentPerDay(currentDay);
-                        if (topCommentId && topCommentId.toNumber() > 0) {
-                            const found = loadedPosts.find(p => p.id === topCommentId.toNumber());
-                            setTopComment(found || null);
-                        }
-                    } catch (e) {}
-
-                } catch (err) {
-                    console.error("Błąd ładowania postów:", err);
-                }
-            };
-
-            const inspectTag = async (tagName) => {
-                const clean = tagName.trim().replace('#', '');
-                if (!clean) {
-                    setInspectTagInfo(null);
-                    return;
-                }
-
-                if (clean.toUpperCase() === 'DEFAULT') {
-                    setInspectTagInfo({
-                        name: 'DEFAULT',
-                        owner: 'System / Public',
-                        usesCount: '∞',
-                        currentPrice: 'Free',
-                        isOwned: false,
-                        canBuy: false,
-                        isSystemTag: true
-                    });
-                    return;
-                }
-
-                try {
-                    const provider = new ethers.providers.JsonRpcProvider(BASE_SEPOLIA_RPC);
-                    const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
-                    const tagData = await contract.tags(clean);
-
-                    if (tagData && tagData.name) {
-                        const uses = tagData.usesCount.toNumber();
-                        const owned = tagData.isOwned;
-                        const canBuy = (!owned && uses >= 50) || (owned && uses >= 100);
-
-                        setInspectTagInfo({
-                            name: tagData.name,
-                            owner: tagData.owner,
-                            usesCount: uses,
-                            currentPrice: ethers.utils.formatEther(tagData.currentPrice),
-                            isOwned: owned,
-                            canBuy: canBuy,
-                            isSystemTag: false
-                        });
-                    }
-                } catch (err) {
-                    setInspectTagInfo(null);
-                }
-            };
-
-            useEffect(() => {
-                loadPostsFromBlockchain();
-            }, []);
-
-            useEffect(() => {
-                if (searchFilter) {
-                    inspectTag(searchFilter);
-                } else {
-                    setInspectTagInfo(null);
-                }
-            }, [searchFilter]);
-
-            const connectWallet = async () => {
-                if (window.ethereum) {
-                    try {
-                        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                        setWallet(accounts[0]);
-                        showNotification("Portfel połączony!");
-                        await loadUserData(accounts[0]);
-                    } catch (err) {
-                        showNotification("Błąd połączenia", "error");
-                    }
-                } else {
-                    alert("Zainstaluj MetaMask!");
-                }
-            };
-
-            const handleBuyoutTag = async (tagName, priceInEth) => {
-                if (!window.ethereum || !wallet) {
-                    connectWallet();
-                    return;
-                }
-                try {
-                    setIsProcessing(true);
-                    showNotification("Przetwarzanie wykupu tagu...", "info");
-                    const provider = new ethers.providers.Web3Provider(window.ethereum);
-                    const signer = provider.getSigner();
-                    const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-
-                    const tx = await contract.buyOrSnipeTag(tagName, {
-                        value: ethers.utils.parseEther(priceInEth),
-                        gasLimit: 300000
-                    });
-                    await tx.wait();
-                    showNotification(`Tag #${tagName} przejęty pomyślnie!`, "success");
-                    inspectTag(tagName);
-                } catch (err) {
-                    showNotification("Wykup odrzucony", "error");
-                } finally {
-                    setIsProcessing(false);
-                }
-            };
-
-            const handleSendChatMessage = async () => {
-                if (!chatRecipient || !chatMessage) return;
-                if (chatMode === 'offchain') {
-                    setChatHistory([...chatHistory, { recipient: chatRecipient.slice(0,6), text: chatMessage, time: new Date().toLocaleTimeString(), mode: 'Off-Chain' }]);
-                    setChatMessage('');
-                } else {
-                    if (!window.ethereum || !wallet) {
-                        connectWallet();
-                        return;
-                    }
-                    try {
-                        setIsProcessing(true);
-                        const provider = new ethers.providers.Web3Provider(window.ethereum);
-                        const signer = provider.getSigner();
-                        const board = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-                        const tx = await board.postMessage("", `[DM]: ${chatMessage}`, { gasLimit: 300000 });
-                        await tx.wait();
-                        setChatMessage('');
-                        showNotification("Wiadomość On-Chain wysłana!", "success");
-                        loadPostsFromBlockchain();
-                    } catch (err) {
-                        showNotification("Błąd wysyłania chatu", "error");
-                    } finally {
-                        setIsProcessing(false);
-                    }
-                }
-            };
-
-            const handleVote = async (postId) => {
-                if (!window.ethereum || !wallet) {
-                    connectWallet();
-                    return;
-                }
-                try {
-                    setIsProcessing(true);
-                    const provider = new ethers.providers.Web3Provider(window.ethereum);
-                    const signer = provider.getSigner();
-                    const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-                    const tx = await contract.voteComment(postId, { gasLimit: 150000 });
-                    await tx.wait();
-                    showNotification("Głos odnotowany!", "success");
-                    loadPostsFromBlockchain();
-                } catch (err) {
-                    showNotification("Głosowanie nie powiodło się", "error");
-                } finally {
-                    setIsProcessing(false);
-                }
-            };
-
-            const handleSaveNickname = async () => {
-                if (!nickname.trim()) return;
-                if (!window.ethereum || !wallet) {
-                    connectWallet();
-                    return;
-                }
-                try {
-                    setIsProcessing(true);
-                    const provider = new ethers.providers.Web3Provider(window.ethereum);
-                    const signer = provider.getSigner();
-                    const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-                    const changesCount = await contract.nicknameChangesCount(wallet);
-                    let requiredFee = changesCount.gt(0) ? ethers.utils.parseEther("0.00005").mul(changesCount) : 0;
-
-                    const tx = await contract.setNickname(nickname, { value: requiredFee, gasLimit: 250000 });
-                    await tx.wait();
-                    showNotification("Nick zapisany!", "success");
-                } catch (err) {
-                    showNotification("Błąd zapisu nicka", "error");
-                } finally {
-                    setIsProcessing(false);
-                }
-            };
-
-            const handleRegisterTag = async () => {
-                if (!newTagInput.trim()) return;
-                if (!window.ethereum || !wallet) {
-                    connectWallet();
-                    return;
-                }
-                try {
-                    setIsProcessing(true);
-                    const provider = new ethers.providers.Web3Provider(window.ethereum);
-                    const signer = provider.getSigner();
-                    const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-                    const tx = await contract.registerCustomTag(newTagInput.trim().replace('#',''), { gasLimit: 200000 });
-                    await tx.wait();
-                    setNewTagInput('');
-                    showNotification("Tag zarejestrowany!", "success");
-                } catch (err) {
-                    showNotification("Błąd rejestracji tagu", "error");
-                } finally {
-                    setIsProcessing(false);
-                }
-            };
-
-            const handlePublish = async (e) => {
-                e.preventDefault();
-                if (!postText.trim()) return;
-                if (!window.ethereum || !wallet) {
-                    connectWallet();
-                    return;
-                }
-
-                const tagToSend = postTag.trim() ? postTag.trim().replace('#', '') : "DEFAULT";
-
-                try {
-                    setIsProcessing(true);
-                    const provider = new ethers.providers.Web3Provider(window.ethereum);
-                    const signer = provider.getSigner();
-                    const board = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-                    const token = new ethers.Contract(TOKEN_ADDRESS, TOKEN_ABI, signer);
-
-                    if (usedMessagesToday >= dailyLimit) {
-                        showNotification("Darmowy limit wyczerpany. Sprawdzanie tokenów $SSOC...", "info");
-                        const allowance = await token.allowance(wallet, CONTRACT_ADDRESS);
-                        if (allowance.lt(ethers.utils.parseUnits("1", 18))) {
-                            showNotification("Zatwierdzanie tokenów w MetaMask...", "info");
-                            const appTx = await token.approve(CONTRACT_ADDRESS, ethers.constants.MaxUint256);
-                            await appTx.wait();
-                        }
-                    }
-
-                    showNotification("Publikowanie w sieci Base...", "info");
-                    const tx = await board.postMessage(tagToSend, postText, { gasLimit: 350000 });
-                    await tx.wait();
-
-                    setPostText('');
-                    setPostTag('');
-                    showNotification("Wiadomość opublikowana on-chain!", "success");
-                    loadPostsFromBlockchain();
-                    loadUserData(wallet);
-                } catch (err) {
-                    console.error(err);
-                    showNotification("Transakcja odrzucona", "error");
-                } finally {
-                    setIsProcessing(false);
-                }
-            };
-
-            const handleBuyTokens = async () => {
-                if (!buyAmount || parseInt(buyAmount) <= 0) return;
-                if (!window.ethereum || !wallet) {
-                    connectWallet();
-                    return;
-                }
-                try {
-                    setIsProcessing(true);
-                    showNotification("Kupowanie tokenów $SSOC...", "info");
-                    const provider = new ethers.providers.Web3Provider(window.ethereum);
-                    const signer = provider.getSigner();
-                    const board = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-
-                    const pricePerToken = ethers.utils.parseEther("0.00001");
-                    const totalCost = pricePerToken.mul(buyAmount);
-
-                    const tx = await board.buyTokens(buyAmount, { value: totalCost });
-                    await tx.wait();
-
-                    showNotification(`Zakupiono ${buyAmount} tokenów $SSOC!`, "success");
-                    setShowBuyModal(false);
-                    loadUserData(wallet);
-                } catch (err) {
-                    showNotification("Zakup nie powiódł się", "error");
-                } finally {
-                    setIsProcessing(false);
-                }
-            };
-
-            const filteredPosts = posts.filter(p => {
-                if (!searchFilter) return true;
-                const filter = searchFilter.toLowerCase().replace('#', '');
-                return p.tag.toLowerCase().includes(filter) || p.name.toLowerCase().includes(filter);
             });
-
-            return (
-                <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-6">
-                    {toast && (
-                        <div className={`fixed top-4 right-4 z-50 px-4 py-2 rounded-xl shadow-2xl text-xs font-medium border flex items-center gap-2 ${
-                            toast.type === 'error' ? 'bg-rose-950 border-rose-800 text-rose-200' : 'bg-emerald-950 border-emerald-800 text-emerald-200'
-                        }`}>
-                            {toast.msg}
-                        </div>
-                    )}
-
-                    <header className="flex flex-col sm:flex-row justify-between items-center gap-4 border-b border-slate-800 pb-4">
-                        <div>
-                            <h1 className="text-2xl font-bold text-indigo-400">⛓️ {t.brand}</h1>
-                            <p className="text-xs text-slate-400">{t.tagline}</p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <button onClick={() => setShowChat(!showChat)} className="bg-slate-800 hover:bg-slate-700 text-blue-400 px-3 py-1.5 rounded-xl text-xs font-medium">💬 {t.chatTitle}</button>
-                            <button onClick={() => setShowRules(true)} className="text-xs text-slate-400 underline">{t.rulesBtn}</button>
-                            <button onClick={() => setLang(lang === 'pl' ? 'en' : 'pl')} className="bg-slate-800 px-3 py-1.5 rounded-xl text-xs font-bold">🌐 {lang.toUpperCase()}</button>
-                            <button onClick={connectWallet} className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-xs font-semibold">
-                                {wallet ? `${wallet.slice(0,6)}...${wallet.slice(-4)}` : t.connectWallet}
-                            </button>
-                        </div>
-                    </header>
-
-                    {wallet && (
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-900/90 p-4 rounded-2xl border border-indigo-900/50">
-                            <div className="text-center">
-                                <p className="text-[11px] text-slate-400 uppercase">{t.freeMsgLabel}</p>
-                                <p className="text-xl font-bold text-emerald-400">{usedMessagesToday} / {dailyLimit}</p>
-                            </div>
-                            <div className="text-center">
-                                <p className="text-[11px] text-slate-400 uppercase">{t.tokenBalanceLabel}</p>
-                                <p className="text-xl font-bold text-indigo-400">{parseFloat(ssocBalance).toFixed(2)} $SSOC</p>
-                            </div>
-                            <div className="flex items-center justify-center">
-                                <button onClick={() => setShowBuyModal(true)} className="w-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold py-2.5 px-4 rounded-xl">
-                                    + {t.buyTokensBtn}
-                                </button>
-                            </div>
-                        </div>
-                    )}
-
-                    {topComment && (
-                        <section className="bg-amber-500/10 border border-amber-500/30 p-4 rounded-2xl">
-                            <h3 className="text-xs font-bold text-amber-400 uppercase mb-1">{t.topCommentTitle}</h3>
-                            <p className="text-xs text-slate-200 italic">"{topComment.text}" - {topComment.name} (👍 {topComment.votes})</p>
-                        </section>
-                    )}
-
-                    {showChat && (
-                        <section className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-3">
-                            <div className="flex justify-between items-center border-b border-slate-800 pb-2">
-                                <h3 className="text-xs font-semibold text-slate-200">💬 {t.chatTitle}</h3>
-                                <div className="flex bg-slate-950 p-1 rounded-xl text-[11px]">
-                                    <button onClick={() => setChatMode('offchain')} className={`px-2 py-0.5 rounded-lg ${chatMode === 'offchain' ? 'bg-indigo-600 text-white' : 'text-slate-400'}`}>{t.offchainChat}</button>
-                                    <button onClick={() => setChatMode('onchain')} className={`px-2 py-0.5 rounded-lg ${chatMode === 'onchain' ? 'bg-indigo-600 text-white' : 'text-slate-400'}`}>{t.onchainChat}</button>
-                                </div>
-                            </div>
-                            <div className="flex gap-2">
-                                <input type="text" value={chatRecipient} onChange={(e) => setChatRecipient(e.target.value)} placeholder={t.recipientPlaceholder} className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs flex-1 text-slate-200" />
-                                <input type="text" value={chatMessage} onChange={(e) => setChatMessage(e.target.value)} placeholder={t.msgPlaceholder} className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs flex-1 text-slate-200" />
-                                <button onClick={handleSendChatMessage} className="bg-blue-600 text-white px-4 py-1.5 rounded-xl text-xs">{t.sendMsg}</button>
-                            </div>
-                        </section>
-                    )}
-
-                    <section className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-3">
-                        <textarea rows="3" value={postText} onChange={(e) => setPostText(e.target.value)} placeholder={t.postPlaceholder} className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-100 resize-none" />
-                        <div className="flex gap-2.5">
-                            <input type="text" value={postTag} onChange={(e) => setPostTag(e.target.value)} placeholder={t.tagPlaceholder} className="bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs flex-1 text-slate-100" />
-                            <button onClick={handlePublish} disabled={isProcessing} className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-6 py-2 rounded-xl text-xs">{t.publish}</button>
-                        </div>
-                    </section>
-
-                    <section className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <div className="bg-slate-900 border border-slate-800 p-3 rounded-2xl space-y-2">
-                            <span className="text-[11px] font-semibold text-slate-400 uppercase">{t.setNickname}</span>
-                            <div className="flex gap-1.5">
-                                <input type="text" value={nickname} onChange={(e) => setNickname(e.target.value)} placeholder={t.nicknamePlaceholder} className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs w-full text-slate-200" />
-                                <button onClick={handleSaveNickname} className="bg-slate-800 text-white px-3 py-1.5 rounded-xl text-xs">{t.saveNickname}</button>
-                            </div>
-                        </div>
-                        <div className="bg-slate-900 border border-slate-800 p-3 rounded-2xl space-y-2">
-                            <span className="text-[11px] font-semibold text-slate-400 uppercase">{t.registerTagTitle}</span>
-                            <div className="flex gap-1.5">
-                                <input type="text" value={newTagInput} onChange={(e) => setNewTagInput(e.target.value)} placeholder={t.tagRegPlaceholder} className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs w-full text-slate-200" />
-                                <button onClick={handleRegisterTag} className="bg-indigo-600 text-white px-3 py-1.5 rounded-xl text-xs">{t.registerTagBtn}</button>
-                            </div>
-                        </div>
-                        <div className="bg-slate-900 border border-slate-800 p-3 rounded-2xl space-y-2">
-                            <span className="text-[11px] font-semibold text-slate-400 uppercase">Szukaj tagu</span>
-                            <div className="flex gap-1.5">
-                                <input type="text" value={searchFilter} onChange={(e) => setSearchFilter(e.target.value)} placeholder={t.searchPlaceholder} className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs w-full text-slate-200" />
-                                {searchFilter && <button onClick={() => setSearchFilter('')} className="bg-slate-800 text-slate-300 px-2.5 py-1.5 rounded-xl text-xs">{t.clearFilter}</button>}
-                            </div>
-                        </div>
-                    </section>
-
-                    {inspectTagInfo && (
-                        <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-2 text-xs">
-                            <div className="flex justify-between items-center">
-                                <span className="font-semibold text-slate-200">🔍 Status tagu <span className="text-blue-400">#{inspectTagInfo.name}</span></span>
-                                <span className="bg-blue-500/10 text-blue-400 px-2.5 py-1 rounded-lg">{inspectTagInfo.isOwned ? t.ownedTag : t.unregisteredTag}</span>
-                            </div>
-                            {!inspectTagInfo.isSystemTag && (
-                                <div className="flex justify-between items-center pt-1 text-slate-400">
-                                    <span>Użycia: <b className="text-slate-200">{inspectTagInfo.usesCount}</b> | Cena: <b className="text-slate-200">{inspectTagInfo.currentPrice} ETH</b></span>
-                                    {inspectTagInfo.canBuy && <button onClick={() => handleBuyoutTag(inspectTagInfo.name, inspectTagInfo.currentPrice)} className="bg-amber-600 text-white px-3 py-1 rounded-xl">{t.buyoutTag}</button>}
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    <main className="space-y-3 pt-2">
-                        <h2 className="text-xs font-semibold text-slate-400 uppercase">{t.feedTitle}</h2>
-                        {filteredPosts.length === 0 ? (
-                            <div className="text-center text-xs text-slate-500 py-10 bg-slate-900/30 rounded-2xl">Brak wpisów on-chain.</div>
-                        ) : (
-                            filteredPosts.map(p => (
-                                <article key={p.id} className="p-4 bg-slate-900 border border-slate-800 rounded-2xl space-y-2">
-                                    <div className="flex justify-between items-center text-xs text-slate-400">
-                                        <span className="font-semibold text-slate-200">{p.name} <span className="text-[10px] text-slate-500">({p.author})</span></span>
-                                        <button onClick={() => setSearchFilter(p.tag)} className="bg-slate-800 px-2 py-0.5 rounded text-blue-400 text-[11px]">#{p.tag}</button>
-                                    </div>
-                                    <p className="text-xs text-slate-200">{p.text}</p>
-                                    <div className="flex justify-end">
-                                        <button onClick={() => handleVote(p.id)} className="text-[11px] bg-slate-800 px-3 py-1 rounded-xl text-slate-300">👍 ({p.votes})</button>
-                                    </div>
-                                </article>
-                            ))
-                        )}
-                    </main>
-
-                    {showBuyModal && (
-                        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
-                            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full space-y-4">
-                                <h3 className="text-base font-bold text-indigo-400">{t.buyModalTitle}</h3>
-                                <p className="text-xs text-slate-400">{t.buyModalDesc}</p>
-                                <input type="number" value={buyAmount} onChange={(e) => setBuyAmount(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white" />
-                                <div className="flex gap-2">
-                                    <button onClick={handleBuyTokens} className="flex-1 bg-indigo-600 text-white font-bold py-2 text-xs rounded-xl">{t.buyAction}</button>
-                                    <button onClick={() => setShowBuyModal(false)} className="bg-slate-800 text-white font-bold py-2 px-4 text-xs rounded-xl">{t.close}</button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {showRules && (
-                        <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
-                            <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-lg w-full space-y-3">
-                                <h3 className="font-bold text-sm text-slate-100">{t.rulesTitle}</h3>
-                                <p className="text-xs text-slate-300">{t.rulesIntro}</p>
-                                <button onClick={() => setShowRules(false)} className="w-full bg-slate-800 text-white py-2 rounded-xl text-xs">{t.close}</button>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            );
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('lang-' + lang).classList.add('active');
         }
 
-        ReactDOM.render(<App />, document.getElementById('root'));
+        const currentLang = localStorage.getItem('ssoc_lang') || 'pl';
+        setLanguage(currentLang);
+
+        function showNotification(text) {
+            const box = document.getElementById('notificationBox');
+            box.innerText = text;
+            box.style.display = 'block';
+            setTimeout(() => { box.style.display = 'none'; }, 4000);
+        }
+
+        function openRulesModal() { document.getElementById('rulesModal').style.display = 'flex'; }
+        function closeRulesModal() { document.getElementById('rulesModal').style.display = 'none'; }
+        function openBuyModal() { document.getElementById('buyTokensModal').style.display = 'flex'; }
+        function closeBuyModal() { document.getElementById('buyTokensModal').style.display = 'none'; }
+
+        async function connectWallet() {
+            if (window.ethereum) {
+                try {
+                    const provider = new ethers.BrowserProvider(window.ethereum);
+                    await provider.send("eth_requestAccounts", []);
+                    const signer = await provider.getSigner();
+                    const address = await signer.getAddress();
+                    document.getElementById('connectWalletBtn').innerText = address.substring(0, 6) + "..." + address.substring(38);
+                    showNotification("Portfel połączony pomyślnie!");
+                } catch (err) {
+                    console.error(err);
+                    showNotification("Błąd łączenia z portfelem.");
+                }
+            } else {
+                alert("Zainstaluj MetaMask!");
+            }
+        }
+
+        function postMessage() {
+            showNotification("Funkcja publikacji gotowa do spięcia z kontraktem Proxy.");
+        }
+
+        function buyTokens() {
+            showNotification("Zakup tokenów w toku...");
+            closeBuyModal();
+        }
     </script>
 </body>
 </html>
