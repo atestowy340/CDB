@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title id="page-title">Zasady i Mechanika - SSOC</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            line-height: 1.6;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1, h2 { color: #38bdf8; }
+        .card {
+            background: #1e293b;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 8px; }
+        a { color: #38bdf8; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .back-btn {
+            background: #3b82f6;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-btn:hover { background: #2563eb; }
+        .lang-select {
+            background: #1e293b;
+            color: #f8fafc;
+            border: 1px solid #334155;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <a href="index.html" class="back-btn" id="btn-back">&larr; Powrót do aplikacji</a>
+        <select id="langSelect" class="lang-select" onchange="changeLanguage(this.value)">
+            <option value="pl">🇵🇱 Polski</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="de">🇩🇪 Deutsch</option>
+        </select>
+    </div>
+
+    <h1 id="main-heading">Zasady i Mechanika Projektu SSOC</h1>
+    <p id="main-desc">Witaj w oficjalnym przewodniku po mechanikach zdecentralizowanej platformy społecznościowej <strong>Say Something On Chain (SSOC)</strong> działającej w sieci Base L2.</p>
+
+    <div class="card">
+        <h2 id="sec1-title">1. Wiadomości i Darmowy Limit</h2>
+        <ul>
+            <li id="sec1-1">Każdy użytkownik otrzymuje dzienny, darmowy limit <strong>150 wiadomości</strong> (odnawiany automatycznie co dobę UTC).</li>
+            <li id="sec1-2">Po wyczerpaniu darmowego limitu, publikacja kolejnych wiadomości wymaga posiadania i zużycia tokenów <strong>$SSOC</strong>.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2 id="sec2-title">2. Tokenomika i Zakup Tokenów ($SSOC)</h2>
+        <ul>
+            <li id="sec2-1">Oficjalny token platformy: <strong>$SSOC</strong>.</li>
+            <li id="sec2-2">Cena zakupu tokena bezpośrednio w smart kontrakcie wynosi <strong>0.00001 ETH</strong> za 1 token.</li>
+            <li id="sec2-3">Wbudowany mechanizm automatycznego mintowania dba o to, by pula kontraktu nigdy się nie wyczerpała przy zakupie za ETH.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2 id="sec3-title">3. System Tagów i Własność</h2>
+        <ul>
+            <li id="sec3-1">Domyślny tag wiadomości to <code>DEFAULT</code> (całkowicie darmowy i dostępny dla każdego).</li>
+            <li id="sec3-2">Każdy użytkownik może zarejestrować do <strong>3 własnych, darmowych tagów</strong> customowych.</li>
+            <li id="sec3-3"><strong>Wykup i podkupienie (Snipe):</strong> Tag, który osiągnie 50 użyć, może zostać wykupiony. Po osiągnięciu 100 użyć, tag posiadany przez kogoś może zostać podkupiony.</li>
+            <li id="sec3-4"><strong>Podział opłat z tagów:</strong> 70% trafia do dotychczasowego właściciela tagu, a 30% zasila prowizję platformy.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2 id="sec4-title">4. Głosowanie i Komentarz Dnia</h2>
+        <ul>
+            <li id="sec4-1">Użytkownicy mogą oddawać 1 głos dziennie na najciekawszy komentarz.</li>
+            <li id="sec4-2">Komentarz z największą liczbą głosów w danym dniu automatycznie ląduje w sekcji wyróżnionej jako <strong>Komentarz Dnia</strong>.</li>
+        </ul>
+    </div>
+
+    <script>
+        const translations = {
+            pl: {
+                pageTitle: "Zasady i Mechanika - SSOC",
+                btnBack: "← Powrót do aplikacji",
+                mainHeading: "Zasady i Mechanika Projektu SSOC",
+                mainDesc: "Witaj w oficjalnym przewodniku po mechanikach zdecentralizowanej platformy społecznościowej <strong>Say Something On Chain (SSOC)</strong> działającej w sieci Base L2.",
+                sec1Title: "1. Wiadomości i Darmowy Limit",
+                sec11: "Każdy użytkownik otrzymuje dzienny, darmowy limit <strong>150 wiadomości</strong> (odnawiany automatycznie co dobę UTC).",
+                sec12: "Po wyczerpaniu darmowego limitu, publikacja kolejnych wiadomości wymaga posiadania i zużycia tokenów <strong>$SSOC</strong>.",
+                sec2Title: "2. Tokenomika i Zakup Tokenów ($SSOC)",
+                sec21: "Oficjalny token platformy: <strong>$SSOC</strong>.",
+                sec22: "Cena zakupu tokena bezpośrednio w smart kontrakcie wynosi <strong>0.00001 ETH</strong> za 1 token.",
+                sec23: "Wbudowany mechanizm automatycznego mintowania dba o to, by pula kontraktu nigdy się nie wyczerpała przy zakupie za ETH.",
+                sec3Title: "3. System Tagów i Własność",
+                sec31: "Domyślny tag wiadomości to <code>DEFAULT</code> (całkowicie darmowy i dostępny dla każdego).",
+                sec32: "Każdy użytkownik może zarejestrować do <strong>3 własnych, darmowych tagów</strong> customowych.",
+                sec33: "<strong>Wykup i podkupienie (Snipe):</strong> Tag, który osiągnie 50 użyć, może zostać wykupiony. Po osiągnięciu 100 użyć, tag posiadany przez kogoś może zostać podkupiony.",
+                sec34: "<strong>Podział opłat z tagów:</strong> 70% trafia do dotychczasowego właściciela tagu, a 30% zasila prowizję platformy.",
+                sec4Title: "4. Głosowanie i Komentarz Dnia",
+                sec41: "Użytkownicy mogą oddawać 1 głos dziennie na najciekawszy komentarz.",
+                sec42: "Komentarz z największą liczbą głosów w danym dniu automatycznie ląduje w sekcji wyróżnionej jako <strong>Komentarz Dnia</strong>."
+            },
+            en: {
+                pageTitle: "Rules & Mechanics - SSOC",
+                btnBack: "← Back to App",
+                mainHeading: "SSOC Project Rules & Mechanics",
+                mainDesc: "Welcome to the official guide to the mechanics of the decentralized social platform <strong>Say Something On Chain (SSOC)</strong> running on Base L2.",
+                sec1Title: "1. Messages & Free Limit",
+                sec11: "Each user receives a daily free limit of <strong>150 messages</strong> (automatically renewed every UTC day).",
+                sec12: "After exhausting the free limit, publishing further messages requires holding and spending <strong>$SSOC</strong> tokens.",
+                sec2Title: "2. Tokenomics & Token Purchase ($SSOC)",
+                sec21: "Official platform token: <strong>$SSOC</strong>.",
+                sec22: "The token purchase price directly in the smart contract is <strong>0.00001 ETH</strong> per 1 token.",
+                sec23: "A built-in automatic minting mechanism ensures the contract pool never runs out when purchasing with ETH.",
+                sec3Title: "3. Tag System & Ownership",
+                sec31: "The default message tag is <code>DEFAULT</code> (completely free and available to everyone).",
+                sec32: "Each user can register up to <strong>3 custom free tags</strong>.",
+                sec33: "<strong>Buyout & Snipe:</strong> A tag that reaches 50 uses can be bought out. Upon reaching 100 uses, an owned tag can be sniped.",
+                sec34: "<strong>Tag fee split:</strong> 70% goes to the previous tag owner, and 30% goes to the platform fee.",
+                sec4Title: "4. Voting & Comment of the Day",
+                sec41: "Users can cast 1 vote per day for the most interesting comment.",
+                sec42: "The comment with the highest number of votes on a given day automatically lands in the highlighted <strong>Comment of the Day</strong> section."
+            },
+            de: {
+                pageTitle: "Regeln & Mechanik - SSOC",
+                btnBack: "← Zurück zur App",
+                mainHeading: "SSOC Projektregeln und Mechanik",
+                mainDesc: "Willkommen beim offiziellen Leitfaden zur Mechanik der dezentralen Social-Plattform <strong>Say Something On Chain (SSOC)</strong> auf Base L2.",
+                sec1Title: "1. Nachrichten & Freigrenze",
+                sec11: "Jeder Nutzer erhält ein tägliches Freilimit von <strong>150 Nachrichten</strong> (wird jeden UTC-Tag automatisch erneuert).",
+                sec12: "Nach Ausschöpfung des Freilimits erfordert das Veröffentlichen weiterer Nachrichten das Halten und Ausgeben von <strong>$SSOC</strong>-Token.",
+                sec2Title: "2. Tokenomics & Token-Kauf ($SSOC)",
+                sec21: "Offizieller Plattform-Token: <strong>$SSOC</strong>.",
+                sec22: "Der Token-Kaufpreis direkt im Smart Contract beträgt <strong>0.00001 ETH</strong> pro 1 Token.",
+                sec23: "Ein integrierter automatischer Minting-Mechanismus sorgt dafür, dass der Vertragspool beim ETH-Kauf nie ausgeht.",
+                sec3Title: "3. Tag-System & Eigentum",
+                sec31: "Der Standard-Nachrichten-Tag ist <code>DEFAULT</code> (völlig kostenlos und für jeden verfügbar).",
+                sec32: "Jeder Benutzer kann bis zu <strong>3 eigene, kostenlose Tags</strong> registrieren.",
+                sec33: "<strong>Kauf und Snipe:</strong> Ein Tag, der 50 Verwendungen erreicht, kann gekauft werden. Nach Erreichen von 100 Verwendungen kann ein besessener Tag gesnipt werden.",
+                sec34: "<strong>Tag-Gebührenaufteilung:</strong> 70% gehen an den bisherigen Tag-Inhaber und 30% an die Plattformgebühr.",
+                sec4Title: "4. Abstimmung & Kommentar des Tages",
+                sec41: "Benutzer können täglich 1 Stimme für den interessantesten Kommentar abgeben.",
+                sec42: "Der Kommentar mit den meisten Stimmen an einem Tag landet automatisch im hervorgehobenen Bereich <strong>Kommentar des Tages</strong>."
+            }
+        };
+
+        function changeLanguage(lang) {
+            const t = translations[lang];
+            if (!t) return;
+            document.getElementById('page-title').innerText = t.pageTitle;
+            document.getElementById('btn-back').innerHTML = t.btnBack;
+            document.getElementById('main-heading').innerText = t.mainHeading;
+            document.getElementById('main-desc').innerHTML = t.mainDesc;
+            document.getElementById('sec1-title').innerText = t.sec1Title;
+            document.getElementById('sec1-1').innerHTML = t.sec11;
+            document.getElementById('sec1-2').innerHTML = t.sec12;
+            document.getElementById('sec2-title').innerText = t.sec2Title;
+            document.getElementById('sec2-1').innerHTML = t.sec21;
+            document.getElementById('sec2-2').innerHTML = t.sec22;
+            document.getElementById('sec2-3').innerHTML = t.sec23;
+            document.getElementById('sec3-title').innerText = t.sec3Title;
+            document.getElementById('sec31').innerHTML = t.sec31;
+            document.getElementById('sec32').innerHTML = t.sec32;
+            document.getElementById('sec33').innerHTML = t.sec33;
+            document.getElementById('sec34').innerHTML = t.sec34;
+            document.getElementById('sec4-title').innerText = t.sec4Title;
+            document.getElementById('sec41').innerHTML = t.sec41;
+            document.getElementById('sec42').innerHTML = t.sec42;
+            localStorage.setItem('ssoc_rules_lang', lang);
+        }
+
+        // Automatyczne wczytanie zapamiętanego języka lub domyślnie PL
+        const savedLang = localStorage.getItem('ssoc_rules_lang') || 'pl';
+        document.getElementById('langSelect').value = savedLang;
+        changeLanguage(savedLang);
+    </script>
+</body>
+</html>
